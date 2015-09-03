@@ -1,0 +1,107 @@
+package com.neversoft.smartwaiter.model.entity;
+
+/**
+ * Created by Usuario on 02/09/2015.
+ */
+public class DetallePedidoEE {
+    private int mId;
+    private int mPedidoId;
+    private int mCodArticulo;
+    private float mCantidad;
+    private float mPrecio;
+    private int mTipoArticulo;
+    private int mCodArticuloPrincipal;
+    private String mComentario;
+    private int mEstadoArticulo;
+    private String mDescArticulo; //FALTA AGREGARLO A LA BD PORQUE SINO AL MOSTRAR HABRIA QUE VOLVER A CONSULTAR LA BD SOLO X LOS NOMBRES
+
+    public DetallePedidoEE() {
+    }
+    public DetallePedidoEE(ArticuloEE articulo) {
+        this.setCodArticulo(articulo.getId());
+        this.setDescArticulo(articulo.getDescripcionNorm());
+        this.setCantidad(1); //1 item por defecto.
+        this.setPrecio(articulo.getPrecio());
+        this.setEstadoArticulo(0); //No enviado a cocina
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        mId = id;
+    }
+
+    public int getPedidoId() {
+        return mPedidoId;
+    }
+
+    public void setPedidoId(int pedidoId) {
+        mPedidoId = pedidoId;
+    }
+
+    public int getCodArticulo() {
+        return mCodArticulo;
+    }
+
+    public void setCodArticulo(int codArticulo) {
+        mCodArticulo = codArticulo;
+    }
+
+    public float getCantidad() {
+        return mCantidad;
+    }
+
+    public void setCantidad(float cantidad) {
+        mCantidad = cantidad;
+    }
+
+    public float getPrecio() {
+        return mPrecio;
+    }
+
+    public void setPrecio(float precio) {
+        mPrecio = precio;
+    }
+
+    public int getTipoArticulo() {
+        return mTipoArticulo;
+    }
+
+    public void setTipoArticulo(int tipoArticulo) {
+        mTipoArticulo = tipoArticulo;
+    }
+
+    public int getCodArticuloPrincipal() {
+        return mCodArticuloPrincipal;
+    }
+
+    public void setCodArticuloPrincipal(int codArticuloPrincipal) {
+        mCodArticuloPrincipal = codArticuloPrincipal;
+    }
+
+    public String getComentario() {
+        return mComentario;
+    }
+
+    public void setComentario(String comentario) {
+        mComentario = comentario;
+    }
+
+    public int getEstadoArticulo() {
+        return mEstadoArticulo;
+    }
+
+    public void setEstadoArticulo(int estadoArticulo) {
+        mEstadoArticulo = estadoArticulo;
+    }
+
+    public String getDescArticulo() {
+        return mDescArticulo;
+    }
+
+    public void setDescArticulo(String descArticulo) {
+        mDescArticulo = descArticulo;
+    }
+}
