@@ -8,8 +8,6 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
-import java.util.List;
-
 /**
  * Created by Usuario on 02/09/2015.
  */
@@ -40,7 +38,7 @@ public class SmartWaiterDB {
         db = dbHelper.getWritableDatabase();
     }
 
-    private void closeDB() {
+    public void closeDB() {
         if (db != null)
             db.close();
     }
@@ -82,12 +80,12 @@ public class SmartWaiterDB {
                         String selection, String[] selectionArgs, String groupBy,
                         String having, String orderBy, String limit) {
         try {
-            this.openReadableDB();
             return db.query(distinct, table, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
         } finally {
 
         }
     }
+
     interface Pedido {
         String ID = "_id";
         int ID_COL = 0;
@@ -276,18 +274,18 @@ public class SmartWaiterDB {
     }
 
     public interface Tables {
-        static final String PEDIDO = "pedido";
-        static final String DETALLE_PEDIDO = "detalle_pedido";
-        static final String FAMILIA = "familia";
-        static final String PRIORIDAD = "prioridad";
-        static final String CLIENTE = "cliente";
-        static final String MESA_PISO = "mesa_piso";
-        static final String CARTA = "carta";
-        static final String ARTICULO = "articulo";
+        String PEDIDO = "pedido";
+        String DETALLE_PEDIDO = "detalle_pedido";
+        String FAMILIA = "familia";
+        String PRIORIDAD = "prioridad";
+        String CLIENTE = "cliente";
+        String MESA_PISO = "mesa_piso";
+        String CARTA = "carta";
+        String ARTICULO = "articulo";
 
-        static final String ARTICULOS_JOIN_CARTA = ARTICULO + " JOIN " + CARTA
-                + " ON " + ARTICULO + "." + Articulo.ID + " = " + CARTA + "." + Carta.COD_ARTICULO
-                + " AND " + CARTA + "." + Carta.COD_FAMILIA + "=? ";
+        String ARTICULOS_JOIN_CARTA = ARTICULO + " JOIN " + CARTA
+                + " ON " + ARTICULO + "." + Articulo.ID + " = " + CARTA + "." + Carta.COD_ARTICULO;
+
     }
 
     private static class DBHelper extends SQLiteOpenHelper {
