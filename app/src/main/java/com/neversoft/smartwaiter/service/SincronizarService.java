@@ -89,7 +89,7 @@ public class SincronizarService extends IntentService {
         try {
 
 
-            String url = RestUtil.URLServer + "ObtenerDatosIniciales/?usuario=SUPERVISOR&codCia=001&cadenaConexion=Initial%20Catalog=ABR";
+            String url = RestUtil.URLServer + "ObtenerDatosIniciales/?usuario=SUPERVISOR&codCia=001&cadenaConexion=Initial%20Catalog=PRUEBAMOVILJHAV";
 
             Log.d(SmartWaiterDB.TAG, url);
             if (Funciones.hasActiveInternetConnection(getApplicationContext())) {

@@ -6,6 +6,7 @@ package com.neversoft.smartwaiter.model.entity;
 public class ArticuloEE {
 
     private int mId;
+    private int mCodListaPrecio;
     private String mDescripcionNorm;
     private String mUm;
     private String mUmDescripcion;
@@ -21,6 +22,14 @@ public class ArticuloEE {
 
     public void setId(int id) {
         mId = id;
+    }
+
+    public int getCodListaPrecio() {
+        return mCodListaPrecio;
+    }
+
+    public void setCodListaPrecio(int codListaPrecio) {
+        mCodListaPrecio = codListaPrecio;
     }
 
     public String getDescripcionNorm() {

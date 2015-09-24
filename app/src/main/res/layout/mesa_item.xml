@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@android:color/holo_blue_dark"
+              android:orientation="vertical"
+              android:padding="5dp">
+
+    <TextView
+        android:id="@+id/nro_textview"
+        android:layout_width="150dp"
+        android:layout_height="20dp"
+        android:textAppearance="?android:textAppearanceMedium"/>
+
+    <TextView
+        android:id="@+id/estado_textview"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="?android:textAppearanceMedium"/>
+
+    <TextView
+        android:id="@+id/reserva_textview"
+        android:layout_width="150dp"
+        android:layout_height="20dp"
+        android:textAppearance="?android:textAppearanceMedium"/>
+</LinearLayout>

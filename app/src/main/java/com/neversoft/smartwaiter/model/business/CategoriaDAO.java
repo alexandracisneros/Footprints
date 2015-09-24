@@ -45,7 +45,7 @@ public class CategoriaDAO {
                     statement.clearBindings();
                     statement.bindString(1, jsonObjItem.get("codelemento").getAsString());
                     statement.bindString(2, jsonObjItem.get("descripcion").getAsString());
-                    statement.bindString(3, jsonObjItem.get("factorc").getAsString());
+                    statement.bindString(3, jsonObjItem.get("descripcion2").getAsString());
                     statement.execute();
                 }
                 db.getDb().setTransactionSuccessful();
@@ -92,11 +92,6 @@ public class CategoriaDAO {
                 db.closeDB();
                 ((TomarPedidoActivity) activity).getCategoriasListView().setAdapter(
                         new CategoriaItemAdapter(CategoriaDAO.this.mContext,((TomarPedidoActivity)activity).getListaCategorias()));
-//                fragment.setAdapterCateg(new CategoriaItemAdapter(mContext,((TomarPedidoActivity)activity).getListaCategorias()));
-//                fragment.getRecyclerViewCateg().setAdapter(fragment.getAdapterCateg());
-                //By default load all the dishes under the first category
-
-                //fragment.loadArticulosObject(familiaId);
 
             }
         }.execute();

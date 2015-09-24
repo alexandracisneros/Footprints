@@ -12,4 +12,18 @@
     <string name="opt_opcion_4">Opcion 4</string>
     <string name="opt_opcion_5">Opcion 5</string>
     <!--Menu Opciones - FIN-->
+    <string name="producto_pedido_label">Producto</string>
+    <string name="precio_pedido_label">Precio</string>
+    <string name="cantidad_pedido_label">Cantidad</string>
+    <string name="sub_total_pedido_label">SubTotal</string>
+    <string name="total_pedido_label">Total</string>
+    <string name="igv_pedido_label">IGV</string>
+    <!--Opciones Toma Pedido - INICIO-->
+    <string name="action_delete">Delete</string>
+    <string name="action_save_send">Enviar</string>
+    <string name="action_save">Guardar</string>
+    <string name="action_cancelar_pedido">Cancelar</string>
+    <string name="title_activity_mesas">MesasActivity</string>
+    <!--Opciones Toma Pedido - FIN-->
+
 </resources>

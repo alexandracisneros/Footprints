@@ -4,5 +4,154 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
     </style>
+    <style name="TituloActivity">
+        <item name="android:textSize">25sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/background_default</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:padding">7dp</item>
+    </style>
+    <style name="BarraTitulo">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/background_default</item>
+        <item name="android:padding">5dp</item>
+    </style>
+    <style name="TituloActivity.Medium">
+        <item name="android:textSize">20sp</item>
+    </style>
 
+    <style name="Separador">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
+    <style name="HoloSeparador" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">3dp</item>
+        <item name="android:background">?android:attr/actionModeSplitBackground</item>
+    </style>
+    <!-- Login Form -->
+    <style name="Control">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">15dp</item>
+        <item name="android:layout_marginRight">15dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:padding">5dp</item>
+    </style>
+
+    <style name="ControlContracted" parent="@style/Control">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:padding">1dp</item>
+    </style>
+
+    <style name="Label" parent="@style/Control">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="LabelContracted" parent="@style/ControlContracted">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="LabelSmall" parent="@style/Label">
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="LabelSmallContracted" parent="@style/LabelContracted">
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="LabelLarge" parent="@style/Label">
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="LabelLargeContracted" parent="@style/LabelContracted">
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="TextView" parent="@style/Control">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="TextViewContracted" parent="@style/ControlContracted">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+
+    <style name="TextViewSmall" parent="@style/TextView">
+        <item name="android:textSize">13sp</item>
+    </style>
+    <style name="TextViewSmallContracted" parent="@style/TextViewContracted">
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="TextViewLarge" parent="@style/TextView">
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="TextViewLargeContracted" parent="@style/TextViewContracted">
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="CajaTexto" parent="@style/Control">
+        <item name="android:padding">5dp</item>
+        <item name="android:ems">10</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Boton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:background">@drawable/button</item>
+    </style>
+
+    <style name="OpcionMenu">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ItemLista">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">14dp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="ItemLista.small">
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="ItemLista.medium">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="ItemLista.large">
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="BarraProgreso" parent="@android:style/Widget.Holo.ProgressBar.Horizontal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">7dp</item>
+        <item name="android:indeterminate">true</item>
+    </style>
+
+    <style name="MiddleLine" >
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">5dp</item>
+        <item name="android:layerType">software</item>
+        <item name="android:background">@drawable/dotted</item>
+    </style>
 </resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>      
+    <color name="background_default">#33B5E5</color>     
+    <color name="button_default">#5E5D5D</color>
+    <color name="button_pressed">#A8A4A4</color> 
+    <color name="holo_light">#DDDDDD</color>
+    <color name="dark_grey">#181818</color>
+</resources>

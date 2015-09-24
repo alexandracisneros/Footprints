@@ -1,9 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
-      tools:context="com.neversoft.smartwaiter.ui.TomarPedidoActivity">
-    <item android:id="@+id/action_settings"
-          android:title="@string/action_settings"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
+      tools:context="com.idealsolution.smartwaiter.ui.CategoryActivity">
+      <item
+          android:id="@+id/action_save_send"
+          android:orderInCategory="10"
+          android:icon="@android:drawable/ic_menu_send"
+          android:showAsAction="ifRoom|withText"
+          android:title="@string/action_save_send" />
+      <item
+          android:id="@+id/action_just_save"
+          android:orderInCategory="20"
+          android:icon="@android:drawable/ic_menu_save"
+          android:showAsAction="ifRoom|withText"
+          android:title="@string/action_save" />
+      <item
+          android:id="@+id/action_cancelar"
+          android:orderInCategory="30"
+          android:showAsAction="ifRoom|withText"
+          android:icon="@android:drawable/ic_menu_delete"
+          android:title="@string/action_cancelar_pedido" />
 </menu>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2">
+
+    <RelativeLayout
+        android:id="@+id/cabeceraPedido"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/productoPedidoLabel"
+            style="@style/LabelContracted"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/producto_pedido_label"/>
+
+        <TextView
+            android:id="@+id/cantidadPedidoLabel"
+            style="@style/LabelContracted"
+            android:layout_alignBaseline="@+id/productoPedidoLabel"
+            android:layout_centerHorizontal="true"
+            android:text="@string/cantidad_pedido_label"/>
+
+        <TextView
+            android:id="@+id/precioPedidoLabel"
+            style="@style/LabelContracted"
+            android:layout_alignBaseline="@+id/productoPedidoLabel"
+            android:layout_alignParentRight="true"
+            android:text="@string/precio_pedido_label"/>
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/footerPedido"
+        android:layout_below="@+id/cabeceraPedido"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/detallePedidoListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@android:color/holo_blue_dark"
+            android:divider="@android:color/black"
+            android:dividerHeight="1dp"
+            tools:listitem="@layout/order_item">
+        </ListView>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/footerPedido"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true">
+        <!--Primera Fila-->
+        <TextView
+            android:id="@+id/subTotalPedidoLabel"
+            style="@style/LabelContracted"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/sub_total_pedido_label"/>
+
+        <TextView
+            android:id="@+id/subTotalPedidoTextView"
+            style="@style/TextViewSmallContracted"
+            android:layout_alignBaseline="@+id/subTotalPedidoLabel"
+            android:layout_toRightOf="@+id/subTotalPedidoLabel"
+            />
+
+        <TextView
+            android:id="@+id/TotalPedidoLabel"
+            style="@style/LabelContracted"
+            android:layout_alignBaseline="@+id/subTotalPedidoLabel"
+            android:layout_alignParentRight="true"
+            android:text="@string/total_pedido_label"/>
+        <!--Primera Fila-->
+        <!--Segunda Fila-->
+        <TextView
+            android:id="@+id/igvPedidoLabel"
+            style="@style/LabelContracted"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/subTotalPedidoLabel"
+            android:text="@string/igv_pedido_label"/>
+
+        <TextView
+            android:id="@+id/igvPedidoTextView"
+            style="@style/TextViewSmallContracted"
+            android:layout_alignBaseline="@+id/igvPedidoLabel"
+            android:layout_alignLeft="@+id/subTotalPedidoTextView"
+            android:layout_below="@+id/subTotalPedidoTextView"
+            android:layout_marginLeft="0dp"
+            android:paddingLeft="0dp"
+            />
+
+        <TextView
+            android:id="@+id/totalPedidoTextView"
+            style="@style/TextViewSmallContracted"
+            android:layout_alignBaseline="@+id/igvPedidoLabel"
+            android:layout_alignParentRight="true"
+            />
+        <!--Segunda Fila-->
+    </RelativeLayout>
+
+</RelativeLayout>

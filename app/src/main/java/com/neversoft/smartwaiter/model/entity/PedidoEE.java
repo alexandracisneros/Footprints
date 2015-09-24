@@ -17,7 +17,8 @@ public class PedidoEE {
     private String mMoneda;
     private float mMontoTotal;
     private float mMontoRecibido;
-    private int mEstado;
+    private String mEstado;
+    private String mCodCia;
     private ArrayList<DetallePedidoEE> mDetalle;
 
     public PedidoEE() {
@@ -111,12 +112,20 @@ public class PedidoEE {
         mMontoRecibido = montoRecibido;
     }
 
-    public int getEstado() {
+    public String getEstado() {
         return mEstado;
     }
 
-    public void setEstado(int estado) {
+    public void setEstado(String estado) {
         mEstado = estado;
+    }
+
+    public String getCodCia() {
+        return mCodCia;
+    }
+
+    public void setCodCia(String codCia) {
+        mCodCia = codCia;
     }
 
     public ArrayList<DetallePedidoEE> getDetalle() {

@@ -10,7 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@android:color/white"
+        android:background="@android:color/holo_green_light"
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"/>
@@ -31,7 +31,7 @@
                 android:id="@+id/categorias_listview"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@android:color/white"
+                android:background="@android:color/holo_blue_light"
                 android:choiceMode="singleChoice"
                 android:layout_weight="1"/>
 
@@ -44,11 +44,7 @@
                 android:layout_weight="1"/>
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/listView3"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"/>
+        <include layout="@layout/pedido_cliente" />
 
     </LinearLayout>
 </LinearLayout>

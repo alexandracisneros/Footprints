@@ -86,7 +86,7 @@ public class SmartWaiterDB {
         }
     }
 
-    interface Pedido {
+    public interface Pedido {
         String ID = "_id";
         int ID_COL = 0;
 
@@ -122,9 +122,12 @@ public class SmartWaiterDB {
 
         String ESTADO = "estado";
         int ESTADO_COL = 11;
+
+        String CODIGO_CIA = "cod_cia";
+        int CODIGO_CIA_COL = 12;
     }
 
-    interface DetallePedido {
+    public interface DetallePedido {
         String ID = "_id";
         int ID_COL = 0;
 
@@ -134,26 +137,29 @@ public class SmartWaiterDB {
         String COD_ART = "cod_articulo";
         int COD_ART_COL = 2;
 
+        String UM = "um";
+        int UM_COL = 3;
+
         String CANTIDAD = "cantidad";
-        int CANTIDAD_COL = 3;
+        int CANTIDAD_COL = 4;
 
         String PRECIO = "precio";
-        int PRECIO_COL = 4;
+        int PRECIO_COL = 5;
 
         String TIPO_ART = "tipo_articulo";
-        int TIPO_ART_COL = 5;
+        int TIPO_ART_COL = 6;
 
         String COD_ART_PRINCIPAL = "cod_art_principal";
-        int COD_ART_PRINCIPAL_COL = 6;
+        int COD_ART_PRINCIPAL_COL = 7;
 
         String COMENTARIO = "comentario";
-        int COMENTARIO_COL = 7;
+        int COMENTARIO_COL = 8;
 
         String ESTADO_ART = "estado_articulo";
-        int ESTADO_ART_COL = 8;
+        int ESTADO_ART_COL = 9;
 
         String DESC_ART = "desc_articulo";
-        int DESC_ART_COL = 9;
+        int DESC_ART_COL = 10;
     }
 
     public interface Familia {
@@ -309,7 +315,8 @@ public class SmartWaiterDB {
                             + Pedido.MONEDA + " TEXT,"
                             + Pedido.MONTO_TOTAL + " REAL NOT NULL,"
                             + Pedido.MONTO_RECIBIDO + " REAL,"
-                            + Pedido.ESTADO + " INTEGER NOT NULL"
+                            + Pedido.ESTADO + " TEXT NOT NULL,"
+                            + Pedido.CODIGO_CIA + " TEXT NOT NULL"
                             + " )"
             );
             db.execSQL("CREATE TABLE "
@@ -317,6 +324,7 @@ public class SmartWaiterDB {
                             + DetallePedido.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                             + DetallePedido.PEDIDO_ID + " INTEGER NOT NULL,"
                             + DetallePedido.COD_ART + " INTEGER NOT NULL,"
+                            + DetallePedido.UM + " TEXT NOT NULL,"
                             + DetallePedido.CANTIDAD + " REAL NOT NULL,"
                             + DetallePedido.PRECIO + " REAL NOT NULL,"
                             + DetallePedido.TIPO_ART + " INTEGER NOT NULL,"

@@ -7,6 +7,7 @@ public class DetallePedidoEE {
     private int mId;
     private int mPedidoId;
     private int mCodArticulo;
+    private String mUm;
     private float mCantidad;
     private float mPrecio;
     private int mTipoArticulo;
@@ -19,6 +20,7 @@ public class DetallePedidoEE {
     }
     public DetallePedidoEE(ArticuloEE articulo) {
         this.setCodArticulo(articulo.getId());
+        this.setUm(articulo.getUm());
         this.setDescArticulo(articulo.getDescripcionNorm());
         this.setCantidad(1); //1 item por defecto.
         this.setPrecio(articulo.getPrecio());
@@ -47,6 +49,14 @@ public class DetallePedidoEE {
 
     public void setCodArticulo(int codArticulo) {
         mCodArticulo = codArticulo;
+    }
+
+    public String getUm() {
+        return mUm;
+    }
+
+    public void setUm(String um) {
+        mUm = um;
     }
 
     public float getCantidad() {
@@ -103,5 +113,15 @@ public class DetallePedidoEE {
 
     public void setDescArticulo(String descArticulo) {
         mDescArticulo = descArticulo;
+    }
+
+    //This functions has been overriden so that I can use CONTAINS in the ArrayList of Details. See PedidoSharedPreference.addItem
+    @Override
+    public boolean equals(Object o) {
+        if(!(o instanceof DetallePedidoEE) ) {
+            return false;
+        }
+        DetallePedidoEE item = (DetallePedidoEE)o;
+        return this.getCodArticulo()==item.getCodArticulo();
     }
 }

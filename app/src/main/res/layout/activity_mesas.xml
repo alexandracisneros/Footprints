@@ -1,0 +1,73 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+              tools:context="com.neversoft.smartwaiter.ui.MesasActivity">
+
+    <ListView
+        android:id="@+id/menu_listview"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@android:color/holo_green_light"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:orientation="vertical">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2">
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/pisosLabel"
+                    android:layout_weight="1"
+                    android:text="Pisos"/>
+
+                <TextView
+                    android:id="@+id/mesasLabel"
+                    android:layout_weight="1"
+                    android:text="Mesas"/>
+            </TableRow>
+
+            <TableRow>
+
+                <Spinner
+                    android:id="@+id/pisos_spinner"
+                    android:layout_weight="1"/>
+
+                <Spinner
+                    android:id="@+id/ambientes_spinner"
+                    android:layout_weight="1"/>
+            </TableRow>
+        </TableLayout>
+
+        <GridView
+            android:id="@+id/mesasGridView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:columnWidth="200dp"
+            android:gravity="center"
+            android:horizontalSpacing="4dp"
+            android:numColumns="auto_fit"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="4dp"
+            tools:listitem="@layout/mesa_item"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>
+
+
+
