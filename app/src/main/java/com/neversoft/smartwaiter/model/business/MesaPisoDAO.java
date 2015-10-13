@@ -90,7 +90,7 @@ public class MesaPisoDAO {
             protected void onPostExecute(Cursor cursor) {
                 while (cursor.moveToNext()) {
                     SpinnerEE item = new SpinnerEE();
-                    item.setCodigo(cursor.getInt(PisosQuery.PISO_NRO_PISO));
+                    item.setCodigo(cursor.getString(PisosQuery.PISO_NRO_PISO));
                     item.setDescripcion("PISO " + cursor.getInt(PisosQuery.PISO_NRO_PISO));
                     ((MesasActivity) activity).getListaPisos().add(item);
                 }
@@ -103,7 +103,7 @@ public class MesaPisoDAO {
                     @Override
                     public void onItemSelected(AdapterView<?> spinner, View container,
                                                int position, long id) {
-                        int nroPiso = ((MesasActivity) activity).getListaPisos().get(position).getCodigo();
+                        int nroPiso = Integer.parseInt(((MesasActivity) activity).getListaPisos().get(position).getCodigo());
                         //Toast.makeText(CombosActivity.this,"Piso: " + nroPiso,Toast.LENGTH_SHORT).show();
                         ((MesasActivity) activity).loadAmbienteSpinner(nroPiso);
 
@@ -138,7 +138,7 @@ public class MesaPisoDAO {
             protected void onPostExecute(Cursor cursor) {
                 while (cursor.moveToNext()) {
                     SpinnerEE item = new SpinnerEE();
-                    item.setCodigo(cursor.getInt(AmbientesQuery.AMBIENTE_COD_AMBIENTE));
+                    item.setCodigo(cursor.getString(AmbientesQuery.AMBIENTE_COD_AMBIENTE));
                     item.setDescripcion(cursor.getString(AmbientesQuery.AMBIENTE_DESC_AMBIENTE));
                     ((MesasActivity) activity).getListaAmbientes().add(item);
                 }
@@ -151,9 +151,9 @@ public class MesaPisoDAO {
                     @Override
                     public void onItemSelected(AdapterView<?> spinner, View container,
                                                int position, long id) {
-                        int codAmbiente = ((MesasActivity) activity).getListaAmbientes().get(position).getCodigo();
+                        int codAmbiente = Integer.parseInt(((MesasActivity) activity).getListaAmbientes().get(position).getCodigo());
 
-                        ((MesasActivity) activity).loadMesas(nroPiso, codAmbiente); // TODO: ACA ME QUEDE
+                        ((MesasActivity) activity).loadMesas(nroPiso, codAmbiente);
 
                     }
 

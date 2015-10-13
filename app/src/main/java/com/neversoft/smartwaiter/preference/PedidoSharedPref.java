@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by Usuario on 14/09/2015.
  */
-public class PedidoSharedPreference {
+public class PedidoSharedPref {
 
     public static final String PREFS_NAME = "Pref_pedido";
     public static final String PREF_PEDIDO_ACTUAL = "pedido_actual";

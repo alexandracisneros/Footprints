@@ -272,11 +272,8 @@ public class SmartWaiterDB {
         String PRECIO = "um_precio";
         int PRECIO_COL = 5;
 
-        String COD_LISTAPRECIO = "cod_lista_precio";
-        int COD_LISTAPRECIO_COL = 6;
-
         String URL = "url";
-        int URL_COL = 7;
+        int URL_COL = 6;
     }
 
     public interface Tables {
@@ -389,7 +386,6 @@ public class SmartWaiterDB {
                             + Articulo.UM + " TEXT,"
                             + Articulo.UM_DESC + " TEXT,"
                             + Articulo.PRECIO + " REAL,"
-                            + Articulo.COD_LISTAPRECIO + " INTEGER,"
                             + Articulo.URL + " TEXT"
                             + " )"
             );

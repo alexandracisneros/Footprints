@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -32,7 +33,7 @@ import com.neversoft.smartwaiter.model.entity.ArticuloEE;
 import com.neversoft.smartwaiter.model.entity.CategoriaEE;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 import com.neversoft.smartwaiter.model.entity.PedidoEE;
-import com.neversoft.smartwaiter.preference.PedidoSharedPreference;
+import com.neversoft.smartwaiter.preference.PedidoSharedPref;
 import com.neversoft.smartwaiter.service.EnviarPedidoService;
 import com.neversoft.smartwaiter.util.Funciones;
 
@@ -150,9 +151,8 @@ public class TomarPedidoActivity extends Activity
     }
 
     private void saveOrder() {
-        PedidoDAO pedidoDAO = new PedidoDAO(this);
-        WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
-        PedidoEE pedido = new PedidoEE();
+        final PedidoDAO pedidoDAO = new PedidoDAO(getApplicationContext());
+        final PedidoEE pedido = new PedidoEE();
         pedido.setFecha(Funciones.getCurrentDate("yyyy/MM/dd"));
         pedido.setNroMesa(2);
         pedido.setAmbiente(1);
@@ -166,7 +166,27 @@ public class TomarPedidoActivity extends Activity
         pedido.setEstado("010");
         pedido.setCodCia("001");
         pedido.setDetalle(mItems);
-        pedidoDAO.savePedido(weakActivity, pedido);
+        new AsyncTask<Void, Void, Object>() {
+
+            @Override
+            protected Object doInBackground(Void... voids) {
+                try {
+                    return pedidoDAO.savePedido(pedido);
+                } catch (Exception e) {
+                    return e;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Object result) {
+                if (result instanceof Long) {
+                    Toast.makeText(TomarPedidoActivity.this, "Operación completada con exito. Id =" + result, Toast.LENGTH_SHORT).show();
+                } else if (result instanceof Exception) {
+                    Toast.makeText(TomarPedidoActivity.this, "Se produjo la excepción: " + result, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute();
+
     }
 
     @Override
@@ -179,8 +199,8 @@ public class TomarPedidoActivity extends Activity
         } else if (adapterView.getId() == R.id.articulos_listview) {
             Toast.makeText(this, "Item Seleccionado : " + mListaArticulos.get(position).getDescripcionNorm(), Toast.LENGTH_SHORT).show();
             DetallePedidoEE itemDetalle = new DetallePedidoEE(mListaArticulos.get(position));
-            PedidoSharedPreference.addItem(this, itemDetalle);
-            mItems = PedidoSharedPreference.getItems(this);
+            PedidoSharedPref.addItem(this, itemDetalle);
+            mItems = PedidoSharedPref.getItems(this);
             showItems();
         } else if (adapterView.getId() == R.id.menu_listview) {
             Toast.makeText(this, "Opcion de Menu : " + ((TextView) view).getText().toString(), Toast.LENGTH_SHORT).show();

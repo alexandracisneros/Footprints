@@ -2,12 +2,25 @@
     <string name="app_name">SmartWaiter</string>
 
     <string name="hello_world">Hello world!</string>
+
+    <!--Inicio Session y Conexion -->
+    <string name="ambiente_label">Ambiente</string>
+    <string name="usuario_label">Usuario</string>
+    <string name="usuario_hint">Ingrese nombre de usuario</string>
+    <string name="logo_imageView">Logo</string>
+    <string name="contrasena_label">Contraseña</string>
+    <string name="contrasena_hint">Ingrese su contraseña</string>
+    <string name="compania_label">Compañía</string>
+    <string name="conectar">Conectar</string>
+    <string name="aceptar">Aceptar</string>
+    <!--Inicio Session y Conexion -->
+
     <string name="action_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_tomar_pedido">TomarPedidoActivity</string>
     <!--Menu Opciones - INICIO-->
     <string name="opt_tomar_pedido">Tomar Pedido</string>
-    <string name="opt_opcion_2">Opcion 2</string>
+    <string name="opt_iniciar_dia">Iniciar Día</string>
     <string name="opt_opcion_3">Opcion 3</string>
     <string name="opt_opcion_4">Opcion 4</string>
     <string name="opt_opcion_5">Opcion 5</string>
@@ -25,5 +38,24 @@
     <string name="action_cancelar_pedido">Cancelar</string>
     <string name="title_activity_mesas">MesasActivity</string>
     <!--Opciones Toma Pedido - FIN-->
+
+    <!-- dialog configurar conexion -->
+    <string name="menu_configurar_conex">Configurar Conexión</string>
+    <string name="dialog_conf_conexion_title">Configurar Conexión</string>
+    <string name="dialog_servidor_label">Servidor:</string>
+    <string name="dialog_aplicacion_label">Aplicación:</string>
+    <string name="dialog_ambiente_label">Ambiente:</string>
+    <string name="servidor_hint">Ingrese URL del Servidor</string>
+    <string name="aplicacion_hint">Ingrese Aplicación</string>
+    <string name="ambiente_hint">Ingrese ambiente</string>
+    <string name="cancelar">Cancelar</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_login_rapido">LoginRapidoActivity</string>
+    <string name="title_activity_iniciar_dia">IniciarDiaActivity</string>
+    <string name="iniciarDia">INICIAR DÍA</string>
+    <!-- dialog configurar conexion -->
 
 </resources>

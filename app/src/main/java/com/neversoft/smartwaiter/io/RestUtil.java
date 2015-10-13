@@ -1,5 +1,10 @@
 package com.neversoft.smartwaiter.io;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.neversoft.smartwaiter.preference.ConexionSharedPref;
+
 import org.apache.http.NameValuePair;
 
 import java.io.IOException;
@@ -12,35 +17,36 @@ import java.util.List;
  */
 public class RestUtil {
     public static final String URLServer = "http://siempresoftqa.cloudapp.net/PruebaMovilAlex/api/restaurante/";
+
     //http://siempresoftqa.cloudapp.net/PruebaMovilAlex/api/restaurante/ObtenerDatosIniciales/?codCia=001&cadenaConexion=Initial%20Catalog=ABR
-//    public static final String obtainURLServer(Context ctxt) {
-//        SharedPreferences prefConextion;
-//
-//        prefConextion = ctxt.getSharedPreferences(PREF_Conexion.NAME, 0);
-//        String server = prefConextion.getString(PREF_Conexion.SERVIDOR, "");
-//        String aplicacion = prefConextion.getString(PREF_Conexion.APLICACION,"");
-//
-//        String url = "http://" + server + "/" + aplicacion + "/api/";
-//        return url;
-//    }
-//
-//    public static final String obtainUrlRoot(Context ctxt){
-//        SharedPreferences prefConextion;
-//
-//        prefConextion = ctxt.getSharedPreferences(PREF_Conexion.NAME, 0);
-//        String server = prefConextion.getString(PREF_Conexion.SERVIDOR, "");
-//
-//        String url = "http://" + server ;
-//        return url;
-//    }
-//
-//    public static final Boolean datosConexionCompletos(Context ctxt){
-//        SharedPreferences prefConextion;
-//        prefConextion = ctxt.getSharedPreferences(PREF_Conexion.NAME, 0);
-//
-//        Boolean datosConexCompletos=prefConextion.getBoolean(PREF_Conexion.DATOS_COMPLETOS, false);
-//        return datosConexCompletos;
-//    }
+    public static final String obtainURLServer(Context ctxt) {
+        SharedPreferences prefConextion;
+
+        prefConextion = ctxt.getSharedPreferences(ConexionSharedPref.NAME, 0);
+        String server = prefConextion.getString(ConexionSharedPref.SERVIDOR, "");
+        String aplicacion = prefConextion.getString(ConexionSharedPref.APLICACION, "");
+
+        String url = "http://" + server + "/" + aplicacion + "/api/";
+        return url;
+    }
+
+    public static final String obtainUrlRoot(Context ctxt) {
+        SharedPreferences prefConextion;
+
+        prefConextion = ctxt.getSharedPreferences(ConexionSharedPref.NAME, 0);
+        String server = prefConextion.getString(ConexionSharedPref.SERVIDOR, "");
+
+        String url = "http://" + server;
+        return url;
+    }
+
+    public static final Boolean datosConexionCompletos(Context ctxt) {
+        SharedPreferences prefConextion;
+        prefConextion = ctxt.getSharedPreferences(ConexionSharedPref.NAME, 0);
+
+        Boolean datosConexCompletos = prefConextion.getBoolean(ConexionSharedPref.DATOS_COMPLETOS, false);
+        return datosConexCompletos;
+    }
 
     public static final RestConnector obtainGetConnection(String url)
             throws IOException {

@@ -1,7 +1,9 @@
 package com.neversoft.smartwaiter.service;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -10,8 +12,11 @@ import com.google.gson.JsonObject;
 import com.neversoft.smartwaiter.database.SmartWaiterDB;
 import com.neversoft.smartwaiter.io.RestConnector;
 import com.neversoft.smartwaiter.io.RestUtil;
+import com.neversoft.smartwaiter.model.business.PedidoDAO;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 import com.neversoft.smartwaiter.model.entity.PedidoEE;
+import com.neversoft.smartwaiter.preference.ConexionSharedPref;
+import com.neversoft.smartwaiter.ui.LoginActivity;
 import com.neversoft.smartwaiter.util.Funciones;
 
 import org.apache.http.NameValuePair;
@@ -19,6 +24,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Usuario on 17/09/2015.
@@ -26,6 +32,14 @@ import java.util.List;
 public class EnviarPedidoService extends IntentService {
     public static final String ACTION_SEND_DATA = "com.neversoft.smartwaiter.ENVIAR_PEDIDO";
     private static final String NAME = "EnviarPedidoService";
+    // define SharedPreferences object
+    private SharedPreferences mPrefConfig;
+    private SharedPreferences mPrefConexion;
+
+    private String mAmbiente;
+    private String mCodVendedor;
+    private String mCodCia;
+    private String mUsuario;
 
     public EnviarPedidoService() {
         super(NAME);
@@ -39,11 +53,24 @@ public class EnviarPedidoService extends IntentService {
         String mensaje = "";
         int procesoOK = 0;
         boolean exito = false;
+        long idPedido = 0;
+
+        // get SharedPreferences
+        mPrefConfig = getApplicationContext().getSharedPreferences(
+                LoginActivity.PREF_CONFIG, Context.MODE_PRIVATE);
+        mPrefConexion = getApplicationContext().getSharedPreferences(
+                ConexionSharedPref.NAME, Context.MODE_PRIVATE);
+        mAmbiente = mPrefConexion.getString(ConexionSharedPref.AMBIENTE, "");
+
+        mCodCia = mPrefConfig.getString("CodCia", "");
+        mUsuario = mPrefConfig.getString("Usuario", "").toUpperCase(
+                Locale.getDefault());
         try {
             if (Funciones.hasActiveInternetConnection(getApplicationContext())) {
 
 
                 ArrayList<PedidoEE> listaPedidosRegistrados = new ArrayList<>();
+                PedidoDAO pedidoDAO = new PedidoDAO(getApplicationContext());
                 //todo
                 //get data as string convert it back to an Order and again to JSON???
                 //wouldn't it be better if they all already had the same names as the WebApi Project?
@@ -52,16 +79,24 @@ public class EnviarPedidoService extends IntentService {
                 PedidoEE pedido = gson.fromJson(stringPedido,
                         PedidoEE.class);
                 listaPedidosRegistrados.add(pedido);
-                String dataToSend = getEnvio(listaPedidosRegistrados);//TODO  //PASA ARRAY
-                // Log.d("QuickOrder", dataToSend);
-                //TODO : BEFORE YOU SEND THE ORDER REGISTER IT IN THE DATABASE SO YOU HAVE  AN ORDER ID
-                procesoOK = sendDataToServer(dataToSend);
-                if (procesoOK == 1) { // See 'RegistrarPedidoMovil' Method in SS
-                    exito = true;
+                try {
+                    idPedido = pedidoDAO.savePedido(pedido);
+                } catch (Exception e) {
+                    throw new Exception("No se pudo guardar el pedido. Excepcion: " + e.getMessage());
+                }
+                //TODO : VERIFICAR ANTES DE INSERTAR SI EL PEDIDO NO HA SIDO YA INSERTADO, SI YA ESTA INSERTADO SOLO ENVIAR
+                if (idPedido > 0) {
+                    String dataToSend = getEnvio(listaPedidosRegistrados, idPedido);//TODO  //PASA ARRAY
+                    // Log.d("QuickOrder", dataToSend);
+                    //TODO : BEFORE YOU SEND THE ORDER REGISTER IT IN THE DATABASE SO YOU HAVE  AN ORDER ID
+                    procesoOK = sendDataToServer(dataToSend);
+                    if (procesoOK > 0) { // Return the id of the order
+                        exito = true;
 
-                } else {
-                    throw new Exception(
-                            "Error al registrar el pedido en el servidor.");
+                    } else {
+                        throw new Exception(
+                                "Pedido enviado pero no guardado");
+                    }
                 }
 
             }
@@ -85,14 +120,14 @@ public class EnviarPedidoService extends IntentService {
     }
 
 
-    private String getEnvio(ArrayList<PedidoEE> pedidosRegistrados) throws Exception {
-        String result = "";
+    private String getEnvio(ArrayList<PedidoEE> pedidosRegistrados, long idPedido) throws Exception {
+        String result;
         JsonObject jsonObjEnvio = new JsonObject();
 
-        jsonObjEnvio.addProperty("cadenaConexion", "Initial Catalog=PRUEBAMOVILJHAV");
+        jsonObjEnvio.addProperty("cadenaConexion", mAmbiente);
         JsonArray jsArrayPedidos = new JsonArray();
         for (PedidoEE pedido : pedidosRegistrados) {
-            JsonObject jsPedido = getPedido(pedido);
+            JsonObject jsPedido = getPedido(pedido, idPedido);
             jsArrayPedidos.add(jsPedido);
         }
         jsonObjEnvio.add("pedidos", jsArrayPedidos);
@@ -105,17 +140,20 @@ public class EnviarPedidoService extends IntentService {
         int procesoOK = 0;
         Object requestObject = null;
         String resultado;
-        String url = "http://siempresoftqa.cloudapp.net/PruebaMovilAlex/api/restaurante/EnviarListaPedidoMV/";
 
-        Log.d(SmartWaiterDB.TAG, url);
+        String urlServer = RestUtil.obtainURLServer(getApplicationContext());
+        String POST_URI = urlServer + "restaurante/EnviarListaPedidoMV/";  //ACA ME QUEDE
+
+
+        Log.d(SmartWaiterDB.TAG, POST_URI);
 
         // Simple Post
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("dataToSend", dataToSend));
         if (Funciones.hasActiveInternetConnection(getApplicationContext())) {
             RestConnector restConnector = RestUtil
-                    .obtainFormPostConnection(url, parameters);
-            requestObject = restConnector.doRequest(url);
+                    .obtainFormPostConnection(POST_URI, parameters);
+            requestObject = restConnector.doRequest(POST_URI);
             if (requestObject instanceof String) {
                 // Only if the request was successful parse the returned value
                 // otherwise re-throw the exception
@@ -129,10 +167,10 @@ public class EnviarPedidoService extends IntentService {
         return procesoOK;
     }
 
-    private JsonObject getPedido(PedidoEE ped) throws Exception {
+    private JsonObject getPedido(PedidoEE ped, long idPedido) throws Exception {
         JsonObject jsonObjPed = new JsonObject();
         JsonArray jsonArrayPedDetalle;
-        jsonObjPed.addProperty("Id", ped.getId());
+        jsonObjPed.addProperty("Id", idPedido);
         jsonObjPed.addProperty("fecha", ped.getFecha());
         jsonObjPed.addProperty("nroMesa", ped.getNroMesa());
         jsonObjPed.addProperty("ambiente", ped.getAmbiente());
@@ -144,28 +182,28 @@ public class EnviarPedidoService extends IntentService {
         jsonObjPed.addProperty("montoTotal", ped.getMontoTotal());
         jsonObjPed.addProperty("montoRecibido", ped.getMontoRecibido());
         jsonObjPed.addProperty("estado", String.valueOf(ped.getEstado()));
-        jsonObjPed.addProperty("codcia", "001"); // ped.getCodCia() //De donde saco esto?
-        jsonArrayPedDetalle = getDetallePedido(ped.getDetalle());
+        jsonObjPed.addProperty("codcia", mCodCia); // ped.getCodCia() //De donde saco esto?
+        jsonArrayPedDetalle = getDetallePedido(ped.getDetalle(), idPedido);
         jsonObjPed.add("detalle", jsonArrayPedDetalle);
 
         return jsonObjPed;
     }
 
-    private JsonArray getDetallePedido(ArrayList<DetallePedidoEE> listaDetallePedido) throws Exception {
+    private JsonArray getDetallePedido(ArrayList<DetallePedidoEE> listaDetallePedido, long idPedido) throws Exception {
         JsonArray jsonArrayDetalle = new JsonArray();
         JsonObject jsonObjItem;
-        for (DetallePedidoEE item : listaDetallePedido) {
+        for (int i = 0; i < listaDetallePedido.size(); i++) {
             jsonObjItem = new JsonObject();
-            jsonObjItem.addProperty("Id", item.getPedidoId());
-            jsonObjItem.addProperty("item", item.getId());
-            jsonObjItem.addProperty("codArticulo", item.getCodArticulo());
-            jsonObjItem.addProperty("um", item.getUm());
-            jsonObjItem.addProperty("cantidad", item.getCantidad());
-            jsonObjItem.addProperty("precio", item.getPrecio());
-            jsonObjItem.addProperty("tipoArticulo", item.getTipoArticulo());
-            jsonObjItem.addProperty("codArticuloPrincipal", item.getCodArticuloPrincipal()); //es este??
-            jsonObjItem.addProperty("comentario", item.getComentario()); //Vacio al enviar
-            jsonObjItem.addProperty("estadoArticulo", item.getEstadoArticulo());  // desArticulo ????? NO TIENE SENTIDO!!! NO SERA estAriculo???
+            jsonObjItem.addProperty("Id", idPedido);
+            jsonObjItem.addProperty("item", i + 1);
+            jsonObjItem.addProperty("codArticulo", listaDetallePedido.get(i).getCodArticulo());
+            jsonObjItem.addProperty("um", listaDetallePedido.get(i).getUm());
+            jsonObjItem.addProperty("cantidad", listaDetallePedido.get(i).getCantidad());
+            jsonObjItem.addProperty("precio", listaDetallePedido.get(i).getPrecio());
+            jsonObjItem.addProperty("tipoArticulo", listaDetallePedido.get(i).getTipoArticulo());
+            jsonObjItem.addProperty("codArticuloPrincipal", listaDetallePedido.get(i).getCodArticuloPrincipal()); //es este??
+            jsonObjItem.addProperty("comentario", listaDetallePedido.get(i).getComentario()); //Vacio al enviar
+            jsonObjItem.addProperty("estadoArticulo", listaDetallePedido.get(i).getEstadoArticulo());  // desArticulo ????? NO TIENE SENTIDO!!! NO SERA estAriculo???
 
             jsonArrayDetalle.add(jsonObjItem);
         }

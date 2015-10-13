@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.neversoft.smartwaiter.ui.LoginActivity">
+    <item
+        android:id="@+id/menuConfigurarConexion"
+        android:icon="@drawable/ic_settings"
+        android:orderInCategory="1"
+        android:title="@string/menu_configurar_conex"
+        app:showAsAction="always"/>
+</menu>

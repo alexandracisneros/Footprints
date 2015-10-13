@@ -135,18 +135,23 @@ public class MesasActivity extends Activity implements AdapterView.OnItemClickLi
             Toast.makeText(
                     getApplicationContext(),
                     "Mesa Nro  #" + getListaMesas().get(position).getNroMesa(), Toast.LENGTH_SHORT).show();
-        }
-        else if(parent.getId()==R.id.menu_listview){
+            Intent intent = new Intent(this, TomarPedidoActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (parent.getId() == R.id.menu_listview) {
             opcionesMenu(position);
         }
     }
-    private void opcionesMenu(int position){
+
+    private void opcionesMenu(int position) {
         Intent intent;
-        switch (position){
+        switch (position) {
             case 0:
-                intent = new Intent(this, TomarPedidoActivity.class);
+                intent = new Intent(this, IniciarDiaActivity.class);
                 startActivity(intent);
                 finish();
+                break;
+            case 1:
                 break;
 
         }

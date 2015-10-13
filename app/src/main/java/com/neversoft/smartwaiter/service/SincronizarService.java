@@ -1,7 +1,9 @@
 package com.neversoft.smartwaiter.service;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -16,7 +18,11 @@ import com.neversoft.smartwaiter.model.business.CategoriaDAO;
 import com.neversoft.smartwaiter.model.business.ClienteDAO;
 import com.neversoft.smartwaiter.model.business.MesaPisoDAO;
 import com.neversoft.smartwaiter.model.business.PrioridadDAO;
+import com.neversoft.smartwaiter.preference.LoginSharedPref;
+import com.neversoft.smartwaiter.ui.LoginActivity;
 import com.neversoft.smartwaiter.util.Funciones;
+
+import java.net.URLEncoder;
 
 /**
  * Created by Usuario on 03/09/2015.
@@ -27,6 +33,16 @@ public class SincronizarService extends IntentService {
     private Exception miExcepcion = null;
     private boolean exito = false;
     private String mensaje = "";
+    private String mUrlServer;
+
+    private String mAmbiente;
+    private String mCodCia;
+    private String mUsuario;
+
+    // define SharedPreferences object
+
+    private SharedPreferences mPrefConfig;
+    private SharedPreferences mPrefLogin;
 
     public SincronizarService() {
         super(NAME);
@@ -37,6 +53,13 @@ public class SincronizarService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+
+        // get SharedPreferences
+
+        mPrefConfig = getApplicationContext().getSharedPreferences(
+                LoginActivity.PREF_CONFIG, Context.MODE_PRIVATE);
+        mPrefLogin = getApplication().getSharedPreferences(LoginSharedPref.NAME,
+                Context.MODE_PRIVATE);
 //        // get NetworkInfo object
 //        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 //        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -53,7 +76,12 @@ public class SincronizarService extends IntentService {
 //            exito = false;
 //            enviarNotificacion();
 //        }
+        mCodCia = mPrefConfig.getString("CodCia", "");
+        mUsuario = mPrefLogin.getString(LoginSharedPref.USUARIO, "");
+
+        mUrlServer = RestUtil.obtainURLServer(getApplicationContext());
         try {
+            mAmbiente = URLEncoder.encode(mAmbiente, "utf-8");
             Log.d(SmartWaiterDB.TAG,
                     "INICIA Insercion DataSincronizada: "
                             + Funciones
@@ -83,13 +111,14 @@ public class SincronizarService extends IntentService {
 
     private int leerDataWebService() throws Exception {
         Object requestObject = null;
-        String result = "";
+        String result;
         int cantidadInsertados = 0;
         // Only download data related to Customer if it hasn't been downloaded yet
         try {
 
-
-            String url = RestUtil.URLServer + "ObtenerDatosIniciales/?usuario=SUPERVISOR&codCia=001&cadenaConexion=Initial%20Catalog=PRUEBAMOVILJHAV";
+            String GET_URI = mUrlServer + "restaurante/ObtenerDatosIniciales/?"
+                    + "usuario=%s&codCia=%s&cadenaConexion=%s";
+            String url = String.format(GET_URI, mUsuario, mCodCia, mAmbiente);
 
             Log.d(SmartWaiterDB.TAG, url);
             if (Funciones.hasActiveInternetConnection(getApplicationContext())) {

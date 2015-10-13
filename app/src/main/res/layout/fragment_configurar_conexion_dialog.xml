@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/servidorLabel"
+        style="@style/Label"
+        android:text="@string/dialog_servidor_label"/>
+
+    <EditText
+        android:id="@+id/servidorEditText"
+        style="@style/CajaTexto"
+        android:ems="8"
+        android:hint="@string/servidor_hint"
+        android:imeOptions="actionNext"
+        android:inputType="textUri">
+    </EditText>
+
+    <TextView
+        android:id="@+id/aplicacionLabel"
+        style="@style/Label"
+        android:text="@string/dialog_aplicacion_label"/>
+
+    <EditText
+        android:id="@+id/aplicacionEditText"
+        style="@style/CajaTexto"
+        android:ems="8"
+        android:hint="@string/aplicacion_hint"
+        android:imeOptions="actionNext"
+        android:inputType="textNoSuggestions">
+    </EditText>
+
+    <TextView
+        android:id="@+id/ambienteLabel"
+        style="@style/Label"
+        android:text="@string/dialog_ambiente_label"/>
+
+    <EditText
+        android:id="@+id/ambienteEditText"
+        style="@style/CajaTexto"
+        android:ems="8"
+        android:hint="@string/ambiente_hint"
+        android:imeOptions="actionDone"
+        android:inputType="textNoSuggestions">
+    </EditText>
+
+</LinearLayout>

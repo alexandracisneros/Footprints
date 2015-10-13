@@ -1,6 +1,7 @@
 package com.neversoft.smartwaiter.ui;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.model.entity.CategoriaEE;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -19,11 +21,13 @@ import java.util.ArrayList;
 public class CategoriaItemAdapter extends BaseAdapter {
     LayoutInflater mLayoutInflater;
     Context mContext;
+    int mSize;
     private ArrayList<CategoriaEE> mItems;
 
     public CategoriaItemAdapter(Context context, ArrayList<CategoriaEE> items) {
         this.mContext = context;
         this.mItems = items;
+        this.mSize=context.getResources().getDimensionPixelSize(R.dimen.icon);
         this.mLayoutInflater = (LayoutInflater) this.mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -54,6 +58,12 @@ public class CategoriaItemAdapter extends BaseAdapter {
         } else {
             wrapper = (ViewHolder) convertView.getTag();
         }
+        Picasso.with(mContext).load(TextUtils.isEmpty(mItems.get(position).getUrl()) ? null : mItems.get(position).getUrl())
+                .placeholder(R.drawable.owner_placeholder)
+                .resize(mSize,mSize)
+                .centerCrop()
+                .error(R.drawable.owner_error)
+                .into(wrapper.icon);
         wrapper.text.setText(mItems.get(position).getDescripcion());
         return convertView;
     }

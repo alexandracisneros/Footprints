@@ -36,9 +36,8 @@ public class ArticuloDAO {
         String insertQuery = "INSERT INTO " + Tables.ARTICULO + "( " +
                 Articulo.ID + "," + Articulo.DESCRIPCION + "," +
                 Articulo.DESCRIPCION_NORM + "," + Articulo.UM + "," +
-                Articulo.UM_DESC + "," + Articulo.PRECIO + "," +
-                Articulo.COD_LISTAPRECIO + "," + Articulo.URL + ") " +
-                "VALUES (?,?,?,?,?,?,?,?)";
+                Articulo.UM_DESC + "," + Articulo.PRECIO + "," + Articulo.URL + ") " +
+                "VALUES (?,?,?,?,?,?,?)";
         try {
             db.openWriteableDB();
             SQLiteStatement stmt = db.compileStatement(insertQuery);
@@ -56,8 +55,7 @@ public class ArticuloDAO {
                     stmt.bindString(4, jsonObjItem.get("UM").getAsString());
                     stmt.bindString(5, jsonObjItem.get("desum").getAsString());
                     stmt.bindDouble(6, jsonObjItem.get("PRECIO").getAsDouble());
-                    stmt.bindLong(7, jsonObjItem.get("idlistaprecio").getAsInt());
-                    stmt.bindString(8, jsonObjItem.get("url").getAsString());
+                    stmt.bindString(7, jsonObjItem.get("url").getAsString());
                     stmt.execute();
                 }
                 db.getDb().setTransactionSuccessful();
