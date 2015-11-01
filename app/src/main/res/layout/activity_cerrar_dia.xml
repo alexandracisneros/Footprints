@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="horizontal"
-              tools:context="com.neversoft.smartwaiter.ui.IniciarDiaActivity">
+              tools:context="com.neversoft.smartwaiter.ui.CerrarDiaActivity">
 
     <ListView
         android:id="@+id/menu_listview"
@@ -21,13 +21,13 @@
         android:baselineAligned="false">
 
         <Button
-            android:id="@+id/iniciarDiaButton"
+            android:id="@+id/cerrarDiaButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:text="@string/iniciarDia"/>
+            android:text="@string/cerrarDia"/>
     </RelativeLayout>
 
 </LinearLayout>

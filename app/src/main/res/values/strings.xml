@@ -19,11 +19,12 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_tomar_pedido">TomarPedidoActivity</string>
     <!--Menu Opciones - INICIO-->
-    <string name="opt_tomar_pedido">Tomar Pedido</string>
     <string name="opt_iniciar_dia">Iniciar Día</string>
+    <string name="opt_sincronizar">Sincronizar Datos</string>
+    <string name="opt_tomar_pedido">Realizar Pedido</string>
     <string name="opt_opcion_3">Opcion 3</string>
     <string name="opt_opcion_4">Opcion 4</string>
-    <string name="opt_opcion_5">Opcion 5</string>
+    <string name="opt_cerrar_dia">Cerrar Día</string>
     <!--Menu Opciones - FIN-->
     <string name="producto_pedido_label">Producto</string>
     <string name="precio_pedido_label">Precio</string>
@@ -56,6 +57,8 @@
     <string name="title_activity_login_rapido">LoginRapidoActivity</string>
     <string name="title_activity_iniciar_dia">IniciarDiaActivity</string>
     <string name="iniciarDia">INICIAR DÍA</string>
+    <string name="cerrarDia">CERRAR DÍA</string>
+    <string name="title_activity_cerrar_dia">Cerrar Dia</string>
     <!-- dialog configurar conexion -->
 
 </resources>

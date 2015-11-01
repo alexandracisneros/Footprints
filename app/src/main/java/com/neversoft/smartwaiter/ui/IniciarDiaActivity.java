@@ -55,7 +55,9 @@ public class IniciarDiaActivity extends Activity
         mIniciarDiaButton = (Button) findViewById(R.id.iniciarDiaButton);
         mIniciarDiaButton.setOnClickListener(this);
         mMenuListView = (ListView) findViewById(R.id.menu_listview);
+        mMenuListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mMenuListView.setOnItemClickListener(this);
+
         mUrlServer = RestUtil.obtainURLServer(getApplicationContext());
 
         Resources res = getResources();
@@ -63,6 +65,7 @@ public class IniciarDiaActivity extends Activity
         ArrayAdapter<String> itemsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
         mMenuListView.setAdapter(itemsAdapter);
+        mMenuListView.setItemChecked(0, true);  //TODO: Put this in some sort of Constant
 
     }
 
@@ -182,7 +185,21 @@ public class IniciarDiaActivity extends Activity
             case 0:
                 break;
             case 1:
+                intent = new Intent(this, SincronizarActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case 2:
                 intent = new Intent(this, MesasActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                intent = new Intent(this, CerrarDiaActivity.class);
                 startActivity(intent);
                 finish();
                 break;

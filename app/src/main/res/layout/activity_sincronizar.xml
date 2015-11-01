@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="horizontal"
-              tools:context="com.neversoft.smartwaiter.ui.IniciarDiaActivity">
+              tools:context="com.neversoft.smartwaiter.ui.SincronizarActivity">
 
     <ListView
         android:id="@+id/menu_listview"
@@ -20,14 +20,18 @@
         android:layout_weight="4"
         android:baselineAligned="false">
 
+
+
         <Button
-            android:id="@+id/iniciarDiaButton"
+            android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:text="@string/iniciarDia"/>
+            android:onClick="onClick"
+            android:text="New Button"/>
     </RelativeLayout>
+
 
 </LinearLayout>

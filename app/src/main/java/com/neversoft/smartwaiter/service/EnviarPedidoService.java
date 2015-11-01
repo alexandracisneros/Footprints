@@ -168,9 +168,12 @@ public class EnviarPedidoService extends IntentService {
     }
 
     private JsonObject getPedido(PedidoEE ped, long idPedido) throws Exception {
+        //TODO: Necesita haber una forma de comunicacion entre los pedidos de la bd sqLite y la bd SQL
+        //Tal vez agregar un campo en la bd SQL para guardar los correspondientes IDs del pedido y detalles de sqLite
+        //yo debo tener un campo en la bd Sqlite tb para guardar los ids del pedido y detalle de SQL
         JsonObject jsonObjPed = new JsonObject();
         JsonArray jsonArrayPedDetalle;
-        jsonObjPed.addProperty("Id", idPedido);
+        jsonObjPed.addProperty("id", idPedido); //TODO : Cambiar a id en minusculas
         jsonObjPed.addProperty("fecha", ped.getFecha());
         jsonObjPed.addProperty("nroMesa", ped.getNroMesa());
         jsonObjPed.addProperty("ambiente", ped.getAmbiente());
@@ -194,8 +197,8 @@ public class EnviarPedidoService extends IntentService {
         JsonObject jsonObjItem;
         for (int i = 0; i < listaDetallePedido.size(); i++) {
             jsonObjItem = new JsonObject();
-            jsonObjItem.addProperty("Id", idPedido);
-            jsonObjItem.addProperty("item", i + 1);
+            jsonObjItem.addProperty("id", idPedido);//TODO : Cambiar a id en minusculas
+            jsonObjItem.addProperty("idPedido", i + 1);//TODO : Cambiar a idPedido
             jsonObjItem.addProperty("codArticulo", listaDetallePedido.get(i).getCodArticulo());
             jsonObjItem.addProperty("um", listaDetallePedido.get(i).getUm());
             jsonObjItem.addProperty("cantidad", listaDetallePedido.get(i).getCantidad());

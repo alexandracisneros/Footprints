@@ -18,6 +18,7 @@ import com.neversoft.smartwaiter.model.business.CategoriaDAO;
 import com.neversoft.smartwaiter.model.business.ClienteDAO;
 import com.neversoft.smartwaiter.model.business.MesaPisoDAO;
 import com.neversoft.smartwaiter.model.business.PrioridadDAO;
+import com.neversoft.smartwaiter.preference.ConexionSharedPref;
 import com.neversoft.smartwaiter.preference.LoginSharedPref;
 import com.neversoft.smartwaiter.ui.LoginActivity;
 import com.neversoft.smartwaiter.util.Funciones;
@@ -43,6 +44,7 @@ public class SincronizarService extends IntentService {
 
     private SharedPreferences mPrefConfig;
     private SharedPreferences mPrefLogin;
+    private SharedPreferences mPrefConexion;
 
     public SincronizarService() {
         super(NAME);
@@ -60,6 +62,7 @@ public class SincronizarService extends IntentService {
                 LoginActivity.PREF_CONFIG, Context.MODE_PRIVATE);
         mPrefLogin = getApplication().getSharedPreferences(LoginSharedPref.NAME,
                 Context.MODE_PRIVATE);
+        mPrefConexion = getApplication().getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
 //        // get NetworkInfo object
 //        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 //        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -76,6 +79,7 @@ public class SincronizarService extends IntentService {
 //            exito = false;
 //            enviarNotificacion();
 //        }
+        mAmbiente = mPrefConexion.getString(ConexionSharedPref.AMBIENTE, "");
         mCodCia = mPrefConfig.getString("CodCia", "");
         mUsuario = mPrefLogin.getString(LoginSharedPref.USUARIO, "");
 

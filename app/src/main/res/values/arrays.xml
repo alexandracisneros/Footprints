@@ -2,9 +2,10 @@
 <resources>
     <string-array name="menu_items_array">
         <item>@string/opt_iniciar_dia</item>
+        <item>@string/opt_sincronizar</item>
         <item>@string/opt_tomar_pedido</item>
         <item>@string/opt_opcion_3</item>
         <item>@string/opt_opcion_4</item>
-        <item>@string/opt_opcion_5</item>
+        <item>@string/opt_cerrar_dia</item>
     </string-array>
 </resources>

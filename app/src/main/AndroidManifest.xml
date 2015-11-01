@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.SincronizarActivity"
             android:label="@string/title_activity_main" >
 
             <!-- <intent-filter> -->
@@ -85,6 +85,10 @@
         <activity
             android:name=".ui.IniciarDiaActivity"
             android:label="@string/title_activity_iniciar_dia" >
+        </activity>
+        <activity
+            android:name=".ui.CerrarDiaActivity"
+            android:label="@string/title_activity_cerrar_dia" >
         </activity>
     </application>
 

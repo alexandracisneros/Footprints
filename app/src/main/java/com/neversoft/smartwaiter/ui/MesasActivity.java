@@ -42,6 +42,7 @@ public class MesasActivity extends Activity implements AdapterView.OnItemClickLi
         mDataHelper = new MesaPisoDAO(this);
         // get reference to the ListView and set its listener
         mMenuListView = (ListView) findViewById(R.id.menu_listview);
+        mMenuListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mMenuListView.setOnItemClickListener(this);
 
 
@@ -50,6 +51,7 @@ public class MesasActivity extends Activity implements AdapterView.OnItemClickLi
         ArrayAdapter<String> itemsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
         mMenuListView.setAdapter(itemsAdapter);
+        mMenuListView.setItemChecked(2,true); //TODO: Put this in some sort of Constant
 
         //TODO: AGREGAR EL SWITCH PARA DECIDIR EN LAS OPCIONES Y VER QUE ACTIVITY ABRO
 
@@ -137,7 +139,7 @@ public class MesasActivity extends Activity implements AdapterView.OnItemClickLi
                     "Mesa Nro  #" + getListaMesas().get(position).getNroMesa(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, TomarPedidoActivity.class);
             startActivity(intent);
-            finish();
+            //finish(); //TODO: Revisar si Tomar pedido deberia mostrar el menu lateral o no segun lineamientos de android
         } else if (parent.getId() == R.id.menu_listview) {
             opcionesMenu(position);
         }
@@ -152,6 +154,20 @@ public class MesasActivity extends Activity implements AdapterView.OnItemClickLi
                 finish();
                 break;
             case 1:
+                intent = new Intent(this, SincronizarActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                intent = new Intent(this, CerrarDiaActivity.class);
+                startActivity(intent);
+                finish();
                 break;
 
         }

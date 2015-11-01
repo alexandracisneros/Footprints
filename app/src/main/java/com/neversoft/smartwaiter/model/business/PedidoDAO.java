@@ -3,12 +3,15 @@ package com.neversoft.smartwaiter.model.business;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.util.Log;
 
 import com.neversoft.smartwaiter.database.SmartWaiterDB;
 import com.neversoft.smartwaiter.database.SmartWaiterDB.DetallePedido;
 import com.neversoft.smartwaiter.database.SmartWaiterDB.Pedido;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 import com.neversoft.smartwaiter.model.entity.PedidoEE;
+
+import java.util.ArrayList;
 
 
 /**
@@ -21,7 +24,7 @@ public class PedidoDAO {
         this.mContext = context;
     }
 
-    public long savePedido(final PedidoEE pedido) throws Exception{
+    public long savePedido(final PedidoEE pedido) throws Exception {
         final SmartWaiterDB db = new SmartWaiterDB(PedidoDAO.this.mContext);
 
         long result = 0;
@@ -83,4 +86,32 @@ public class PedidoDAO {
 
 
     }
+
+    public long getNumeroPedidos(int estadoEnviado) throws Exception {
+        final SmartWaiterDB db = new SmartWaiterDB(PedidoDAO.this.mContext);
+        long count = 0;
+        try {
+            db.openReadableDB();
+            // estadoEnviado=-1 =No tener en cuenta estado
+            // estadoEnviado= 0 =Pedidos que no han sido enviados
+            String where = Pedido.CONFIRMADO + " =?";
+
+            ArrayList<String> whereArgsArrayList = new ArrayList<String>();
+            if (estadoEnviado != -1) {
+                where += " AND " + Pedido.ENVIADO + " =?";
+                whereArgsArrayList.add("1");
+                whereArgsArrayList.add(String.valueOf(estadoEnviado));
+            } else {
+                whereArgsArrayList.add("1");
+            }
+            String[] whereArgs = new String[whereArgsArrayList.size()];
+            whereArgs = whereArgsArrayList.toArray(whereArgs);
+            count = db.count(SmartWaiterDB.Tables.PEDIDO, where, whereArgs);
+
+        } finally {
+            db.closeDB();
+        }
+        return count;
+    }
+
 }

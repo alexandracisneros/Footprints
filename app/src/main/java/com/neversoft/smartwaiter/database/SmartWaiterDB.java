@@ -3,10 +3,12 @@ package com.neversoft.smartwaiter.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
+import android.util.Log;
 
 /**
  * Created by Usuario on 02/09/2015.
@@ -86,6 +88,23 @@ public class SmartWaiterDB {
         }
     }
 
+    public long count(String tableName, String where, String[] whereArgs) throws Exception {
+        long nroCols = 0;
+
+        nroCols = DatabaseUtils.queryNumEntries(db, tableName, where,
+                whereArgs);
+        //Aqui me quede 25/10/2015 -04:29pm
+        return nroCols;
+    }
+
+    public void deleteTable(String tableName) throws Exception {
+        String[] whereArgs = {tableName};
+        db.delete(tableName, null, null);
+        db.delete("sqlite_sequence", " name=?", whereArgs);
+    }
+
+
+
     public interface Pedido {
         String ID = "_id";
         int ID_COL = 0;
@@ -125,6 +144,12 @@ public class SmartWaiterDB {
 
         String CODIGO_CIA = "cod_cia";
         int CODIGO_CIA_COL = 12;
+
+        String CONFIRMADO = "confirmado";
+        int CONFIRMADO_COL = 13;
+
+        String ENVIADO = "enviado";
+        int ENVIADO_COL = 14;
     }
 
     public interface DetallePedido {
@@ -313,7 +338,9 @@ public class SmartWaiterDB {
                             + Pedido.MONTO_TOTAL + " REAL NOT NULL,"
                             + Pedido.MONTO_RECIBIDO + " REAL,"
                             + Pedido.ESTADO + " TEXT NOT NULL,"
-                            + Pedido.CODIGO_CIA + " TEXT NOT NULL"
+                            + Pedido.CODIGO_CIA + " TEXT NOT NULL,"
+                            + Pedido.CONFIRMADO + " INTEGER DEFAULT 0,"
+                            + Pedido.ENVIADO + " INTEGER DEFAULT 0"
                             + " )"
             );
             db.execSQL("CREATE TABLE "
