@@ -1,28 +1,40 @@
 package com.neversoft.smartwaiter.ui;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.neversoft.smartwaiter.R;
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
-import com.neversoft.smartwaiter.service.SincronizarService;
+import com.neversoft.smartwaiter.service.ConsultarPedidosRecogerReceiver;
 
-public class SincronizarActivity extends Activity implements AdapterView.OnItemClickListener{
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+public class PedidosARecogerActivity extends Activity implements AdapterView.OnItemClickListener {
+    public static final String EXTRA_RANDOM="r";
+    public  static final String EXTRA_TIME="t";
+    public static final String ACTION_EVENT="e";
     private ListView mMenuListView;
+    private TextView mDateTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sincronizar);
+        setContentView(R.layout.activity_pedidos_arecoger);
         overridePendingTransition(0, 0);
 
         // get reference to the ListView and set its listener
@@ -30,18 +42,53 @@ public class SincronizarActivity extends Activity implements AdapterView.OnItemC
         mMenuListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mMenuListView.setOnItemClickListener(this);
 
+        mDateTextView= (TextView) findViewById(R.id.fechaTextView);
+
         Resources res = getResources();
         String[] options = res.getStringArray(R.array.menu_items_array);
         ArrayAdapter<String> itemsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
         mMenuListView.setAdapter(itemsAdapter);
-        mMenuListView.setItemChecked(1, true);  //TODO: Put this in some sort of Constant
+        mMenuListView.setItemChecked(3, true);  //TODO: Put this in some sort of Constant
+
+        ConsultarPedidosRecogerReceiver.scheduleAlarms(this);
+
+        Toast.makeText(this, R.string.alarms_scheduled, Toast.LENGTH_LONG)
+                .show();
+        ConsultarPedidosRecogerReceiver.scheduleAlarms(this);
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filter=new IntentFilter(ACTION_EVENT);
+
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(onEvent, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(onEvent);
+        super.onPause();
+    }
+    private BroadcastReceiver onEvent=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            DateFormat fmt=new SimpleDateFormat("HH:mm:ss", Locale.US);
+
+
+            Date date=new Date(intent.getLongExtra(EXTRA_TIME, 0));
+
+            mDateTextView.setText(String.format("%s = %x", fmt.format(date),
+                    intent.getIntExtra(EXTRA_RANDOM, -1)));
+        }
+    };
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_pedidos_arecoger, menu);
         return true;
     }
 
@@ -58,22 +105,11 @@ public class SincronizarActivity extends Activity implements AdapterView.OnItemC
         }
 
         return super.onOptionsItemSelected(item);
-
-    }
-    public void onClick(View v) {
-        // here get SharedPreferences and send them with the Intent
-        Intent inputIntent = new Intent(SincronizarActivity.this,
-                SincronizarService.class);
-        Log.d(SmartWaiterDB.TAG, "Antes de startService");
-        // Display progress to the user
-        startService(inputIntent);
-
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View v,
-                            int position, long id) {
-       if (parent.getId() == R.id.menu_listview) {
+    public void onItemClick(AdapterView<?> parent, View v,int position, long id) {
+        if (parent.getId() == R.id.menu_listview) {
             opcionesMenu(position);
         }
     }
@@ -86,6 +122,9 @@ public class SincronizarActivity extends Activity implements AdapterView.OnItemC
                 finish();
                 break;
             case 1:
+                intent = new Intent(this, SincronizarActivity.class);
+                startActivity(intent);
+                finish();
                 break;
             case 2:
                 intent = new Intent(this, MesasActivity.class);
@@ -93,9 +132,6 @@ public class SincronizarActivity extends Activity implements AdapterView.OnItemC
                 finish();
                 break;
             case 3:
-                intent = new Intent(this, PedidosARecogerActivity.class);
-                startActivity(intent);
-                finish();
                 break;
             case 4:
                 break;

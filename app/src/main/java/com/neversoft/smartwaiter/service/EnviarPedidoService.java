@@ -173,7 +173,7 @@ public class EnviarPedidoService extends IntentService {
         //yo debo tener un campo en la bd Sqlite tb para guardar los ids del pedido y detalle de SQL
         JsonObject jsonObjPed = new JsonObject();
         JsonArray jsonArrayPedDetalle;
-        jsonObjPed.addProperty("id", idPedido); //TODO : Cambiar a id en minusculas
+        jsonObjPed.addProperty("id", idPedido);
         jsonObjPed.addProperty("fecha", ped.getFecha());
         jsonObjPed.addProperty("nroMesa", ped.getNroMesa());
         jsonObjPed.addProperty("ambiente", ped.getAmbiente());

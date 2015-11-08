@@ -161,6 +161,9 @@ public class MesasActivity extends Activity implements AdapterView.OnItemClickLi
             case 2:
                 break;
             case 3:
+                intent = new Intent(this, PedidosARecogerActivity.class);
+                startActivity(intent);
+                finish();
                 break;
             case 4:
                 break;

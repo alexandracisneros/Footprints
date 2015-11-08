@@ -195,6 +195,9 @@ public class IniciarDiaActivity extends Activity
                 finish();
                 break;
             case 3:
+                intent = new Intent(this, PedidosARecogerActivity.class);
+                startActivity(intent);
+                finish();
                 break;
             case 4:
                 break;

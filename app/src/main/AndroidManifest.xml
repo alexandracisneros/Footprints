@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.neversoft.smartwaiter" >
+<manifest package="com.neversoft.smartwaiter"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:name=".ui.SmartWaiter"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Holo" >
+        android:theme="@android:style/Theme.Holo">
         <activity
             android:name=".ui.LaunchActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.NoDisplay" >
+            android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.SincronizarActivity"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -33,12 +35,12 @@
             <!-- </intent-filter> -->
         </activity>
 
-        <service android:name=".service.SincronizarService" >
+        <service android:name=".service.SincronizarService">
         </service>
 
         <activity
             android:name=".ui.TomarPedidoActivity"
-            android:label="@string/title_activity_tomar_pedido" >
+            android:label="@string/title_activity_tomar_pedido">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN"/> -->
@@ -48,17 +50,17 @@
             <!-- </intent-filter> -->
         </activity>
 
-        <service android:name=".service.EnviarPedidoService" />
+        <service android:name=".service.EnviarPedidoService"/>
 
-        <receiver android:name=".service.EnviarPedidoReceiver" >
+        <receiver android:name=".service.EnviarPedidoReceiver">
             <intent-filter>
-                <action android:name="com.ss.quicorder.SEND_DATA" />
+                <action android:name="com.ss.quicorder.SEND_DATA"/>
             </intent-filter>
         </receiver>
 
         <activity
             android:name=".ui.MesasActivity"
-            android:label="@string/title_activity_mesas" >
+            android:label="@string/title_activity_mesas">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -69,7 +71,7 @@
         </activity>
         <activity
             android:name=".ui.LoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="@string/title_activity_login">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN"/> -->
@@ -80,16 +82,27 @@
         </activity>
         <activity
             android:name=".ui.LoginRapidoActivity"
-            android:label="@string/title_activity_login_rapido" >
+            android:label="@string/title_activity_login_rapido">
         </activity>
         <activity
             android:name=".ui.IniciarDiaActivity"
-            android:label="@string/title_activity_iniciar_dia" >
+            android:label="@string/title_activity_iniciar_dia">
         </activity>
         <activity
             android:name=".ui.CerrarDiaActivity"
-            android:label="@string/title_activity_cerrar_dia" >
+            android:label="@string/title_activity_cerrar_dia">
         </activity>
+        <activity
+            android:name=".ui.PedidosARecogerActivity"
+            android:label="@string/title_activity_pedidos_arecoger">
+        </activity>
+
+        <service android:name=".service.ConsultarPedidosRecogerService"/>
+        <receiver android:name=".service.ConsultarPedidosRecogerReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

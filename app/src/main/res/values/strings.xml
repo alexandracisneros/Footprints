@@ -22,7 +22,7 @@
     <string name="opt_iniciar_dia">Iniciar Día</string>
     <string name="opt_sincronizar">Sincronizar Datos</string>
     <string name="opt_tomar_pedido">Realizar Pedido</string>
-    <string name="opt_opcion_3">Opcion 3</string>
+    <string name="opt_pedidos_recoger">Pedidos a Recoger</string>
     <string name="opt_opcion_4">Opcion 4</string>
     <string name="opt_cerrar_dia">Cerrar Día</string>
     <!--Menu Opciones - FIN-->
@@ -59,6 +59,10 @@
     <string name="iniciarDia">INICIAR DÍA</string>
     <string name="cerrarDia">CERRAR DÍA</string>
     <string name="title_activity_cerrar_dia">Cerrar Dia</string>
+    <string name="title_activity_pedidos_arecoger">PedidosARecogerActivity</string>
     <!-- dialog configurar conexion -->
 
+
+    <string name="alarms_scheduled">Alarms scheduled!</string>
+    <string name="notif_title">You got a random number!</string>
 </resources>
