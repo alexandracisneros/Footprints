@@ -9,6 +9,8 @@ public class PedidoEE {
     private int mId;
     private String mFecha;
     private int mNroMesa;
+    private int mNroPiso;
+    private String mCantRecogida;
     private int mAmbiente;
     private String mCodUsuario;
     private int mCodCliente;
@@ -46,6 +48,22 @@ public class PedidoEE {
 
     public void setNroMesa(int nroMesa) {
         mNroMesa = nroMesa;
+    }
+
+    public int getNroPiso() {
+        return mNroPiso;
+    }
+
+    public void setNroPiso(int nroPiso) {
+        mNroPiso = nroPiso;
+    }
+
+    public String getCantRecogida() {
+        return mCantRecogida;
+    }
+
+    public void setCantRecogida(String cantRecogida) {
+        mCantRecogida = cantRecogida;
     }
 
     public int getAmbiente() {

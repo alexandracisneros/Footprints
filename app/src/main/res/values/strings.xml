@@ -51,7 +51,7 @@
     <string name="ambiente_hint">Ingrese ambiente</string>
     <string name="cancelar">Cancelar</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_login_rapido">LoginRapidoActivity</string>
@@ -65,4 +65,12 @@
 
     <string name="alarms_scheduled">Alarms scheduled!</string>
     <string name="notif_title">You got a random number!</string>
+
+
+    <!--Cabecera pedido a recoger-->
+    <string name="nro_pedido_label">Nro</string>
+    <string name="nro_piso_label">Mesa-Piso</string>
+    <string name="items_label">Items</string>
+    <!--Cabecera pedido a recoger-->
+
 </resources>

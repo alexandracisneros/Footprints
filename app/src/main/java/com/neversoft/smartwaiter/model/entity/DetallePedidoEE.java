@@ -6,6 +6,7 @@ package com.neversoft.smartwaiter.model.entity;
 public class DetallePedidoEE {
     private int mId;
     private int mPedidoId;
+    private int mItem;
     private int mCodArticulo;
     private String mUm;
     private float mCantidad;
@@ -41,6 +42,14 @@ public class DetallePedidoEE {
 
     public void setPedidoId(int pedidoId) {
         mPedidoId = pedidoId;
+    }
+
+    public int getItem() {
+        return mItem;
+    }
+
+    public void setItem(int item) {
+        mItem = item;
     }
 
     public int getCodArticulo() {

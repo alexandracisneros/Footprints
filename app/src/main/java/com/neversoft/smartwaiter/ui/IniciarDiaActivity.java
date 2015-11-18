@@ -144,7 +144,7 @@ public class IniciarDiaActivity extends Activity
         String url = mUrlServer
                 + "ventas/IniciarDiaVendedorMV/?fecha=%s&codVen=%s&codCia=%s&usuario=%s&cadenaConexion=%s";
         mFechaInicioDia = Funciones.getCurrentDate("yyyy/MM/dd");
-        String codVen = mPrefConfig.getString("CodVen", "");
+        String codMozo = mPrefConfig.getString("CodMozo", "");
         String codCia = mPrefConfig.getString("CodCia", "");
         String usuario = mPrefConfig.getString("Usuario", "").toUpperCase(
                 Locale.getDefault());
@@ -153,13 +153,13 @@ public class IniciarDiaActivity extends Activity
         try {
             // Simple GET
             String mensajeError = "";
-            if (codVen != "") {
+            if (codMozo != "") {
                 if (codCia != "") {
                     if (usuario != "") {
                         String encondedAmbiente = URLEncoder.encode(ambiente,
                                 "utf-8");
                         String urlWithParams = String.format(url,
-                                mFechaInicioDia, codVen, codCia, usuario,
+                                mFechaInicioDia, codMozo, codCia, usuario,
                                 encondedAmbiente);
                         new DoIniciarDia().execute(urlWithParams);
                     } else {
@@ -169,7 +169,7 @@ public class IniciarDiaActivity extends Activity
                     mensajeError = "No se ha configurado 'código de compañía'";
                 }
             } else {
-                mensajeError = "No se ha configurado 'código de usuario'";
+                mensajeError = "No se ha configurado 'código de mozo'";
             }
             if (mensajeError != "") {
                 throw new Exception(mensajeError);

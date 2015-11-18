@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:id="@+id/cabeceraPedido"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/productoPedidoLabel"
+            style="@style/LabelContracted"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/nro_pedido_label"/>
+
+        <TextView
+            android:id="@+id/cantidadPedidoLabel"
+            style="@style/LabelContracted"
+            android:layout_alignBaseline="@+id/productoPedidoLabel"
+            android:layout_centerHorizontal="true"
+            android:text="@string/nro_piso_label"/>
+
+        <TextView
+            android:id="@+id/precioPedidoLabel"
+            style="@style/LabelContracted"
+            android:layout_alignBaseline="@+id/productoPedidoLabel"
+            android:layout_alignParentRight="true"
+            android:text="@string/items_label"/>
+
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/detalleCabPedidoRecogerListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/cabeceraPedido"
+        android:layout_margin="5dp"
+        android:background="@android:color/holo_blue_dark"
+        android:divider="@android:color/black"
+        tools:listitem="@layout/pedido_cab_recoger_item"
+        android:dividerHeight="1dp">
+    </ListView>
+
+</RelativeLayout>

@@ -154,7 +154,7 @@ public class CerrarDiaActivity extends Activity implements View.OnClickListener,
 //         String fecha = Funciones.getCurrentDate("yyyy/MM/dd");
         String fecha = mPrefControl
                 .getString(ControlSharedPref.FECHA_INICIO_DIA, Funciones.getCurrentDate("yyyy/MM/dd"));
-        String codVen = mPrefConfig.getString("CodVen", "");
+        String codMozo= mPrefConfig.getString("CodMozo", "");
         String codCia = mPrefConfig.getString("CodCia", "");
         String usuario = mPrefConfig.getString("Usuario", "").toUpperCase(
                 Locale.getDefault());
@@ -162,7 +162,7 @@ public class CerrarDiaActivity extends Activity implements View.OnClickListener,
         Log.d("QuickOrder", ambiente);
         try {
             String encondedAmbiente = URLEncoder.encode(ambiente, "utf-8");
-            String urlWithParams = String.format(url, fecha, codVen, codCia,
+            String urlWithParams = String.format(url, fecha, codMozo, codCia,
                     usuario, encondedAmbiente);
             new DoCerrarDia().execute(urlWithParams);
         } catch (Exception ex) {

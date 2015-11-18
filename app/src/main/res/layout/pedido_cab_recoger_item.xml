@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?android:attr/activatedBackgroundIndicator">
+    <TextView
+        android:id="@+id/nroPedidoDescTextView"
+        style="@style/TextViewContracted"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:maxLines="3"
+        android:textColor="@android:color/black"
+        android:text="Nro" />
+
+    <TextView
+        android:id="@+id/mesaPisoPedidoTextView"
+        style="@style/TextViewContracted"
+        android:layout_alignBaseline="@+id/productoPedidoDescTextView"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/black"
+        android:text="Mesa-Piso" />
+
+    <TextView
+        android:id="@+id/itemsPedidoTextView"
+        style="@style/TextViewContracted"
+        android:layout_alignBaseline="@+id/productoPedidoDescTextView"
+        android:layout_alignParentRight="true"
+        android:textColor="@android:color/black"
+        android:text="Items" />
+</RelativeLayout>

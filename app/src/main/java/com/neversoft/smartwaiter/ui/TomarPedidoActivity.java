@@ -155,6 +155,8 @@ public class TomarPedidoActivity extends Activity
         final PedidoEE pedido = new PedidoEE();
         pedido.setFecha(Funciones.getCurrentDate("yyyy/MM/dd"));
         pedido.setNroMesa(2);
+        pedido.setNroPiso(1);
+        pedido.setCantRecogida("");
         pedido.setAmbiente(1);
         pedido.setCodUsuario("200");
         pedido.setCodCliente(100);
@@ -171,7 +173,7 @@ public class TomarPedidoActivity extends Activity
             @Override
             protected Object doInBackground(Void... voids) {
                 try {
-                    return pedidoDAO.savePedido(pedido);
+                    return pedidoDAO.savePedido(pedido,0); //0=NO ENVIADO A COCINA
                 } catch (Exception e) {
                     return e;
                 }
@@ -256,6 +258,8 @@ public class TomarPedidoActivity extends Activity
                                 PedidoEE pedido = new PedidoEE();
                                 pedido.setFecha(Funciones.getCurrentDate("yyyy/MM/dd"));
                                 pedido.setNroMesa(2);
+                                pedido.setNroPiso(1);
+                                pedido.setCantRecogida("");
                                 pedido.setAmbiente(1);
                                 pedido.setCodUsuario("200");
                                 pedido.setCodCliente(100);

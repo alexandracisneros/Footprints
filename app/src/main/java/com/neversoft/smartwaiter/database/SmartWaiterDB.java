@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
-import android.util.Log;
 
 /**
  * Created by Usuario on 02/09/2015.
@@ -70,7 +69,9 @@ public class SmartWaiterDB {
     public long insertOrThrow(String table, String nullColumnHack, ContentValues values) {
         return db.insertOrThrow(table, nullColumnHack, values);
     }
-
+    public int update (String table, ContentValues values, String whereClause, String[] whereArgs){
+        return db.update(table,values,whereClause,whereArgs);
+    }
     public int delete(String table, String whereClause, String[] whereArgs) {
         return db.delete(table, whereClause, whereArgs);
     }
@@ -86,6 +87,10 @@ public class SmartWaiterDB {
         } finally {
 
         }
+    }
+
+    public Cursor rawQuery(String sql, String[] selectionArgs) {
+        return db.rawQuery(sql, selectionArgs);
     }
 
     public long count(String tableName, String where, String[] whereArgs) throws Exception {
@@ -104,7 +109,6 @@ public class SmartWaiterDB {
     }
 
 
-
     public interface Pedido {
         String ID = "_id";
         int ID_COL = 0;
@@ -115,41 +119,47 @@ public class SmartWaiterDB {
         String NRO_MESA = "nro_mesa";
         int NRO_MESA_COL = 2;
 
+        String NRO_PISO= "nro_piso";
+        int NRO_PISO_COL = 3;
+
+        String CANT_RECOGIDA= "cant_recogida";
+        int CANT_RECOGIDA_COL = 4;
+
         String AMBIENTE = "ambiente";
-        int AMBIENTE_COL = 3;
+        int AMBIENTE_COL = 5;
 
         String CODIGO_USUARIO = "codigo_usuario";
-        int CODIGO_USUARIO_COL = 4;
+        int CODIGO_USUARIO_COL = 6;
 
         String CODIGO_CLIENTE = "codigo_cliente";
-        int CODIGO_COL = 5;
+        int CODIGO_COL = 7;
 
         String TIPO_VENTA = "tipo_venta";
-        int TIPO_VENTA_COL = 6;
+        int TIPO_VENTA_COL = 8;
 
         String TIPO_PAGO = "tipo_pago";
-        int TIPO_PAGO_COL = 7;
+        int TIPO_PAGO_COL = 9;
 
         String MONEDA = "moneda";
-        int MONEDA_COL = 8;
+        int MONEDA_COL = 10;
 
         String MONTO_TOTAL = "monto_total";
-        int MONTO_TOTAL_COL = 9;
+        int MONTO_TOTAL_COL = 11;
 
         String MONTO_RECIBIDO = "moneda_recibido";
-        int MONTO_RECIBIDO_COL = 10;
+        int MONTO_RECIBIDO_COL = 12;
 
         String ESTADO = "estado";
-        int ESTADO_COL = 11;
+        int ESTADO_COL = 13;
 
         String CODIGO_CIA = "cod_cia";
-        int CODIGO_CIA_COL = 12;
+        int CODIGO_CIA_COL = 14;
 
         String CONFIRMADO = "confirmado";
-        int CONFIRMADO_COL = 13;
+        int CONFIRMADO_COL = 15;
 
         String ENVIADO = "enviado";
-        int ENVIADO_COL = 14;
+        int ENVIADO_COL = 16;
     }
 
     public interface DetallePedido {
@@ -159,32 +169,35 @@ public class SmartWaiterDB {
         String PEDIDO_ID = "pedido_id";
         int PEDIDO_ID_COL = 1;
 
+        String ITEM = "item";
+        int ITEM_COL = 2;
+
         String COD_ART = "cod_articulo";
-        int COD_ART_COL = 2;
+        int COD_ART_COL = 3;
 
         String UM = "um";
-        int UM_COL = 3;
+        int UM_COL = 4;
 
         String CANTIDAD = "cantidad";
-        int CANTIDAD_COL = 4;
+        int CANTIDAD_COL = 5;
 
         String PRECIO = "precio";
-        int PRECIO_COL = 5;
+        int PRECIO_COL = 6;
 
         String TIPO_ART = "tipo_articulo";
-        int TIPO_ART_COL = 6;
+        int TIPO_ART_COL = 7;
 
         String COD_ART_PRINCIPAL = "cod_art_principal";
-        int COD_ART_PRINCIPAL_COL = 7;
+        int COD_ART_PRINCIPAL_COL = 8;
 
         String COMENTARIO = "comentario";
-        int COMENTARIO_COL = 8;
+        int COMENTARIO_COL = 9;
 
         String ESTADO_ART = "estado_articulo";
-        int ESTADO_ART_COL = 9;
+        int ESTADO_ART_COL = 10;
 
         String DESC_ART = "desc_articulo";
-        int DESC_ART_COL = 10;
+        int DESC_ART_COL = 11;
     }
 
     public interface Familia {
@@ -329,6 +342,8 @@ public class SmartWaiterDB {
                             + Pedido.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                             + Pedido.FECHA + " TEXT NOT NULL,"
                             + Pedido.NRO_MESA + " INTEGER NOT NULL,"
+                            + Pedido.NRO_PISO + " INTEGER NOT NULL,"
+                            + Pedido.CANT_RECOGIDA + " TEXT NOT NULL,"
                             + Pedido.AMBIENTE + " INTEGER NOT NULL,"
                             + Pedido.CODIGO_USUARIO + " TEXT NOT NULL,"
                             + Pedido.CODIGO_CLIENTE + " INTEGER,"
@@ -347,6 +362,7 @@ public class SmartWaiterDB {
                             + Tables.DETALLE_PEDIDO + " ("
                             + DetallePedido.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                             + DetallePedido.PEDIDO_ID + " INTEGER NOT NULL,"
+                            + DetallePedido.ITEM + " INTEGER NOT NULL,"
                             + DetallePedido.COD_ART + " INTEGER NOT NULL,"
                             + DetallePedido.UM + " TEXT NOT NULL,"
                             + DetallePedido.CANTIDAD + " REAL NOT NULL,"
