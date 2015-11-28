@@ -25,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.neversoft.smartwaiter.R;
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
+import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.model.business.DetallePedidoDAO;
 import com.neversoft.smartwaiter.model.business.PedidoDAO;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
@@ -66,16 +66,13 @@ public class PedidosARecogerActivity extends Activity implements
             if (cantidadActualizar > 0) {
                 new ConsultarPedidosDespachados().execute();
             }
-//            Date date=new Date(intent.getLongExtra(EXTRA_TIME, 0));
-//
-//            mDateTextView.setText(String.format("%s = %x", fmt.format(date),
-//                    intent.getIntExtra(EXTRA_RANDOM, -1)));
         }
     };
     private BroadcastReceiver onEventNotificarRecojo = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String idPedidoRefrescar = intent.getStringExtra(EXTRA_ID_PEDIDO_REFRESCAR);
+            //ANTES DE ESTO DEBERIA HABERSE UTILIZANDO UN LOADING QUE NO DEJE SELECCIONAR NADA MAS PARA PODER REFRESCAR LOS ITEMS PREVIAMENTE SELECCIONADOS
             if (idPedidoRefrescar == "0") {
                 new ConsultarPedidosDespachados().execute();
                 new ConsultarItemsPedidoDespachado().execute(idPedidoRefrescar);
@@ -220,15 +217,15 @@ public class PedidosARecogerActivity extends Activity implements
             map.put("pedidoNro", String.valueOf(item.getId()));
             map.put("pedidoPisoMesa", String.valueOf(item.getNroMesa()) + "-" + String.valueOf(item.getNroPiso())); //TODO: cambiar con lo que mande alex
             map.put("pedidoCantidad", item.getCantRecogida());//TODO: cambiar con lo que mande alex
-            map.put("nroPedidoServ",String.valueOf(item.getNroPedidoServidor()));
+            map.put("nroPedidoServ", String.valueOf(item.getNroPedidoServidor()));
             data.add(map);
         }
 
         //create the resouces, from, and to variables
         int resource = R.layout.pedido_cab_recoger_item;
-        String[] from = {"pedidoNro", "pedidoPisoMesa", "pedidoCantidad","nroPedidoServ"};
+        String[] from = {"pedidoNro", "pedidoPisoMesa", "pedidoCantidad", "nroPedidoServ"};
         int[] to = {R.id.nroPedidoDescTextView, R.id.mesaPisoPedidoTextView,
-                R.id.itemsPedidoTextView,R.id.nroPedidoServTextView};
+                R.id.itemsPedidoTextView, R.id.nroPedidoServTextView};
 
         //create and set the adapter
         SimpleAdapter adapter = new SimpleAdapter(this, data, resource, from, to);
@@ -251,9 +248,9 @@ public class PedidosARecogerActivity extends Activity implements
 
         //create the resouces, from, and to variables
         int resource = R.layout.pedido_det_recoger_item;
-        String[] from = {"item", "articulo", "cantidad","itemId"};
+        String[] from = {"item", "articulo", "cantidad", "itemId"};
         int[] to = {R.id.itemDetalleTextView, R.id.articuloDetalleTextView,
-                R.id.cantidadDetalleTextView,R.id.itemIdDetalleTextView};
+                R.id.cantidadDetalleTextView, R.id.itemIdDetalleTextView};
 
         //create and set the adapter
         SimpleAdapter adapter = new SimpleAdapter(this, data, resource, from, to);
@@ -342,7 +339,7 @@ public class PedidosARecogerActivity extends Activity implements
             } else if (result instanceof Exception) {
                 String response;
                 response = ((Exception) result).getMessage();
-                Log.d(SmartWaiterDB.TAG, "Se produjó la excepción: " + response);
+                Log.d(DBHelper.TAG, "Se produjó la excepción: " + response);
                 Toast.makeText(PedidosARecogerActivity.this, response, Toast.LENGTH_LONG)
                         .show();
             }
@@ -373,7 +370,7 @@ public class PedidosARecogerActivity extends Activity implements
             } else if (result instanceof Exception) {
                 String response;
                 response = ((Exception) result).getMessage();
-                Log.d(SmartWaiterDB.TAG, "Se produjó la excepción: " + response);
+                Log.d(DBHelper.TAG, "Se produjó la excepción: " + response);
                 Toast.makeText(PedidosARecogerActivity.this, response, Toast.LENGTH_LONG)
                         .show();
             }

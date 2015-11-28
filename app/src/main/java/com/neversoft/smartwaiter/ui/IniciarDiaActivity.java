@@ -20,7 +20,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.neversoft.smartwaiter.R;
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
+import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.io.RestConnector;
 import com.neversoft.smartwaiter.io.RestUtil;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
@@ -224,7 +224,7 @@ public class IniciarDiaActivity extends Activity
         protected Object doInBackground(String... params) {
             Object requestObject = null;
             String url = params[0];
-            Log.d(SmartWaiterDB.TAG, url);
+            Log.d(DBHelper.TAG, url);
             RestConnector restConnector;
             try {
                 if (Funciones

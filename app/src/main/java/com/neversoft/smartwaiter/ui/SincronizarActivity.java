@@ -14,7 +14,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.neversoft.smartwaiter.R;
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
+import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.service.SincronizarService;
 
 public class SincronizarActivity extends Activity implements AdapterView.OnItemClickListener{
@@ -64,7 +64,7 @@ public class SincronizarActivity extends Activity implements AdapterView.OnItemC
         // here get SharedPreferences and send them with the Intent
         Intent inputIntent = new Intent(SincronizarActivity.this,
                 SincronizarService.class);
-        Log.d(SmartWaiterDB.TAG, "Antes de startService");
+        Log.d(DBHelper.TAG, "Antes de startService");
         // Display progress to the user
         startService(inputIntent);
 

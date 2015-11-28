@@ -1,13 +1,14 @@
 package com.neversoft.smartwaiter.model.business;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
-import com.neversoft.smartwaiter.database.SmartWaiterDB.Cliente;
-import com.neversoft.smartwaiter.database.SmartWaiterDB.Tables;
+import com.neversoft.smartwaiter.database.DBHelper;
+import com.neversoft.smartwaiter.database.DBHelper.Cliente;
+import com.neversoft.smartwaiter.database.DBHelper.Tables;
 
 import java.text.Normalizer;
 import java.util.Locale;
@@ -25,17 +26,19 @@ public class ClienteDAO {
     public int saveClienteData(JsonArray jsonArrayCliente) throws Exception {
 
         int numInserted = 0;
-        SmartWaiterDB db = new SmartWaiterDB(this.mContext);
         String insertQuery = "INSERT INTO " + Tables.CLIENTE + "( " +
                 Cliente.ID + "," +
                 Cliente.RAZON_SOCIAL + "," + Cliente.RAZON_SOCIAL_NORM + "," +
                 Cliente.TIPO_PERSONA + "," + Cliente.NRO_DOCUMENTO + "," +
                 Cliente.DIRECCION + ") " +
                 "VALUES (?,?,?,?,?,?)";
+        DBHelper dbHelper;
+        SQLiteDatabase db = null;
         try {
-            db.openWriteableDB();
+            dbHelper=DBHelper.getInstance(ClienteDAO.this.mContext);
+            db=dbHelper.getWritableDatabase();
             SQLiteStatement statement = db.compileStatement(insertQuery);
-            db.getDb().beginTransaction();
+            db.beginTransaction();
             if (jsonArrayCliente.size() > 0) {
                 for (int i = 0; i < jsonArrayCliente.size(); i++) {
                     JsonObject jsonObjItem = jsonArrayCliente.get(i).getAsJsonObject();
@@ -51,7 +54,7 @@ public class ClienteDAO {
                     statement.bindString(6, jsonObjItem.get("DIRECCION").getAsString());
                     statement.execute();
                 }
-                db.getDb().setTransactionSuccessful();
+                db.setTransactionSuccessful();
                 numInserted = jsonArrayCliente.size();
             } else {
                 throw new Exception("No hay 'Clientes'.");
@@ -59,8 +62,10 @@ public class ClienteDAO {
         } catch (Exception e) {
             throw e;
         } finally {
-            db.getDb().endTransaction();
-            db.getDb().close();
+            if(db!=null) {
+                db.endTransaction();
+                db.close();
+            }
         }
         return numInserted;
 

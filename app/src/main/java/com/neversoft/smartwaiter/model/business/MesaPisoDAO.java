@@ -3,6 +3,7 @@ package com.neversoft.smartwaiter.model.business;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
 import android.view.View;
@@ -11,9 +12,9 @@ import android.widget.ArrayAdapter;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
-import com.neversoft.smartwaiter.database.SmartWaiterDB.MesaPiso;
-import com.neversoft.smartwaiter.database.SmartWaiterDB.Tables;
+import com.neversoft.smartwaiter.database.DBHelper;
+import com.neversoft.smartwaiter.database.DBHelper.MesaPiso;
+import com.neversoft.smartwaiter.database.DBHelper.Tables;
 import com.neversoft.smartwaiter.model.entity.MesaPisoEE;
 import com.neversoft.smartwaiter.model.entity.SpinnerEE;
 import com.neversoft.smartwaiter.ui.MesaItemAdapter;
@@ -34,17 +35,19 @@ public class MesaPisoDAO {
     public int saveMesaData(JsonArray jsonArrayMesa) throws Exception {
 
         int numInserted = 0;
-        SmartWaiterDB db = new SmartWaiterDB(this.mContext);
         String insertQuery = "INSERT INTO " + Tables.MESA_PISO + "( " +
                 MesaPiso.NRO_PISO + "," + MesaPiso.COD_AMBIENTE + "," +
                 MesaPiso.DESC_AMBIENTE + "," + MesaPiso.NRO_MESA + "," +
                 MesaPiso.NRO_ASIENTOS + "," + MesaPiso.COD_ESTADO_MESA + "," +
                 MesaPiso.DESC_ESTADO_MESA + "," + MesaPiso.COD_RESERVA + " ) " +
                 "VALUES (?,?,?,?,?,?,?,?)";
+        DBHelper dbHelper;
+        SQLiteDatabase db = null;
         try {
-            db.openWriteableDB();
+            dbHelper = DBHelper.getInstance(MesaPisoDAO.this.mContext);
+            db = dbHelper.getWritableDatabase();
             SQLiteStatement statement = db.compileStatement(insertQuery);
-            db.getDb().beginTransaction();
+            db.beginTransaction();
             if (jsonArrayMesa.size() > 0) {
                 for (int i = 0; i < jsonArrayMesa.size(); i++) {
                     JsonObject jsonObjItem = jsonArrayMesa.get(i).getAsJsonObject();
@@ -59,7 +62,7 @@ public class MesaPisoDAO {
                     statement.bindLong(8, jsonObjItem.get("CODRESERVA").getAsLong());
                     statement.execute();
                 }
-                db.getDb().setTransactionSuccessful();
+                db.setTransactionSuccessful();
                 numInserted = jsonArrayMesa.size();
             } else {
                 throw new Exception("No hay 'Mesas'.");
@@ -67,8 +70,10 @@ public class MesaPisoDAO {
         } catch (Exception e) {
             throw e;
         } finally {
-            db.getDb().endTransaction();
-            db.getDb().close();
+            if (db != null) {
+                db.endTransaction();
+                db.close();
+            }
         }
         return numInserted;
 
@@ -76,12 +81,12 @@ public class MesaPisoDAO {
 
     public void getPisosAsync(final WeakReference<Activity> mReference) {
         final Activity activity = mReference.get();
-        final SmartWaiterDB db = new SmartWaiterDB(MesaPisoDAO.this.mContext);
+        final DBHelper dbHelper=DBHelper.getInstance(MesaPisoDAO.this.mContext);
+        final SQLiteDatabase db=dbHelper.getReadableDatabase();
         new AsyncTask<Void, Void, Cursor>() {
 
             @Override
             protected Cursor doInBackground(Void... params) {
-                db.openReadableDB();
                 Cursor cursor = db.query(true, Tables.MESA_PISO, PisosQuery.PROJECTION, null, null, null, null, null, null);
                 return cursor;
             }
@@ -95,6 +100,7 @@ public class MesaPisoDAO {
                     ((MesasActivity) activity).getListaPisos().add(item);
                 }
                 cursor.close();
+                db.close();  //ITV
                 ArrayAdapter adapter = new ArrayAdapter(mContext, android.R.layout.simple_spinner_item, ((MesasActivity) activity).getListaPisos());
                 ((MesasActivity) activity).getPisosSpinner().setAdapter(adapter);
 
@@ -124,12 +130,12 @@ public class MesaPisoDAO {
 
     public void getAmbientesAsync(final WeakReference<Activity> mReference, final int nroPiso) {
         final Activity activity = mReference.get();
-        final SmartWaiterDB db = new SmartWaiterDB(MesaPisoDAO.this.mContext);
+        final DBHelper dbHelper=DBHelper.getInstance(MesaPisoDAO.this.mContext);
+        final SQLiteDatabase db=dbHelper.getReadableDatabase();
         new AsyncTask<Void, Void, Cursor>() {
 
             @Override
             protected Cursor doInBackground(Void... params) {
-                db.openReadableDB();
                 Cursor cursor = db.query(true, Tables.MESA_PISO, AmbientesQuery.PROJECTION, MesaPiso.NRO_PISO + "= ? ", new String[]{String.valueOf(nroPiso)}, null, null, null, null);
                 return cursor;
             }
@@ -143,6 +149,7 @@ public class MesaPisoDAO {
                     ((MesasActivity) activity).getListaAmbientes().add(item);
                 }
                 cursor.close();
+                db.close();//ITV
                 ArrayAdapter adapter = new ArrayAdapter(mContext, android.R.layout.simple_spinner_item, ((MesasActivity) activity).getListaAmbientes());
                 ((MesasActivity) activity).getAmbienteSpinner().setAdapter(adapter);
 
@@ -168,14 +175,14 @@ public class MesaPisoDAO {
         }.execute();
     }
 
-    public void getMesasAsync(final WeakReference<Activity> mReference,final int nroPiso, final int codAmbiente) {
+    public void getMesasAsync(final WeakReference<Activity> mReference, final int nroPiso, final int codAmbiente) {
         final Activity activity = mReference.get();
-        final SmartWaiterDB db = new SmartWaiterDB(MesaPisoDAO.this.mContext);
+        final DBHelper dbHelper=DBHelper.getInstance(MesaPisoDAO.this.mContext);
+        final SQLiteDatabase db=dbHelper.getReadableDatabase();
         new AsyncTask<Void, Void, Cursor>() {
             @Override
             protected Cursor doInBackground(Void... params) {
-                db.openReadableDB();
-                Cursor cursor = db.query(true, Tables.MESA_PISO,  MesasQuery.PROJECTION,  MesaPiso.NRO_PISO + "=? and " + MesaPiso.COD_AMBIENTE + "=? ", new String[]{String.valueOf(nroPiso), String.valueOf(codAmbiente)}, null, null, null, null);
+                Cursor cursor = db.query(true, Tables.MESA_PISO, MesasQuery.PROJECTION, MesaPiso.NRO_PISO + "=? and " + MesaPiso.COD_AMBIENTE + "=? ", new String[]{String.valueOf(nroPiso), String.valueOf(codAmbiente)}, null, null, null, null);
                 return cursor;
             }
 
@@ -194,6 +201,7 @@ public class MesaPisoDAO {
                     ((MesasActivity) activity).getListaMesas().add(item);
                 }
                 cursor.close();
+                db.close();//ITV
                 ((MesasActivity) activity).getMesasGridView().setAdapter(new MesaItemAdapter(mContext, ((MesasActivity) activity).getListaMesas()));
                 //((MesasActivity) activity).getMesasGridView().setOnItemClickListener(mContext);
 //                ((MesasActivity) activity).getRecylerView().setAdapter(((MesasActivity) activity).getMesasAdapter());
@@ -201,6 +209,7 @@ public class MesaPisoDAO {
             }
         }.execute();
     }
+
     private interface PisosQuery {
         String[] PROJECTION = {
                 MesaPiso.NRO_PISO

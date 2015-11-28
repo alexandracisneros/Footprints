@@ -1,9 +1,11 @@
 package com.neversoft.smartwaiter.model.business;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
+import com.neversoft.smartwaiter.database.DBHelper;
+import com.neversoft.smartwaiter.database.DBHelper.Tables;
 
 /**
  * Created by Usuario on 26/10/2015.
@@ -17,22 +19,25 @@ public class SincroDAO {
 
     //Cambiar a otra clase
     public void dropDataDownloaded() throws Exception {
-        final SmartWaiterDB db = new SmartWaiterDB(SincroDAO.this.mContext);
+        final DBHelper dbHelper = DBHelper.getInstance(SincroDAO.this.mContext);
+        SQLiteDatabase db = null;
         try {
-            db.openWriteableDB();
-            db.getDb().beginTransaction();
-            db.deleteTable(SmartWaiterDB.Tables.ARTICULO);
-            db.deleteTable(SmartWaiterDB.Tables.CLIENTE);
-            db.deleteTable(SmartWaiterDB.Tables.CARTA);
-            db.deleteTable(SmartWaiterDB.Tables.FAMILIA);
-            db.deleteTable(SmartWaiterDB.Tables.MESA_PISO);
-            db.deleteTable(SmartWaiterDB.Tables.PRIORIDAD);
-            db.getDb().setTransactionSuccessful();
-            Log.d(SmartWaiterDB.TAG, "dropDataDownloaded");
+            db = dbHelper.getWritableDatabase();
+            db.beginTransaction();
+            dbHelper.deleteTable(Tables.ARTICULO,db);
+            dbHelper.deleteTable(Tables.CLIENTE,db);
+            dbHelper.deleteTable(Tables.CARTA,db);
+            dbHelper.deleteTable(Tables.FAMILIA,db);
+            dbHelper.deleteTable(Tables.MESA_PISO,db);
+            dbHelper.deleteTable(Tables.PRIORIDAD,db);
+            db.setTransactionSuccessful();
+            Log.d(DBHelper.TAG, "dropDataDownloaded");
 
         } finally {
-            db.getDb().endTransaction();
-            db.closeDB();
+            if (db != null) {
+                db.endTransaction();
+                db.close();
+            }
         }
 
     }

@@ -14,11 +14,10 @@ import android.util.Log;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.neversoft.smartwaiter.R;
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
+import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.io.RestConnector;
 import com.neversoft.smartwaiter.io.RestUtil;
 import com.neversoft.smartwaiter.model.business.DetallePedidoDAO;
-import com.neversoft.smartwaiter.model.entity.PedidoEE;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
 import com.neversoft.smartwaiter.ui.LoginActivity;
 import com.neversoft.smartwaiter.ui.PedidosARecogerActivity;
@@ -64,26 +63,27 @@ public class NotificarPedidosRecogidosService extends IntentService {
         mCodCia = mPrefConfig.getString("CodCia", "");
         mUsuario = mPrefConfig.getString("Usuario", "").toUpperCase(
                 Locale.getDefault());
-        String idPedido=intent.getStringExtra(PedidosARecogerActivity.EXTRA_ID_PEDIDO);
-        String idPedidoServidor=intent.getStringExtra(PedidosARecogerActivity.EXTRA_ID_PEDIDO_SERV);
-        ArrayList<String> selectedItems =intent.getExtras().getStringArrayList(PedidosARecogerActivity.EXTRA_SELECTED_ITEMS_ARRAY);
-        String[] items=selectedItems.toArray(new String[selectedItems.size()]);
-        int totalPedidosXRecoger=intent.getIntExtra(PedidosARecogerActivity.EXTRA_TOTAL_ITEMS_RECOGER, 0);
-        int totalPedidoNoRecogidos=totalPedidosXRecoger-items.length;
-        String idPedidoRefrescar="0";
+        String idPedido = intent.getStringExtra(PedidosARecogerActivity.EXTRA_ID_PEDIDO);
+        String idPedidoServidor = intent.getStringExtra(PedidosARecogerActivity.EXTRA_ID_PEDIDO_SERV);
+        ArrayList<String> selectedItems = intent.getExtras().getStringArrayList(PedidosARecogerActivity.EXTRA_SELECTED_ITEMS_ARRAY);
+        String[] items = selectedItems.toArray(new String[selectedItems.size()]);
+        int totalPedidosXRecoger = intent.getIntExtra(PedidosARecogerActivity.EXTRA_TOTAL_ITEMS_RECOGER, 0);
+        int totalPedidoNoRecogidos = totalPedidosXRecoger - items.length;
+        String idPedidoRefrescar = "0";
         try {
             if (Funciones.hasActiveInternetConnection(getApplicationContext())) {
-                String dataToSend = getEnvio(idPedido,idPedidoServidor,items);
+                String dataToSend = getEnvio(idPedido, idPedidoServidor, items);
                 procesoOK = sendDataToServer(dataToSend);
-                if(procesoOK) {
-                    DetallePedidoDAO detallePedidoDAO=new DetallePedidoDAO(getApplicationContext());
-                    List<String> arrayIDs= Arrays.asList(items);
-                    detallePedidoDAO.confirmRecojoItemsPedido(idPedido,arrayIDs);
+                if (procesoOK) {
+                    DetallePedidoDAO detallePedidoDAO = new DetallePedidoDAO(getApplicationContext());
+                    List<String> arrayIDs = new ArrayList<String>(Arrays.asList(items));
+
+                    detallePedidoDAO.confirmRecojoItemsPedido(idPedido, arrayIDs);
                     if (totalPedidoNoRecogidos >= 1) {
                         //refresh_only_detail
                         //otherwise refresh all the orders and select the one with the oder_id=0
                         //with that the details list should be clear
-                        idPedidoRefrescar=idPedido;
+                        idPedidoRefrescar = idPedido;
                     }
                     Intent event = new Intent(NotificarPedidosRecogidosService.ACTION_NOTIFICAR_RECOJO_PEDIDO);
                     event.putExtra(PedidosARecogerActivity.EXTRA_ID_PEDIDO_REFRESCAR, idPedidoRefrescar);
@@ -112,7 +112,8 @@ public class NotificarPedidosRecogidosService extends IntentService {
             exito = false;
         }
     }
-    private String getEnvio(String idPedido, String idPedidoServidor,String[] itemsSeleccionados) throws Exception {
+
+    private String getEnvio(String idPedido, String idPedidoServidor, String[] itemsSeleccionados) throws Exception {
         String result;
         JsonObject jsonObjCab = new JsonObject();
 
@@ -131,14 +132,16 @@ public class NotificarPedidosRecogidosService extends IntentService {
         result = jsonObjCab.toString();
         return result;
     }
+
     private JsonObject getItem(String item, String idPedidoServidor) throws Exception {
 
-        JsonObject jsonObjItem= new JsonObject();
+        JsonObject jsonObjItem = new JsonObject();
         jsonObjItem.addProperty("idPed", idPedidoServidor);
         jsonObjItem.addProperty("item", item);
 
         return jsonObjItem;
     }
+
     // Methods used in sending all the orders back to the server for processing
     private boolean sendDataToServer(String dataToSend) throws Exception {
         boolean procesoOK = false;
@@ -149,7 +152,7 @@ public class NotificarPedidosRecogidosService extends IntentService {
         String POST_URI = urlServer + "restaurante/EnviarListaPedidoRecibidos/";
 
 
-        Log.d(SmartWaiterDB.TAG, POST_URI);
+        Log.d(DBHelper.TAG, POST_URI);
 
         // Simple Post
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
@@ -162,7 +165,7 @@ public class NotificarPedidosRecogidosService extends IntentService {
                 // Only if the request was successful parse the returned value
                 // otherwise re-throw the exception
                 resultado = (String) requestObject;
-                procesoOK= Boolean.parseBoolean(resultado);
+                procesoOK = Boolean.parseBoolean(resultado);
 
             } else if (requestObject instanceof Exception) {
                 throw new Exception(((Exception) requestObject).getMessage());

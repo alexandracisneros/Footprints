@@ -4,16 +4,16 @@ package com.neversoft.smartwaiter.model.business;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
-import com.neversoft.smartwaiter.database.SmartWaiterDB.DetallePedido;
-import com.neversoft.smartwaiter.database.SmartWaiterDB.Pedido;
+import com.neversoft.smartwaiter.database.DBHelper;
+import com.neversoft.smartwaiter.database.DBHelper.DetallePedido;
+import com.neversoft.smartwaiter.database.DBHelper.Pedido;
+import com.neversoft.smartwaiter.database.DBHelper.Tables;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 import com.neversoft.smartwaiter.model.entity.PedidoEE;
-import com.neversoft.smartwaiter.util.Funciones;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -27,16 +27,31 @@ public class PedidoDAO {
         this.mContext = context;
     }
 
+    public static void updatePedidoRecoger(String idPedido, String idPedidoServidor, String nuevaCantidad, SQLiteDatabase db) throws Exception {
+
+        ContentValues cv = new ContentValues();
+        cv.put(Pedido.CANT_RECOGIDA, nuevaCantidad.trim());
+        cv.put(Pedido.NRO_PED_SERVIDOR, idPedidoServidor);
+        String updateWhere = null;
+        String[] updateWhereArgs = null;
+
+
+        updateWhere = Pedido.ID + " =? ";
+        updateWhereArgs = new String[]{idPedido};
+
+        db.update(Tables.PEDIDO, cv, updateWhere,
+                updateWhereArgs);
+    }
+
     public long savePedido(final PedidoEE pedido, int estadoArticulo) throws Exception {
-        final SmartWaiterDB db = new SmartWaiterDB(PedidoDAO.this.mContext);
 
         long result = 0;
         ContentValues cvPedido = new ContentValues();
         ContentValues cvItem;
         cvPedido.put(Pedido.FECHA, pedido.getFecha());
         cvPedido.put(Pedido.NRO_MESA, pedido.getNroMesa());
-        cvPedido.put(Pedido.NRO_PISO,pedido.getNroPiso());
-        cvPedido.put(Pedido.CANT_RECOGIDA,pedido.getCantRecogida());
+        cvPedido.put(Pedido.NRO_PISO, pedido.getNroPiso());
+        cvPedido.put(Pedido.CANT_RECOGIDA, pedido.getCantRecogida());
         cvPedido.put(Pedido.AMBIENTE, pedido.getAmbiente());
         cvPedido.put(Pedido.CODIGO_USUARIO, pedido.getCodUsuario());
         cvPedido.put(Pedido.CODIGO_CLIENTE, pedido.getCodCliente());
@@ -47,19 +62,22 @@ public class PedidoDAO {
         cvPedido.put(Pedido.MONTO_RECIBIDO, pedido.getMontoRecibido());
         cvPedido.put(Pedido.ESTADO, pedido.getEstado());
         cvPedido.put(Pedido.CODIGO_CIA, pedido.getCodCia());
+        DBHelper dbHelper;
+        SQLiteDatabase db = null;
         try {
 
-            db.openWriteableDB();
-            db.getDb().beginTransaction();
+            dbHelper = DBHelper.getInstance(PedidoDAO.this.mContext);
+            db = dbHelper.getWritableDatabase();
+            db.beginTransaction();
             //TODO :CREO QUE VOY A NECESITAR ESTO http://stackoverflow.com/questions/418898/sqlite-upsert-not-insert-or-replace/4330694#4330694
-            long idPedido = db.insertOrThrow(SmartWaiterDB.Tables.PEDIDO, null, cvPedido);
+            long idPedido = db.insertOrThrow(Tables.PEDIDO, null, cvPedido);
             long idItemPedido = 0;
             if (idPedido > 0) {
-                int count=1;
+                int count = 1;
                 for (DetallePedidoEE det : pedido.getDetalle()) {
                     cvItem = new ContentValues();
                     cvItem.put(DetallePedido.PEDIDO_ID, idPedido);
-                    cvItem.put(DetallePedido.ITEM,count);
+                    cvItem.put(DetallePedido.ITEM, count);
                     cvItem.put(DetallePedido.COD_ART, det.getCodArticulo());
                     cvItem.put(DetallePedido.UM, det.getUm());
                     cvItem.put(DetallePedido.CANTIDAD, det.getCantidad());
@@ -69,13 +87,13 @@ public class PedidoDAO {
                     cvItem.put(DetallePedido.COMENTARIO, det.getComentario());
                     cvItem.put(DetallePedido.ESTADO_ART, estadoArticulo);
                     cvItem.put(DetallePedido.DESC_ART, det.getDescArticulo());
-                    idItemPedido = db.insertOrThrow(SmartWaiterDB.Tables.DETALLE_PEDIDO, null,
+                    idItemPedido = db.insertOrThrow(Tables.DETALLE_PEDIDO, null,
                             cvItem);
                     count++;
                 }
                 if (idItemPedido > 0) {
                     result = idPedido;
-                    db.getDb().setTransactionSuccessful();
+                    db.setTransactionSuccessful();
                 }
 
             }
@@ -84,23 +102,20 @@ public class PedidoDAO {
         } catch (Exception e) {
             throw e;
         } finally {
-            db.getDb().endTransaction();
-            db.closeDB();
+            if (db != null) {
+                db.endTransaction();
+                db.close();
+            }
         }
-
-
-//                    Toast.makeText(activity, "Operación completada con exito. Id =" + result, Toast.LENGTH_SHORT).show();
-//
-//                    Toast.makeText(activity, "Se produjo la excepción: " + result, Toast.LENGTH_SHORT).show();
-
-
     }
 
     public long getNumeroPedidos(int estadoEnviado) throws Exception {
-        final SmartWaiterDB db = new SmartWaiterDB(PedidoDAO.this.mContext);
         long count = 0;
+        DBHelper dbHelper;
+        SQLiteDatabase db = null;
         try {
-            db.openReadableDB();
+            dbHelper = DBHelper.getInstance(PedidoDAO.this.mContext);
+            db = dbHelper.getReadableDatabase();
             // estadoEnviado=-1 =No tener en cuenta estado
             // estadoEnviado= 0 =Pedidos que no han sido enviados
             String where = Pedido.CONFIRMADO + " =?";
@@ -115,23 +130,27 @@ public class PedidoDAO {
             }
             String[] whereArgs = new String[whereArgsArrayList.size()];
             whereArgs = whereArgsArrayList.toArray(whereArgs);
-            count = db.count(SmartWaiterDB.Tables.PEDIDO, where, whereArgs);
+            count = dbHelper.count(Tables.PEDIDO, where, whereArgs);
 
         } finally {
-            db.closeDB();
+            if (db != null) {
+                db.close();
+            }
         }
         return count;
     }
 
     public List<PedidoEE> getPedidosDespachados() throws Exception {
-        final SmartWaiterDB db = new SmartWaiterDB(PedidoDAO.this.mContext);
         List<PedidoEE> listaPedido = new ArrayList<>();
+        DBHelper dbHelper;
+        SQLiteDatabase db = null;
         try {
-            db.openReadableDB();
-            String query = "SELECT * FROM " + SmartWaiterDB.Tables.PEDIDO +
+            dbHelper = DBHelper.getInstance(PedidoDAO.this.mContext);
+            db = dbHelper.getReadableDatabase();
+            String query = "SELECT * FROM " + Tables.PEDIDO +
                     "  WHERE (" +
-                    " SELECT COUNT(*) FROM " + SmartWaiterDB.Tables.DETALLE_PEDIDO +
-                    "  WHERE " + SmartWaiterDB.Tables.PEDIDO + "." + Pedido.ID + "= " + SmartWaiterDB.Tables.DETALLE_PEDIDO + "." + DetallePedido.PEDIDO_ID
+                    " SELECT COUNT(*) FROM " + Tables.DETALLE_PEDIDO +
+                    "  WHERE " + Tables.PEDIDO + "." + Pedido.ID + "= " + Tables.DETALLE_PEDIDO + "." + DetallePedido.PEDIDO_ID
                     + " AND " + DetallePedido.ESTADO_ART + " = ?" +
                     "    ) > 0";
             Cursor cursor = db.rawQuery(query, new String[]{"2"});
@@ -150,24 +169,11 @@ public class PedidoDAO {
             cursor.close();
 
         } finally {
-            db.closeDB();
+            if (db != null) {
+                db.close();
+            }
         }
         return listaPedido;
-    }
-    public static void updatePedidoRecoger(String idPedido, String idPedidoServidor,String nuevaCantidad, SmartWaiterDB db) throws Exception {
-
-        ContentValues cv = new ContentValues();
-        cv.put(Pedido.CANT_RECOGIDA, nuevaCantidad.trim());
-        cv.put(Pedido.NRO_PED_SERVIDOR,idPedidoServidor);
-        String updateWhere = null;
-        String[] updateWhereArgs = null;
-
-
-        updateWhere = SmartWaiterDB.Pedido.ID + " =? ";
-        updateWhereArgs = new String[]{idPedido};
-
-        db.update(SmartWaiterDB.Tables.PEDIDO, cv, updateWhere,
-                updateWhereArgs);
     }
 
 }

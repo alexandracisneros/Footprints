@@ -24,7 +24,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.neversoft.smartwaiter.R;
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
+import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.io.RestConnector;
 import com.neversoft.smartwaiter.io.RestUtil;
 import com.neversoft.smartwaiter.model.entity.SpinnerEE;
@@ -211,7 +211,7 @@ public class LoginActivity extends Activity
 
         } catch (Exception e) {
             limpiarLogin();
-            Log.d(SmartWaiterDB.TAG, e.toString());
+            Log.d(DBHelper.TAG, e.toString());
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
@@ -333,7 +333,7 @@ public class LoginActivity extends Activity
         protected Object doInBackground(String... params) {
             Object requestObject = null;
             String url = params[0];
-            Log.d(SmartWaiterDB.TAG, url);
+            Log.d(DBHelper.TAG, url);
             RestConnector restConnector;
             try {
                 if (Funciones.hasActiveInternetConnection(getApplicationContext())) {
@@ -363,7 +363,7 @@ public class LoginActivity extends Activity
                 } else {
                     response = ((Exception) result).getMessage();
                 }
-                Log.d(SmartWaiterDB.TAG, "Error en Iniciar sesion: " + response);
+                Log.d(DBHelper.TAG, "Error en Iniciar sesion: " + response);
                 Toast.makeText(LoginActivity.this, response, Toast.LENGTH_LONG)
                         .show();
             }
@@ -385,7 +385,7 @@ public class LoginActivity extends Activity
         protected Object doInBackground(String... params) {
             Object requestObject = null;
             String url = params[0];
-            Log.d(SmartWaiterDB.TAG, url);
+            Log.d(DBHelper.TAG, url);
             RestConnector restConnector;
             try {
                 if (Funciones.hasActiveInternetConnection(getApplicationContext())) {
@@ -411,7 +411,7 @@ public class LoginActivity extends Activity
 
             } else if (result instanceof Exception) {
                 response = ((Exception) result).getMessage();
-                Log.d(SmartWaiterDB.TAG, "Se produjó la excepción: " + response);
+                Log.d(DBHelper.TAG, "Se produjó la excepción: " + response);
                 Toast.makeText(LoginActivity.this, response, Toast.LENGTH_LONG)
                         .show();
             }

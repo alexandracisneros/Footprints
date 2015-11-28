@@ -13,7 +13,7 @@ import com.commonsware.cwac.wakeful.WakefulIntentService;
  * Created by Usuario on 05/11/2015.
  */
 public class ConsultarPedidosRecogerReceiver extends BroadcastReceiver {
-    private static final int PERIOD=240000; // 4 minute
+    private static final int PERIOD=120000; // 4 minute
     private static final int INITIAL_DELAY=5000; // 5 seconds
     @Override
     public void onReceive(Context context, Intent intent) {

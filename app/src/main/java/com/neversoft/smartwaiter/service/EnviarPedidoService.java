@@ -9,7 +9,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
+import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.io.RestConnector;
 import com.neversoft.smartwaiter.io.RestUtil;
 import com.neversoft.smartwaiter.model.business.PedidoDAO;
@@ -113,7 +113,7 @@ public class EnviarPedidoService extends IntentService {
         broadcastIntent.putExtra("resultado", procesoOK);
         broadcastIntent.putExtra("mensaje", mensaje);
 
-        Log.d(SmartWaiterDB.TAG, "El resultado de la operacion fue :  " + procesoOK);
+        Log.d(DBHelper.TAG, "El resultado de la operacion fue :  " + procesoOK);
 
         sendOrderedBroadcast(broadcastIntent, null);
 
@@ -146,7 +146,7 @@ public class EnviarPedidoService extends IntentService {
         String POST_URI = urlServer + "restaurante/EnviarListaPedidoMV/";  //ACA ME QUEDE
 
 
-        Log.d(SmartWaiterDB.TAG, POST_URI);
+        Log.d(DBHelper.TAG, POST_URI);
 
         // Simple Post
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();

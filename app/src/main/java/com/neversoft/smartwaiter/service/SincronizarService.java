@@ -9,7 +9,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
+import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.io.RestConnector;
 import com.neversoft.smartwaiter.io.RestUtil;
 import com.neversoft.smartwaiter.model.business.ArticuloDAO;
@@ -86,12 +86,12 @@ public class SincronizarService extends IntentService {
         mUrlServer = RestUtil.obtainURLServer(getApplicationContext());
         try {
             mAmbiente = URLEncoder.encode(mAmbiente, "utf-8");
-            Log.d(SmartWaiterDB.TAG,
+            Log.d(DBHelper.TAG,
                     "INICIA Insercion DataSincronizada: "
                             + Funciones
                             .getCurrentDate("yyyy/MM/dd hh:mm:ss"));
             leerDataWebService();
-            Log.d(SmartWaiterDB.TAG,
+            Log.d(DBHelper.TAG,
                     "FINALIZA Insercion DataSincronizada: "
                             + Funciones
                             .getCurrentDate("yyyy/MM/dd hh:mm:ss"));
@@ -107,7 +107,7 @@ public class SincronizarService extends IntentService {
         broadcastIntent.putExtra("resultado", "2");
         broadcastIntent.putExtra("mensaje", mensaje);
 
-        Log.d(SmartWaiterDB.TAG, "Mesaje Final Sincronizacion: " + mensaje);
+        Log.d(DBHelper.TAG, "Mesaje Final Sincronizacion: " + mensaje);
 
         sendOrderedBroadcast(broadcastIntent, null);
 
@@ -124,7 +124,7 @@ public class SincronizarService extends IntentService {
                     + "usuario=%s&codCia=%s&cadenaConexion=%s";
             String url = String.format(GET_URI, mUsuario, mCodCia, mAmbiente);
 
-            Log.d(SmartWaiterDB.TAG, url);
+            Log.d(DBHelper.TAG, url);
             if (Funciones.hasActiveInternetConnection(getApplicationContext())) {
                 RestConnector restConnector = RestUtil.obtainGetConnection(url);
                 requestObject = restConnector.doRequest(url);
@@ -135,12 +135,12 @@ public class SincronizarService extends IntentService {
                     Gson gson = new Gson();
                     JsonObject jsonObjectResponse = gson.fromJson(result, JsonObject.class);
                     cantidadInsertados = saveSyncDataToDB(jsonObjectResponse);
-                    Log.d(SmartWaiterDB.TAG,
+                    Log.d(DBHelper.TAG,
                             "Fin Insercion DataSincronizada Cantidad: " + cantidadInsertados);
                     return cantidadInsertados;
 
                 } else if (requestObject instanceof Exception) {
-                    Log.d(SmartWaiterDB.TAG, "Error al guardar data de sincronizacion: "
+                    Log.d(DBHelper.TAG, "Error al guardar data de sincronizacion: "
                             + ((Exception) requestObject).getMessage());
                     throw new Exception(((Exception) requestObject).getMessage());
                 }

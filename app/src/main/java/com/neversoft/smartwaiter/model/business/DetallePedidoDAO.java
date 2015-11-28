@@ -3,12 +3,14 @@ package com.neversoft.smartwaiter.model.business;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
-import com.neversoft.smartwaiter.database.SmartWaiterDB.DetallePedido;
+import com.neversoft.smartwaiter.database.DBHelper;
+import com.neversoft.smartwaiter.database.DBHelper.Tables;
+import com.neversoft.smartwaiter.database.DBHelper.DetallePedido;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 import com.neversoft.smartwaiter.util.Funciones;
 
@@ -26,12 +28,13 @@ public class DetallePedidoDAO {
     }
 
     public int updateEstadoItemsPedido(JsonArray jsonPedidosDespachados, int estadoOriginal, int nuevoEstado) throws Exception {
-        final SmartWaiterDB db = new SmartWaiterDB(DetallePedidoDAO.this.mContext);
         int rowCountUpdate = 0;
-
+        DBHelper dbHelper;
+        SQLiteDatabase db=null;
         try {
-            db.openWriteableDB();
-            db.getDb().beginTransaction();
+            dbHelper=DBHelper.getInstance(DetallePedidoDAO.this.mContext);
+            db=dbHelper.getWritableDatabase();
+            db.beginTransaction();
             List<String> IDsArray = new ArrayList();
 
             for (int i = 0; i < jsonPedidosDespachados.size(); i++) {
@@ -44,35 +47,40 @@ public class DetallePedidoDAO {
                 updateEstadoArticulo(idPedido, IDsArray, estadoOriginal, nuevoEstado, db);
 
             }
-            db.getDb().setTransactionSuccessful();
+            db.setTransactionSuccessful();
 
         } finally {
-            db.getDb().endTransaction();
-            db.getDb().close();
+            if(db!=null) {
+                db.endTransaction();
+                db.close();
+            }
         }
         return rowCountUpdate;
     }
 
     public int confirmRecojoItemsPedido(String idPedido, List<String> IDsArray) throws Exception {
-        final SmartWaiterDB db = new SmartWaiterDB(DetallePedidoDAO.this.mContext);
         int rowCountUpdate = 0;
-
+        DBHelper dbHelper;
+        SQLiteDatabase db=null;
         try {
-            db.openWriteableDB();
-            db.getDb().beginTransaction();
+            dbHelper=DBHelper.getInstance(DetallePedidoDAO.this.mContext);
+            db=dbHelper.getWritableDatabase();
+            db.beginTransaction();
             updateEstadoArticulo(idPedido, IDsArray, 2, 3, db);
-            db.getDb().setTransactionSuccessful();
+            db.setTransactionSuccessful();
         } finally {
-            db.getDb().endTransaction();
-            db.getDb().close();
+            if(db!=null) {
+                db.endTransaction();
+                db.close();
+            }
         }
         return rowCountUpdate;
     }
 
-    private void updateEstadoArticulo(String idPedido, List<String> IDsArray, int estadoOriginal, int nuevoEstado, SmartWaiterDB db) throws Exception {
+    private void updateEstadoArticulo(String idPedido, List<String> IDsArray, int estadoOriginal, int nuevoEstado, SQLiteDatabase db) throws Exception {
         try {
             ContentValues cv = new ContentValues();
-            cv.put(SmartWaiterDB.DetallePedido.ESTADO_ART, nuevoEstado);
+            cv.put(DetallePedido.ESTADO_ART, nuevoEstado);
             String updateWhere = null;
             String[] updateWhereArgs = null;
 
@@ -81,15 +89,15 @@ public class DetallePedidoDAO {
                     + Funciones.makePlaceholders(IDsArray.size()) + ") AND "
                     + DetallePedido.PEDIDO_ID + "=? AND "
                     + DetallePedido.ESTADO_ART + "=?";
-            IDsArray.add(idPedido); //<-- ACA SE CAE
+            IDsArray.add(idPedido);
             IDsArray.add(String.valueOf(estadoOriginal));
 
             updateWhereArgs = IDsArray.toArray(new String[IDsArray.size()]);
 
-            db.update(SmartWaiterDB.Tables.DETALLE_PEDIDO, cv, updateWhere,
+            db.update(Tables.DETALLE_PEDIDO, cv, updateWhere,
                     updateWhereArgs);
         } catch (Exception e) {
-            Log.d(SmartWaiterDB.TAG, "DAMN ERROR:" + e.getMessage());
+            Log.d(DBHelper.TAG, "DAMN ERROR:" + e.getMessage());
             throw e;
         }
     }
@@ -104,12 +112,13 @@ public class DetallePedidoDAO {
     }
 
     public List<DetallePedidoEE> getDetallePorEstado(String idPedido, int estado) throws Exception {
-        final SmartWaiterDB db = new SmartWaiterDB(DetallePedidoDAO.this.mContext);
         List<DetallePedidoEE> lista = new ArrayList<>();
+        DBHelper dbHelper;
+        SQLiteDatabase db=null;
         try {
-            db.openReadableDB();
-
-            Cursor cursor = db.query(true, SmartWaiterDB.Tables.DETALLE_PEDIDO, null, DetallePedido.PEDIDO_ID + "=? and "
+            dbHelper=DBHelper.getInstance(DetallePedidoDAO.this.mContext);
+            db=dbHelper.getReadableDatabase();
+            Cursor cursor = db.query(true, Tables.DETALLE_PEDIDO, null, DetallePedido.PEDIDO_ID + "=? and "
                             + DetallePedido.ESTADO_ART + "=? ",
                     new String[]{idPedido,
                             String.valueOf(estado)}, null, null, null, null);
@@ -129,7 +138,9 @@ public class DetallePedidoDAO {
             }
             cursor.close();
         } finally {
-            db.closeDB();
+            if(db!=null) {
+                db.close();
+            }
         }
         return lista;
 

@@ -4,7 +4,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
+import com.neversoft.smartwaiter.database.DBHelper;
 
 
 /**
@@ -33,7 +33,7 @@ public class ControlSharedPref {
         if (excepcionMensaje != null) editor.putString(EXCEPCION_SERVICIO, excepcionMensaje.trim());
         editor.commit();
 
-        Log.d(SmartWaiterDB.TAG, "Guarde SharedPreferece 'PREF_Control'");
+        Log.d(DBHelper.TAG, "Guarde SharedPreferece 'PREF_Control'");
 
     }
 
@@ -41,6 +41,6 @@ public class ControlSharedPref {
         Editor editor = prefControl.edit();
         editor.clear();
         editor.commit();
-        Log.d(SmartWaiterDB.TAG, "Elimine SharedPreferece 'PREF_Control'");
+        Log.d(DBHelper.TAG, "Elimine SharedPreferece 'PREF_Control'");
     }
 }

@@ -3,7 +3,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
+import com.neversoft.smartwaiter.database.DBHelper;
 
 /**
  * Created by Usuario on 02/10/2015.
@@ -28,13 +28,13 @@ public class LoginSharedPref {
         if(ingresoApp!=null) editor.putBoolean(INGRESO_APLICACION, ingresoApp);
         if(salioApp!=null) editor.putBoolean(SALIO_APLICACION, salioApp);
         editor.commit();
-        Log.d(SmartWaiterDB.TAG, "Guarde SharedPreferece 'PREF_Login'");
+        Log.d(DBHelper.TAG, "Guarde SharedPreferece 'PREF_Login'");
     }
 
     public static void remove(SharedPreferences prefLogin) {
         Editor editor = prefLogin.edit();
         editor.clear();
         editor.commit();
-        Log.d(SmartWaiterDB.TAG, "Elimine SharedPreferece 'PREF_Login'");
+        Log.d(DBHelper.TAG, "Elimine SharedPreferece 'PREF_Login'");
     }
 }

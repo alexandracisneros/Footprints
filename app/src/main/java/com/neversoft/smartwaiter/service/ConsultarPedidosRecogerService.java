@@ -14,7 +14,7 @@ import com.commonsware.cwac.wakeful.WakefulIntentService;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.neversoft.smartwaiter.R;
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
+import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.io.RestConnector;
 import com.neversoft.smartwaiter.io.RestUtil;
 import com.neversoft.smartwaiter.model.business.DetallePedidoDAO;
@@ -70,7 +70,7 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
         int cantidadActualizar = 0;
         try {
             mAmbiente = URLEncoder.encode(mAmbiente, "utf-8");
-            Log.d(SmartWaiterDB.TAG,
+            Log.d(DBHelper.TAG,
                     "Llamada a  ObtenerPedidosDespachados: " + Funciones.getCurrentDate("yyyy/MM/dd hh:mm:ss"));
             cantidadActualizar = actualizarItemsPedidoDespachados();
         } catch (Exception e) {
@@ -123,7 +123,7 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
                 + "codMozo=%s&codCia=%s&cadenaConexion=%s";
         String url = String.format(GET_URI, mCodMozo, mCodCia, mAmbiente);
 
-        Log.d(SmartWaiterDB.TAG, url);
+        Log.d(DBHelper.TAG, url);
         if (Funciones.hasActiveInternetConnection(getApplicationContext())) {
             RestConnector restConnector = RestUtil.obtainGetConnection(url);
             requestObject = restConnector.doRequest(url);
@@ -140,7 +140,7 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
                 }
 
             } else if (requestObject instanceof Exception) {
-                Log.d(SmartWaiterDB.TAG, "Error al guardar data de sincronizacion: "
+                Log.d(DBHelper.TAG, "Error al guardar data de sincronizacion: "
                         + ((Exception) requestObject).getMessage());
                 throw new Exception(((Exception) requestObject).getMessage());
             }

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
+import com.neversoft.smartwaiter.database.DBHelper;
 
 /**
  * Created by Usuario on 01/10/2015.
@@ -21,7 +21,7 @@ public class SmartWaiter extends Application {
         Context mContext = this.getApplicationContext();
         //0=mode private. Only this app can read these preferences
         mPrefFirstRun = mContext.getSharedPreferences(PREF_CREACION_APLICACION, MODE_PRIVATE);
-        Log.d(SmartWaiterDB.TAG, "QuickOrder application class has been started");
+        Log.d(DBHelper.TAG, "QuickOrder application class has been started");
     }
 
     public boolean getFirstRun() {

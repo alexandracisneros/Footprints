@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.neversoft.smartwaiter.R;
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
+import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.model.business.ArticuloDAO;
 import com.neversoft.smartwaiter.model.business.CategoriaDAO;
 import com.neversoft.smartwaiter.model.business.PedidoDAO;
@@ -71,12 +71,12 @@ public class TomarPedidoActivity extends Activity
                 mItems = new ArrayList<>();
                 showItems();
                 mensaje = "Pedidos enviados correctamente.";
-                Log.d(SmartWaiterDB.TAG,
+                Log.d(DBHelper.TAG,
                         "Success from BroadcastReceiver within EnviarDatosActivity : "
                                 + mensaje);
             } else {
                 mensaje = intent.getStringExtra("mensaje");
-                Log.d(SmartWaiterDB.TAG, "Exception from BroadcastReceiver within EnviarDatosActivity :"
+                Log.d(DBHelper.TAG, "Exception from BroadcastReceiver within EnviarDatosActivity :"
                         + mensaje);
             }
 
@@ -280,7 +280,7 @@ public class TomarPedidoActivity extends Activity
                                 Intent iniciarServiceIntent = new Intent(TomarPedidoActivity.this,
                                         EnviarPedidoService.class);
                                 iniciarServiceIntent.putExtra("json", pedidosString);
-                                Log.d(SmartWaiterDB.TAG, "Antes de startService SendDataService");
+                                Log.d(DBHelper.TAG, "Antes de startService SendDataService");
                                 startService(iniciarServiceIntent);
                             }
                         })
@@ -298,14 +298,14 @@ public class TomarPedidoActivity extends Activity
     protected void onPause() {
         super.onPause();
         unregisterReceiver(sendDataReceiver);
-        Log.d(SmartWaiterDB.TAG, "Entre a onPause - EnviarDatosActivity");
+        Log.d(DBHelper.TAG, "Entre a onPause - EnviarDatosActivity");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        Log.d(SmartWaiterDB.TAG, "Entre a onResume - EnviarDatosActivity");
+        Log.d(DBHelper.TAG, "Entre a onResume - EnviarDatosActivity");
         IntentFilter filter = new IntentFilter(
                 EnviarPedidoService.ACTION_SEND_DATA);
         filter.setPriority(2);

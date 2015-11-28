@@ -3,14 +3,15 @@ package com.neversoft.smartwaiter.model.business;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
-import com.neversoft.smartwaiter.database.SmartWaiterDB.Familia;
-import com.neversoft.smartwaiter.database.SmartWaiterDB.Tables;
+import com.neversoft.smartwaiter.database.DBHelper;
+import com.neversoft.smartwaiter.database.DBHelper.Familia;
+import com.neversoft.smartwaiter.database.DBHelper.Tables;
 import com.neversoft.smartwaiter.model.entity.CategoriaEE;
 import com.neversoft.smartwaiter.ui.CategoriaItemAdapter;
 import com.neversoft.smartwaiter.ui.TomarPedidoActivity;
@@ -31,14 +32,16 @@ public class CategoriaDAO {
     public int saveCategoriaData(JsonArray jsonArrayFamilia) throws Exception {
 
         int numInserted = 0;
-        SmartWaiterDB db = new SmartWaiterDB(this.mContext);
         String insertQuery = "INSERT INTO " + Tables.FAMILIA + "(" +
                 Familia.CODIGO + "," + Familia.DESCRIPCION + "," + Familia.URL +
                 ") VALUES (?,?,?)";
+        DBHelper dbHelper;
+        SQLiteDatabase db = null;
         try {
-            db.openWriteableDB();
+            dbHelper = DBHelper.getInstance(CategoriaDAO.this.mContext);
+            db = dbHelper.getWritableDatabase();
             SQLiteStatement statement = db.compileStatement(insertQuery);
-            db.getDb().beginTransaction();
+            db.beginTransaction();
             if (jsonArrayFamilia.size() > 0) {
                 for (int i = 0; i < jsonArrayFamilia.size(); i++) {
                     JsonObject jsonObjItem = jsonArrayFamilia.get(i).getAsJsonObject();
@@ -48,7 +51,7 @@ public class CategoriaDAO {
                     statement.bindString(3, jsonObjItem.get("descripcion2").getAsString());
                     statement.execute();
                 }
-                db.getDb().setTransactionSuccessful();
+                db.setTransactionSuccessful();
                 numInserted = jsonArrayFamilia.size();
             } else {
                 throw new Exception("No hay 'Familias'.");
@@ -56,8 +59,10 @@ public class CategoriaDAO {
         } catch (Exception e) {
             throw e;
         } finally {
-            db.getDb().endTransaction();
-            db.getDb().close();
+            if (db != null) {
+                db.endTransaction();
+                db.close();
+            }
         }
         return numInserted;
 
@@ -65,12 +70,12 @@ public class CategoriaDAO {
 
     public void getCategoriasAsync(final WeakReference<Activity> mReference) {
         final Activity activity = mReference.get();
-        final SmartWaiterDB db = new SmartWaiterDB(CategoriaDAO.this.mContext);
+        final DBHelper dbHelper = DBHelper.getInstance(CategoriaDAO.this.mContext);
+        final SQLiteDatabase db = dbHelper.getReadableDatabase();
         new AsyncTask<Void, Void, Cursor>() {
             @Override
             protected Cursor doInBackground(Void... params) {
                 try {
-                    db.openReadableDB();
                     Cursor cursor = db.query(true, Tables.FAMILIA, CategoriasQuery.PROJECTION, null, null, null, null, null, null);
                     return cursor;
                 } finally {
@@ -89,9 +94,9 @@ public class CategoriaDAO {
                     ((TomarPedidoActivity) activity).getListaCategorias().add(item);
                 }
                 cursor.close();
-                db.closeDB();
+                db.close();
                 ((TomarPedidoActivity) activity).getCategoriasListView().setAdapter(
-                        new CategoriaItemAdapter(CategoriaDAO.this.mContext,((TomarPedidoActivity)activity).getListaCategorias()));
+                        new CategoriaItemAdapter(CategoriaDAO.this.mContext, ((TomarPedidoActivity) activity).getListaCategorias()));
 
             }
         }.execute();

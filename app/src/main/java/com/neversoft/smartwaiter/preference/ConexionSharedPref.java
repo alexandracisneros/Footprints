@@ -4,7 +4,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
-import com.neversoft.smartwaiter.database.SmartWaiterDB;
+import com.neversoft.smartwaiter.database.DBHelper;
 
 /**
  * Created by Usuario on 30/09/2015.
@@ -32,7 +32,7 @@ public class ConexionSharedPref {
         if (datosCompletos != null)
             editor.putBoolean(DATOS_COMPLETOS, datosCompletos);
         editor.commit();
-        Log.d(SmartWaiterDB.TAG, "Guarde SharedPreferece 'PREF_CONEXION'");
+        Log.d(DBHelper.TAG, "Guarde SharedPreferece 'PREF_CONEXION'");
     }
 
     public static void remove(SharedPreferences prefControl) {
