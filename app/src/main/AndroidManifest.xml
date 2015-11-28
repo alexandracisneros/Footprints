@@ -98,11 +98,14 @@
         </activity>
 
         <service android:name=".service.ConsultarPedidosRecogerService"/>
+
         <receiver android:name=".service.ConsultarPedidosRecogerReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+
+        <service android:name=".service.NotificarPedidosRecogidosService"/>
     </application>
 
 </manifest>

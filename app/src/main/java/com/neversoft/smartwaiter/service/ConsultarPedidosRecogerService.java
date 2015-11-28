@@ -132,7 +132,7 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
                 // Only if the request was successful parse the returned value otherwise re-throw the exception
                 result = (String) requestObject;
                 Gson gson = new Gson();
-                //TODO : Aca llamar a la BD para actualizar
+
                 JsonArray jsonArrayResponse = gson.fromJson(result, JsonArray.class);
                 cantidadAActualizar = jsonArrayResponse.size();
                 if (cantidadAActualizar > 0) {

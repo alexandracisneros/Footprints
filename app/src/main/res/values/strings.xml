@@ -73,4 +73,9 @@
     <string name="items_label">Items</string>
     <!--Cabecera pedido a recoger-->
 
+    <!--Cabecera pedido a recoger-->
+    <string name="item_label">Item</string>
+    <string name="articulo_label">Artículo</string>
+    <string name="cantidad_label">Cantidad</string>
+    <!--Cabecera pedido a recoger-->
 </resources>

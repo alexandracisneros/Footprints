@@ -10,32 +10,53 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.SmartWaiterDB;
+import com.neversoft.smartwaiter.model.business.DetallePedidoDAO;
 import com.neversoft.smartwaiter.model.business.PedidoDAO;
+import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 import com.neversoft.smartwaiter.model.entity.PedidoEE;
 import com.neversoft.smartwaiter.service.ConsultarPedidosRecogerReceiver;
 import com.neversoft.smartwaiter.service.ConsultarPedidosRecogerService;
+import com.neversoft.smartwaiter.service.NotificarPedidosRecogidosService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PedidosARecogerActivity extends Activity implements AdapterView.OnItemClickListener {
-    //    public static final String EXTRA_RANDOM="r";
+public class PedidosARecogerActivity extends Activity implements
+        AdapterView.OnItemClickListener,
+        AbsListView.MultiChoiceModeListener {
+
     public static final String EXTRA_CANTIDAD_ACTUALIZAR = "cantidad_actualizar";
-    //    public static final String ACTION_EVENT="e";
+    public static final String EXTRA_SELECTED_ITEMS_ARRAY = "selected_items_array";
+    public static final String EXTRA_ID_PEDIDO = "id_pedido";
+    public static final String EXTRA_ID_PEDIDO_SERV = "id_pedido_servidor";
+    public static final String EXTRA_TOTAL_ITEMS_RECOGER = "total_items_recoger";
+    public static final String EXTRA_ID_PEDIDO_REFRESCAR = "id_pedido_refrescar";
+
     private ListView mMenuListView;
     private ListView mCabecerPedidoListView;
+    private ListView mDetallePedidoListView;
+    private ArrayList<DetallePedidoEE> mItems;
+    private ActionMode mActionMode;
+    private String mIdPedido;
+    private String mIdPedidoServidor;
+
     private BroadcastReceiver onEvent = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -51,6 +72,18 @@ public class PedidosARecogerActivity extends Activity implements AdapterView.OnI
 //                    intent.getIntExtra(EXTRA_RANDOM, -1)));
         }
     };
+    private BroadcastReceiver onEventNotificarRecojo = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String idPedidoRefrescar = intent.getStringExtra(EXTRA_ID_PEDIDO_REFRESCAR);
+            if (idPedidoRefrescar == "0") {
+                new ConsultarPedidosDespachados().execute();
+                new ConsultarItemsPedidoDespachado().execute(idPedidoRefrescar);
+            } else {
+                new ConsultarItemsPedidoDespachado().execute(idPedidoRefrescar);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +97,13 @@ public class PedidosARecogerActivity extends Activity implements AdapterView.OnI
         mMenuListView.setOnItemClickListener(this);
 
         // get reference header ListView
-        mCabecerPedidoListView = (ListView) findViewById(R.id.detalleCabPedidoRecogerListView);
+        mCabecerPedidoListView = (ListView) findViewById(R.id.cabeceraPedidoRecogerListView);
         mCabecerPedidoListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mCabecerPedidoListView.setOnItemClickListener(this);
+
+        mDetallePedidoListView = (ListView) findViewById(R.id.detallePedidoRecogerListView);
+        mDetallePedidoListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        mDetallePedidoListView.setMultiChoiceModeListener(this);
 
 
         Resources res = getResources();
@@ -91,12 +128,18 @@ public class PedidosARecogerActivity extends Activity implements AdapterView.OnI
 
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(onEvent, filter);
+        IntentFilter filterNotificarRecojo = new IntentFilter(NotificarPedidosRecogidosService.ACTION_NOTIFICAR_RECOJO_PEDIDO);
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(onEventNotificarRecojo, filterNotificarRecojo);
+
     }
 
     @Override
     protected void onPause() {
         LocalBroadcastManager.getInstance(this)
                 .unregisterReceiver(onEvent);
+        LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(onEventNotificarRecojo);
         super.onPause();
     }
 
@@ -126,6 +169,15 @@ public class PedidosARecogerActivity extends Activity implements AdapterView.OnI
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         if (parent.getId() == R.id.menu_listview) {
             opcionesMenu(position);
+        } else if (parent.getId() == R.id.cabeceraPedidoRecogerListView) {
+            if (mActionMode != null) {
+                mActionMode.finish();
+            }
+            TextView nroPedidoTextView = (TextView) v.findViewById(R.id.nroPedidoDescTextView);
+            TextView nroPedServTextView = (TextView) v.findViewById(R.id.nroPedidoServTextView);
+            mIdPedido = nroPedidoTextView.getText().toString();
+            mIdPedidoServidor = nroPedServTextView.getText().toString();
+            new ConsultarItemsPedidoDespachado().execute(mIdPedido);
         }
     }
 
@@ -168,20 +220,103 @@ public class PedidosARecogerActivity extends Activity implements AdapterView.OnI
             map.put("pedidoNro", String.valueOf(item.getId()));
             map.put("pedidoPisoMesa", String.valueOf(item.getNroMesa()) + "-" + String.valueOf(item.getNroPiso())); //TODO: cambiar con lo que mande alex
             map.put("pedidoCantidad", item.getCantRecogida());//TODO: cambiar con lo que mande alex
+            map.put("nroPedidoServ",String.valueOf(item.getNroPedidoServidor()));
             data.add(map);
         }
 
         //create the resouces, from, and to variables
         int resource = R.layout.pedido_cab_recoger_item;
-        String[] from = {"pedidoNro", "pedidoPisoMesa", "pedidoCantidad"};
+        String[] from = {"pedidoNro", "pedidoPisoMesa", "pedidoCantidad","nroPedidoServ"};
         int[] to = {R.id.nroPedidoDescTextView, R.id.mesaPisoPedidoTextView,
-                R.id.itemsPedidoTextView};
+                R.id.itemsPedidoTextView,R.id.nroPedidoServTextView};
 
         //create and set the adapter
         SimpleAdapter adapter = new SimpleAdapter(this, data, resource, from, to);
         adapter.notifyDataSetChanged();
 
         mCabecerPedidoListView.setAdapter(adapter);
+    }
+
+    private void mostrarDetallePedido() {
+        ArrayList<HashMap<String, String>> data =
+                new ArrayList<HashMap<String, String>>();
+        for (DetallePedidoEE item : mItems) {
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("item", String.valueOf(item.getItem()));
+            map.put("articulo", item.getDescArticulo());
+            map.put("cantidad", String.valueOf(item.getCantidad()));
+            map.put("itemId", String.valueOf(item.getId()));
+            data.add(map);
+        }
+
+        //create the resouces, from, and to variables
+        int resource = R.layout.pedido_det_recoger_item;
+        String[] from = {"item", "articulo", "cantidad","itemId"};
+        int[] to = {R.id.itemDetalleTextView, R.id.articuloDetalleTextView,
+                R.id.cantidadDetalleTextView,R.id.itemIdDetalleTextView};
+
+        //create and set the adapter
+        SimpleAdapter adapter = new SimpleAdapter(this, data, resource, from, to);
+        adapter.notifyDataSetChanged();
+
+        mDetallePedidoListView.setAdapter(adapter);
+    }
+
+    //Action Mode -Start
+    @Override
+    public void onItemCheckedStateChanged(ActionMode actionMode, int position, long id, boolean checked) {
+        int count = mDetallePedidoListView.getCheckedItemCount();
+        actionMode.setTitle(String.format("%d Selected", count));
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+        mActionMode = actionMode;
+        MenuInflater inflater = actionMode.getMenuInflater();
+        inflater.inflate(R.menu.menu_pedidos_arecoger, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+        return true;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode actionMode, MenuItem item) {
+        SparseBooleanArray items = mDetallePedidoListView.getCheckedItemPositions();
+
+        switch (item.getItemId()) {
+            case R.id.action_send_recogidos:
+                enviarItemsPedidoRecogidos(items);
+                actionMode.finish();
+                return true;
+        }
+        return true;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode actionMode) {
+
+    }
+
+    //Action Mode -End
+    private void enviarItemsPedidoRecogidos(SparseBooleanArray items) {
+        ArrayList<String> selectedItems = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            if (items.valueAt(i)) {
+                int position = items.keyAt(i);
+                DetallePedidoEE itemDetalle = mItems.get(position);
+                selectedItems.add(String.valueOf(itemDetalle.getItem()));
+            }
+        }
+        //
+        Intent i = new Intent(PedidosARecogerActivity.this, NotificarPedidosRecogidosService.class);
+        i.putStringArrayListExtra(EXTRA_SELECTED_ITEMS_ARRAY, selectedItems);
+        i.putExtra(EXTRA_ID_PEDIDO, mIdPedido);
+        i.putExtra(EXTRA_ID_PEDIDO_SERV, mIdPedidoServidor);
+        i.putExtra(EXTRA_TOTAL_ITEMS_RECOGER, mItems.size());
+        startService(i);
     }
 
     private class ConsultarPedidosDespachados extends AsyncTask<Void, Void, Object> {
@@ -199,7 +334,6 @@ public class PedidosARecogerActivity extends Activity implements AdapterView.OnI
 
         @Override
         protected void onPostExecute(Object result) {
-            // Clear progress indicator
 
             if (result instanceof List<?>) {
                 List<PedidoEE> listaPedidos = (List<PedidoEE>) result;
@@ -214,5 +348,35 @@ public class PedidosARecogerActivity extends Activity implements AdapterView.OnI
             }
         }
 
+    }
+
+    private class ConsultarItemsPedidoDespachado extends AsyncTask<String, Void, Object> {
+
+        @Override
+        protected Object doInBackground(String... params) {
+            Object requestObject;
+            String idPedido = params[0];
+            try {
+                DetallePedidoDAO detallePedidoDAO = new DetallePedidoDAO(getApplicationContext());
+                requestObject = detallePedidoDAO.getDetallePorEstado(idPedido, 2);
+            } catch (Exception e) {
+                requestObject = e;
+            }
+            return requestObject;
+        }
+
+        @Override
+        protected void onPostExecute(Object result) {
+            if (result instanceof List<?>) {
+                mItems = (ArrayList<DetallePedidoEE>) result;
+                mostrarDetallePedido();
+            } else if (result instanceof Exception) {
+                String response;
+                response = ((Exception) result).getMessage();
+                Log.d(SmartWaiterDB.TAG, "Se produjó la excepción: " + response);
+                Toast.makeText(PedidosARecogerActivity.this, response, Toast.LENGTH_LONG)
+                        .show();
+            }
+        }
     }
 }

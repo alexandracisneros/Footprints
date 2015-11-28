@@ -3,13 +3,13 @@ package com.neversoft.smartwaiter.model.business;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.neversoft.smartwaiter.database.SmartWaiterDB;
 import com.neversoft.smartwaiter.database.SmartWaiterDB.DetallePedido;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
-import com.neversoft.smartwaiter.ui.SmartWaiter;
 import com.neversoft.smartwaiter.util.Funciones;
 
 import java.util.ArrayList;
@@ -37,9 +37,10 @@ public class DetallePedidoDAO {
             for (int i = 0; i < jsonPedidosDespachados.size(); i++) {
                 JsonObject jsonObjPed = jsonPedidosDespachados.get(i).getAsJsonObject();
                 String idPedido = jsonObjPed.get("idPedOri").getAsString();
+                String idPedidoServidor = jsonObjPed.get("idPed").getAsString();
                 String cantRecoger = jsonObjPed.get("cantrec").getAsString();
                 IDsArray = getIdsDetalleActualizar(jsonObjPed.get("detalle").getAsJsonArray());
-                PedidoDAO.updateCantidadRecoger(idPedido,cantRecoger,db);
+                PedidoDAO.updatePedidoRecoger(idPedido, idPedidoServidor, cantRecoger, db);
                 updateEstadoArticulo(idPedido, IDsArray, estadoOriginal, nuevoEstado, db);
 
             }
@@ -52,24 +53,45 @@ public class DetallePedidoDAO {
         return rowCountUpdate;
     }
 
+    public int confirmRecojoItemsPedido(String idPedido, List<String> IDsArray) throws Exception {
+        final SmartWaiterDB db = new SmartWaiterDB(DetallePedidoDAO.this.mContext);
+        int rowCountUpdate = 0;
+
+        try {
+            db.openWriteableDB();
+            db.getDb().beginTransaction();
+            updateEstadoArticulo(idPedido, IDsArray, 2, 3, db);
+            db.getDb().setTransactionSuccessful();
+        } finally {
+            db.getDb().endTransaction();
+            db.getDb().close();
+        }
+        return rowCountUpdate;
+    }
+
     private void updateEstadoArticulo(String idPedido, List<String> IDsArray, int estadoOriginal, int nuevoEstado, SmartWaiterDB db) throws Exception {
-        ContentValues cv = new ContentValues();
-        cv.put(SmartWaiterDB.DetallePedido.ESTADO_ART, nuevoEstado);
-        String updateWhere = null;
-        String[] updateWhereArgs = null;
+        try {
+            ContentValues cv = new ContentValues();
+            cv.put(SmartWaiterDB.DetallePedido.ESTADO_ART, nuevoEstado);
+            String updateWhere = null;
+            String[] updateWhereArgs = null;
 
 
-        updateWhere = DetallePedido. ITEM + " IN ("
-                + Funciones.makePlaceholders(IDsArray.size()) + ") AND "
-                + DetallePedido.PEDIDO_ID + "=? AND "
-                + DetallePedido.ESTADO_ART + "=?";
-        IDsArray.add(idPedido);
-        IDsArray.add(String.valueOf(estadoOriginal));
+            updateWhere = DetallePedido.ITEM + " IN ("
+                    + Funciones.makePlaceholders(IDsArray.size()) + ") AND "
+                    + DetallePedido.PEDIDO_ID + "=? AND "
+                    + DetallePedido.ESTADO_ART + "=?";
+            IDsArray.add(idPedido); //<-- ACA SE CAE
+            IDsArray.add(String.valueOf(estadoOriginal));
 
-        updateWhereArgs = IDsArray.toArray(new String[IDsArray.size()]);
+            updateWhereArgs = IDsArray.toArray(new String[IDsArray.size()]);
 
-        db.update(SmartWaiterDB.Tables.DETALLE_PEDIDO, cv, updateWhere,
-                updateWhereArgs);
+            db.update(SmartWaiterDB.Tables.DETALLE_PEDIDO, cv, updateWhere,
+                    updateWhereArgs);
+        } catch (Exception e) {
+            Log.d(SmartWaiterDB.TAG, "DAMN ERROR:" + e.getMessage());
+            throw e;
+        }
     }
 
     private List<String> getIdsDetalleActualizar(JsonArray items) {
@@ -81,7 +103,7 @@ public class DetallePedidoDAO {
         return IDsArray;
     }
 
-    public List<DetallePedidoEE> getDetallePorEstado(int idPedido, int estado) throws Exception {
+    public List<DetallePedidoEE> getDetallePorEstado(String idPedido, int estado) throws Exception {
         final SmartWaiterDB db = new SmartWaiterDB(DetallePedidoDAO.this.mContext);
         List<DetallePedidoEE> lista = new ArrayList<>();
         try {
@@ -89,11 +111,12 @@ public class DetallePedidoDAO {
 
             Cursor cursor = db.query(true, SmartWaiterDB.Tables.DETALLE_PEDIDO, null, DetallePedido.PEDIDO_ID + "=? and "
                             + DetallePedido.ESTADO_ART + "=? ",
-                    new String[]{String.valueOf(idPedido),
+                    new String[]{idPedido,
                             String.valueOf(estado)}, null, null, null, null);
             while (cursor.moveToNext()) {
                 DetallePedidoEE item = new DetallePedidoEE();
                 item.setId(cursor.getInt(cursor.getColumnIndex(DetallePedido.ID)));
+                item.setItem(cursor.getInt(cursor.getColumnIndex(DetallePedido.ITEM)));
                 item.setPedidoId(cursor.getInt(cursor.getColumnIndex(DetallePedido.PEDIDO_ID)));
                 item.setCodArticulo(cursor.getInt(cursor.getColumnIndex(DetallePedido.COD_ART)));
                 item.setUm(cursor.getString(cursor.getColumnIndex(DetallePedido.UM)));

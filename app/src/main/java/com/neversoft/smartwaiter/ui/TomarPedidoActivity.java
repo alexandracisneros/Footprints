@@ -67,7 +67,9 @@ public class TomarPedidoActivity extends Activity
             abortBroadcast();
             String mensaje;
             if (exito) {
-
+                PedidoSharedPref.clear(context);
+                mItems = new ArrayList<>();
+                showItems();
                 mensaje = "Pedidos enviados correctamente.";
                 Log.d(SmartWaiterDB.TAG,
                         "Success from BroadcastReceiver within EnviarDatosActivity : "

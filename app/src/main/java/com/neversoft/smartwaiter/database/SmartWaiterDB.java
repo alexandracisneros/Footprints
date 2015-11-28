@@ -160,6 +160,9 @@ public class SmartWaiterDB {
 
         String ENVIADO = "enviado";
         int ENVIADO_COL = 16;
+
+        String NRO_PED_SERVIDOR="nro_pedido_servidor";
+        int NRO_PED_SERVIDOR_COL = 17;
     }
 
     public interface DetallePedido {
@@ -355,7 +358,8 @@ public class SmartWaiterDB {
                             + Pedido.ESTADO + " TEXT NOT NULL,"
                             + Pedido.CODIGO_CIA + " TEXT NOT NULL,"
                             + Pedido.CONFIRMADO + " INTEGER DEFAULT 0,"
-                            + Pedido.ENVIADO + " INTEGER DEFAULT 0"
+                            + Pedido.ENVIADO + " INTEGER DEFAULT 0,"
+                            + Pedido.NRO_PED_SERVIDOR + " INTEGER DEFAULT 0"
                             + " )"
             );
             db.execSQL("CREATE TABLE "

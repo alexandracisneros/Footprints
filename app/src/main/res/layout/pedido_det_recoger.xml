@@ -1,6 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                xmlns:tools="http://schemas.android.com/tools">
+    <RelativeLayout
+        android:id="@+id/headerDetallePedido"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true">
 
+        <TextView
+            android:id="@+id/itemLabel"
+            style="@style/LabelContracted"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/item_label"/>
+
+        <TextView
+            android:id="@+id/articuloLabel"
+            style="@style/LabelContracted"
+            android:layout_alignBaseline="@+id/productoPedidoLabel"
+            android:layout_centerHorizontal="true"
+            android:text="@string/articulo_label"/>
+
+        <TextView
+            android:id="@+id/cantidadLabel"
+            style="@style/LabelContracted"
+            android:layout_alignBaseline="@+id/productoPedidoLabel"
+            android:layout_alignParentRight="true"
+            android:text="@string/cantidad_label"/>
+
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/detallePedidoRecogerListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/headerDetallePedido"
+        android:layout_margin="5dp"
+        android:background="@android:color/holo_blue_dark"
+        android:divider="@android:color/black"
+        tools:listitem="@layout/pedido_det_recoger_item"
+        android:dividerHeight="1dp">
+    </ListView>
 </RelativeLayout>

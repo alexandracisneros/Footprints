@@ -3,8 +3,10 @@ package com.neversoft.smartwaiter.preference;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 
 import com.google.gson.Gson;
+import com.neversoft.smartwaiter.database.SmartWaiterDB;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 
 import java.util.ArrayList;
@@ -91,5 +93,16 @@ public class PedidoSharedPref {
             return null;
 
         return (ArrayList<DetallePedidoEE>) items;
+    }
+
+    public static void clear(Context context) {
+        SharedPreferences settings;
+        Editor editor;
+        settings = context.getSharedPreferences(PREFS_NAME,
+                Context.MODE_PRIVATE);
+        editor = settings.edit();
+        editor.clear();
+        editor.commit();
+        Log.d(SmartWaiterDB.TAG, "Elimine SharedPreferece 'Pref_pedido'");
     }
 }

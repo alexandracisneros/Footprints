@@ -63,7 +63,7 @@ public class EnviarPedidoService extends IntentService {
         mAmbiente = mPrefConexion.getString(ConexionSharedPref.AMBIENTE, "");
 
         mCodCia = mPrefConfig.getString("CodCia", "");
-        mCodMozo =mPrefConfig.getString("CodMozo","");
+        mCodMozo = mPrefConfig.getString("CodMozo", "");
         mUsuario = mPrefConfig.getString("Usuario", "").toUpperCase(
                 Locale.getDefault());
         try {
@@ -81,7 +81,7 @@ public class EnviarPedidoService extends IntentService {
                         PedidoEE.class);
                 listaPedidosRegistrados.add(pedido);
                 try {
-                    idPedido = pedidoDAO.savePedido(pedido,1); // 1=ENVIADO A COCINA
+                    idPedido = pedidoDAO.savePedido(pedido, 1); // 1=ENVIADO A COCINA
                 } catch (Exception e) {
                     throw new Exception("No se pudo guardar el pedido. Excepcion: " + e.getMessage());
                 }
@@ -200,8 +200,8 @@ public class EnviarPedidoService extends IntentService {
         JsonObject jsonObjItem;
         for (int i = 0; i < listaDetallePedido.size(); i++) {
             jsonObjItem = new JsonObject();
-            jsonObjItem.addProperty("id", idPedido);//TODO : Cambiar a id en minusculas
-            jsonObjItem.addProperty("idPedido", i + 1);//TODO : Cambiar a idPedido
+            jsonObjItem.addProperty("id", idPedido);
+            jsonObjItem.addProperty("idPedido", (i + 1));
             jsonObjItem.addProperty("codArticulo", listaDetallePedido.get(i).getCodArticulo());
             jsonObjItem.addProperty("um", listaDetallePedido.get(i).getUm());
             jsonObjItem.addProperty("cantidad", listaDetallePedido.get(i).getCantidad());

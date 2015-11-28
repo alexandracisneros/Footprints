@@ -144,6 +144,7 @@ public class PedidoDAO {
                 ped.setAmbiente(cursor.getInt(cursor.getColumnIndex(Pedido.AMBIENTE)));
                 ped.setCantRecogida(cursor.getString(cursor.getColumnIndex(Pedido.CANT_RECOGIDA)));
                 ped.setCodCliente(cursor.getInt(cursor.getColumnIndex(Pedido.CODIGO_CLIENTE)));
+                ped.setNroPedidoServidor(cursor.getInt(cursor.getColumnIndex(Pedido.NRO_PED_SERVIDOR)));
                 listaPedido.add(ped);
             }
             cursor.close();
@@ -153,9 +154,11 @@ public class PedidoDAO {
         }
         return listaPedido;
     }
-    public static void updateCantidadRecoger(String idPedido,String nuevaCantidad, SmartWaiterDB db) throws Exception {
+    public static void updatePedidoRecoger(String idPedido, String idPedidoServidor,String nuevaCantidad, SmartWaiterDB db) throws Exception {
+
         ContentValues cv = new ContentValues();
-        cv.put(SmartWaiterDB.Pedido.CANT_RECOGIDA, nuevaCantidad.trim());
+        cv.put(Pedido.CANT_RECOGIDA, nuevaCantidad.trim());
+        cv.put(Pedido.NRO_PED_SERVIDOR,idPedidoServidor);
         String updateWhere = null;
         String[] updateWhereArgs = null;
 

@@ -3,31 +3,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="?android:attr/activatedBackgroundIndicator">
-
     <TextView
-        android:id="@+id/nroPedidoDescTextView"
+        android:id="@+id/itemDetalleTextView"
         style="@style/TextViewContracted"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="Nro"
-        android:textColor="@android:color/black"/>
+        android:textColor="@android:color/black"
+        android:text="Item" />
 
     <TextView
-        android:id="@+id/mesaPisoPedidoTextView"
+        android:id="@+id/articuloDetalleTextView"
         style="@style/TextViewContracted"
         android:layout_centerHorizontal="true"
-        android:text="Mesa-Piso"
-        android:textColor="@android:color/black"/>
+        android:maxLines="3"
+        android:textColor="@android:color/black"
+        android:text="Articulo" />
 
     <TextView
-        android:id="@+id/itemsPedidoTextView"
+        android:id="@+id/cantidadDetalleTextView"
         style="@style/TextViewContracted"
         android:layout_alignParentRight="true"
-        android:text="Items"
-        android:textColor="@android:color/black"/>
+        android:textColor="@android:color/black"
+        android:text="Cantidad" />
 
     <TextView
-        android:id="@+id/nroPedidoServTextView"
+        android:id="@+id/itemIdDetalleTextView"
         style="@style/TextViewContracted"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </RelativeLayout>

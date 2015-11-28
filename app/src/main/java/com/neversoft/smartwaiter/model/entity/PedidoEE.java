@@ -7,6 +7,7 @@ import java.util.ArrayList;
  */
 public class PedidoEE {
     private int mId;
+    private int mNroPedidoServidor;
     private String mFecha;
     private int mNroMesa;
     private int mNroPiso;
@@ -32,6 +33,14 @@ public class PedidoEE {
 
     public void setId(int id) {
         mId = id;
+    }
+
+    public int getNroPedidoServidor() {
+        return mNroPedidoServidor;
+    }
+
+    public void setNroPedidoServidor(int nroPedidoServidor) {
+        mNroPedidoServidor = nroPedidoServidor;
     }
 
     public String getFecha() {
