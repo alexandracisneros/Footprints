@@ -166,6 +166,9 @@ public class MesasActivity extends Activity implements AdapterView.OnItemClickLi
                 finish();
                 break;
             case 4:
+                intent = new Intent(this, PedidosFacturarActivity.class);
+                startActivity(intent);
+                finish();
                 break;
             case 5:
                 intent = new Intent(this, CerrarDiaActivity.class);

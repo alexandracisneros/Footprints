@@ -98,6 +98,9 @@ public class SincronizarActivity extends Activity implements AdapterView.OnItemC
                 finish();
                 break;
             case 4:
+                intent = new Intent(this, PedidosFacturarActivity.class);
+                startActivity(intent);
+                finish();
                 break;
             case 5:
                 intent = new Intent(this, CerrarDiaActivity.class);

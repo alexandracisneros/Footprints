@@ -23,7 +23,7 @@
     <string name="opt_sincronizar">Sincronizar Datos</string>
     <string name="opt_tomar_pedido">Realizar Pedido</string>
     <string name="opt_pedidos_recoger">Pedidos a Recoger</string>
-    <string name="opt_opcion_4">Opcion 4</string>
+    <string name="opt_pedido_facturar">Pedidos a Facturar</string>
     <string name="opt_cerrar_dia">Cerrar Día</string>
     <!--Menu Opciones - FIN-->
     <string name="producto_pedido_label">Producto</string>
@@ -77,5 +77,12 @@
     <string name="item_label">Item</string>
     <string name="articulo_label">Artículo</string>
     <string name="cantidad_label">Cantidad</string>
+    <!--Cabecera pedido a recoger-->
+
+    <!--Cabecera pedido a recoger-->
+    <string name="nro_mesa_fact_label">Mesa</string>
+    <string name="nro_piso_fact_label">Piso</string>
+    <string name="importe_fact_label">Importe</string>
+    <string name="title_activity_mi_layout">MiLayout</string>
     <!--Cabecera pedido a recoger-->
 </resources>

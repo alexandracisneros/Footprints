@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="?android:attr/activatedBackgroundIndicator">
+
+    <TextView
+        android:id="@+id/nroPedidoTextView"
+        style="@style/TextViewContracted"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="Nro"
+        android:textColor="@android:color/black"/>
+
+    <TextView
+        android:id="@+id/nroMesaPedidoTextView"
+        style="@style/TextViewContracted"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="Mesa"
+        android:textColor="@android:color/black"/>
+
+    <TextView
+        android:id="@+id/nroPisoPedidoTextView"
+        style="@style/TextViewContracted"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="Piso"
+        android:textColor="@android:color/black"/>
+
+    <TextView
+        android:id="@+id/importePedidoTextView"
+        style="@style/TextViewContracted"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="Importe"
+        android:textColor="@android:color/black"/>
+
+</LinearLayout>

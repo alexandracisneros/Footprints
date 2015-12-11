@@ -5,7 +5,7 @@
         <item>@string/opt_sincronizar</item>
         <item>@string/opt_tomar_pedido</item>
         <item>@string/opt_pedidos_recoger</item>
-        <item>@string/opt_opcion_4</item>
+        <item>@string/opt_pedido_facturar</item>
         <item>@string/opt_cerrar_dia</item>
     </string-array>
 </resources>

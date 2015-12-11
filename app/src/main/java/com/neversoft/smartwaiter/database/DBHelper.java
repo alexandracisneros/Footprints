@@ -17,13 +17,13 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
     private static DBHelper mSingleton = null;
 
-    public DBHelper(Context context, String name, CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    private DBHelper(Context context) {
+        super(context,DB_NAME, null, DB_VERSION);
     }
 
     public synchronized static DBHelper getInstance(Context ctxt) {
         if (mSingleton == null) {
-            mSingleton = new DBHelper(ctxt.getApplicationContext(), DB_NAME, null, DB_VERSION);
+            mSingleton = new DBHelper(ctxt.getApplicationContext());
         }
         return mSingleton;
     }

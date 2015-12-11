@@ -43,7 +43,6 @@ import java.util.HashMap;
 
 public class TomarPedidoActivity extends Activity
         implements OnItemClickListener {
-    private ListView mMenuListView;
     private ListView mCategoriasListView;
     private ListView mArticulosListView;
     private ListView mPedidoListView;
@@ -95,10 +94,6 @@ public class TomarPedidoActivity extends Activity
         mCategoriaDAO = new CategoriaDAO(getApplicationContext());
         mArticuloDAO = new ArticuloDAO(getApplicationContext());
 
-        // get reference to the ListView and set its listener
-        mMenuListView = (ListView) findViewById(R.id.menu_listview);
-        mMenuListView.setOnItemClickListener(this);
-
         mCategoriasListView = (ListView) findViewById(R.id.categorias_listview);
         mCategoriasListView.setOnItemClickListener(this);
 
@@ -109,12 +104,6 @@ public class TomarPedidoActivity extends Activity
         mIGVPedidoTextView = (TextView) findViewById(R.id.igvPedidoTextView);
         mTotalPedidoTextView = (TextView) findViewById(R.id.totalPedidoTextView);
         mPedidoListView = (ListView) findViewById(R.id.detallePedidoListView);
-
-        Resources res = getResources();
-        String[] options = res.getStringArray(R.array.menu_items_array);
-        ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
-        mMenuListView.setAdapter(itemsAdapter);
 
         loadCategorias();
     }
@@ -167,7 +156,7 @@ public class TomarPedidoActivity extends Activity
         pedido.setMoneda("SOL");
         pedido.setMontoTotal(mTotal);
         pedido.setMontoRecibido(1500);
-        pedido.setEstado("010");
+        pedido.setEstado("010"); //Se realizo el guardado del pedido pero no se ha enviado a cocina
         pedido.setCodCia("001");
         pedido.setDetalle(mItems);
         new AsyncTask<Void, Void, Object>() {
@@ -270,7 +259,7 @@ public class TomarPedidoActivity extends Activity
                                 pedido.setMoneda("SOL");
                                 pedido.setMontoTotal(mTotal);  // ESTE TOTAL NO ESTA COMPLETO ESTA VIAJANDO SOLO LA SUMATORIA Y NO EL TOTAL CON IGV
                                 pedido.setMontoRecibido(1500);
-                                pedido.setEstado("020");
+                                pedido.setEstado("020"); //Se realizo el guardado del Pedido y se envío a cocina //TODO Mejor pasalo el estado en "savePedido"
                                 pedido.setCodCia("001");
                                 pedido.setDetalle(mItems);
                                 //PONER EN FUNCION
