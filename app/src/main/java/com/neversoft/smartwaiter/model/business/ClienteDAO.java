@@ -1,6 +1,7 @@
 package com.neversoft.smartwaiter.model.business;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
@@ -9,6 +10,7 @@ import com.google.gson.JsonObject;
 import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.database.DBHelper.Cliente;
 import com.neversoft.smartwaiter.database.DBHelper.Tables;
+import com.neversoft.smartwaiter.model.entity.ClienteEE;
 
 import java.text.Normalizer;
 import java.util.Locale;
@@ -35,8 +37,8 @@ public class ClienteDAO {
         DBHelper dbHelper;
         SQLiteDatabase db = null;
         try {
-            dbHelper=DBHelper.getInstance(ClienteDAO.this.mContext);
-            db=dbHelper.getWritableDatabase();
+            dbHelper = DBHelper.getInstance(ClienteDAO.this.mContext);
+            db = dbHelper.getWritableDatabase();
             SQLiteStatement statement = db.compileStatement(insertQuery);
             db.beginTransaction();
             if (jsonArrayCliente.size() > 0) {
@@ -62,12 +64,41 @@ public class ClienteDAO {
         } catch (Exception e) {
             throw e;
         } finally {
-            if(db!=null) {
+            if (db != null) {
                 db.endTransaction();
                 db.close();
             }
         }
         return numInserted;
 
+    }
+
+    public ClienteEE getClienteByRuc(String ruc) throws Exception {
+        ClienteEE clie = new ClienteEE();
+        DBHelper dbHelper;
+        SQLiteDatabase db = null;
+        try {
+            dbHelper = DBHelper.getInstance(ClienteDAO.this.mContext);
+            db = dbHelper.getReadableDatabase();
+            String where = Cliente.NRO_DOCUMENTO + " LIKE ? ";
+            String[] whereArgs = {ruc};
+            Cursor cursor = db.query(Tables.CLIENTE, null, where, whereArgs, null,
+                    null, null);
+            if (cursor.moveToFirst()) {
+                clie.setId(cursor.getInt(cursor.getColumnIndex(DBHelper.Cliente.ID)));
+                clie.setRazonSocial(cursor.getString(cursor.getColumnIndex(Cliente.RAZON_SOCIAL_NORM)));
+                clie.setTipoPersona(cursor.getString(cursor.getColumnIndex(Cliente.TIPO_PERSONA)));
+                clie.setNroDocumento(cursor.getString(cursor.getColumnIndex(Cliente.NRO_DOCUMENTO)));
+                clie.setDireccion(cursor.getString(cursor.getColumnIndex(Cliente.DIRECCION)));
+
+            }
+            cursor.close();
+
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return clie;
     }
 }

@@ -9,8 +9,8 @@ import android.util.Log;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.neversoft.smartwaiter.database.DBHelper;
-import com.neversoft.smartwaiter.database.DBHelper.Tables;
 import com.neversoft.smartwaiter.database.DBHelper.DetallePedido;
+import com.neversoft.smartwaiter.database.DBHelper.Tables;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 import com.neversoft.smartwaiter.util.Funciones;
 
@@ -30,10 +30,10 @@ public class DetallePedidoDAO {
     public int updateEstadoItemsPedido(JsonArray jsonPedidosDespachados, int estadoOriginal, int nuevoEstado) throws Exception {
         int rowCountUpdate = 0;
         DBHelper dbHelper;
-        SQLiteDatabase db=null;
+        SQLiteDatabase db = null;
         try {
-            dbHelper=DBHelper.getInstance(DetallePedidoDAO.this.mContext);
-            db=dbHelper.getWritableDatabase();
+            dbHelper = DBHelper.getInstance(DetallePedidoDAO.this.mContext);
+            db = dbHelper.getWritableDatabase();
             db.beginTransaction();
             List<String> IDsArray = new ArrayList();
 
@@ -50,7 +50,7 @@ public class DetallePedidoDAO {
             db.setTransactionSuccessful();
 
         } finally {
-            if(db!=null) {
+            if (db != null) {
                 db.endTransaction();
                 db.close();
             }
@@ -61,15 +61,15 @@ public class DetallePedidoDAO {
     public int confirmRecojoItemsPedido(String idPedido, List<String> IDsArray) throws Exception {
         int rowCountUpdate = 0;
         DBHelper dbHelper;
-        SQLiteDatabase db=null;
+        SQLiteDatabase db = null;
         try {
-            dbHelper=DBHelper.getInstance(DetallePedidoDAO.this.mContext);
-            db=dbHelper.getWritableDatabase();
+            dbHelper = DBHelper.getInstance(DetallePedidoDAO.this.mContext);
+            db = dbHelper.getWritableDatabase();
             db.beginTransaction();
             updateEstadoArticulo(idPedido, IDsArray, 2, 3, db);
             db.setTransactionSuccessful();
         } finally {
-            if(db!=null) {
+            if (db != null) {
                 db.endTransaction();
                 db.close();
             }
@@ -112,16 +112,25 @@ public class DetallePedidoDAO {
     }
 
     public List<DetallePedidoEE> getDetallePorEstado(String idPedido, int estado) throws Exception {
+        //<--ACA ME QUEDE -- 07:46 am
+        //TODO: MODIFICAR PARA QUE ACEPTE CUALQUIER ESTADO o NINGUNO
         List<DetallePedidoEE> lista = new ArrayList<>();
         DBHelper dbHelper;
-        SQLiteDatabase db=null;
+        SQLiteDatabase db = null;
         try {
-            dbHelper=DBHelper.getInstance(DetallePedidoDAO.this.mContext);
-            db=dbHelper.getReadableDatabase();
-            Cursor cursor = db.query(true, Tables.DETALLE_PEDIDO, null, DetallePedido.PEDIDO_ID + "=? and "
-                            + DetallePedido.ESTADO_ART + "=? ",
-                    new String[]{idPedido,
-                            String.valueOf(estado)}, null, null, null, null);
+            dbHelper = DBHelper.getInstance(DetallePedidoDAO.this.mContext);
+            db = dbHelper.getReadableDatabase();
+            String where = DetallePedido.PEDIDO_ID + "=? ";
+            ArrayList<String> whereArgsArrayList = new ArrayList<String>();
+            whereArgsArrayList.add(idPedido);
+            if (estado != -1) {
+                where +=" AND " + DetallePedido.ESTADO_ART + "=? ";
+                whereArgsArrayList.add(String.valueOf(estado));
+            }
+            String[] whereArgs = new String[whereArgsArrayList.size()];
+            whereArgs = whereArgsArrayList.toArray(whereArgs);
+            Cursor cursor = db.query(true, Tables.DETALLE_PEDIDO, null,where,
+                    whereArgs, null, null, null, null);
             while (cursor.moveToNext()) {
                 DetallePedidoEE item = new DetallePedidoEE();
                 item.setId(cursor.getInt(cursor.getColumnIndex(DetallePedido.ID)));
@@ -138,11 +147,14 @@ public class DetallePedidoDAO {
             }
             cursor.close();
         } finally {
-            if(db!=null) {
+            if (db != null) {
                 db.close();
             }
         }
         return lista;
+
+        //SELECT * FROM detalle_pedido
+        //WHERE pedido_id = 1 AND estado_articulo=3 --3 recogido
 
     }
 }

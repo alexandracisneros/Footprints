@@ -35,5 +35,8 @@
         android:layout_weight="1"
         android:text="Importe"
         android:textColor="@android:color/black"/>
-
+    <TextView
+        android:id="@+id/nroPedidoServTextView"
+        style="@style/TextViewContracted"
+        android:visibility="gone"/>
 </LinearLayout>

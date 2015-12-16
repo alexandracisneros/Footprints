@@ -176,4 +176,81 @@ public class PedidoDAO {
         return listaPedido;
     }
 
+    public List<PedidoEE> getPedidosPorFacturar() throws Exception {
+        List<PedidoEE> listaPedido = new ArrayList<>();
+        DBHelper dbHelper;
+        SQLiteDatabase db = null;
+        try {
+            dbHelper = DBHelper.getInstance(PedidoDAO.this.mContext);
+            db = dbHelper.getReadableDatabase();
+            String query = "SELECT * FROM " + Tables.PEDIDO +
+                    "  WHERE (" +
+                    " SELECT COUNT(*) FROM " + Tables.DETALLE_PEDIDO +
+                    "  WHERE " + Tables.PEDIDO + "." + Pedido.ID + "= " + Tables.DETALLE_PEDIDO + "." + DetallePedido.PEDIDO_ID
+                    + " AND " + DetallePedido.ESTADO_ART + " = ?" +
+                    "    ) > 0 AND " + Pedido.ESTADO + " =?";
+            Cursor cursor = db.rawQuery(query, new String[]{"3", "020"});
+            while (cursor.moveToNext()) {
+                PedidoEE ped = new PedidoEE();
+                ped.setId(cursor.getInt(cursor.getColumnIndex(Pedido.ID)));
+                ped.setNroMesa(cursor.getInt(cursor.getColumnIndex(Pedido.NRO_MESA)));
+                ped.setNroPiso(cursor.getInt(cursor.getColumnIndex(Pedido.NRO_PISO)));
+                ped.setAmbiente(cursor.getInt(cursor.getColumnIndex(Pedido.AMBIENTE)));
+                ped.setCantRecogida(cursor.getString(cursor.getColumnIndex(Pedido.CANT_RECOGIDA)));
+                ped.setCodCliente(cursor.getInt(cursor.getColumnIndex(Pedido.CODIGO_CLIENTE)));
+                ped.setMontoTotal(cursor.getFloat(cursor.getColumnIndex(Pedido.MONTO_TOTAL)));
+                ped.setNroPedidoServidor(cursor.getInt(cursor.getColumnIndex(Pedido.NRO_PED_SERVIDOR)));
+                listaPedido.add(ped);
+            }
+            cursor.close();
+
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return listaPedido;
+    }
+
+    public int updateEstadoPedidoDetalle(int idPedido, String estadoPedido, int estadoArtActual, int estadoArtNuevo) {
+        int resultDetalle = 0;
+        int resultPedido = 0;
+        DBHelper dbHelper;
+        SQLiteDatabase db = null;
+
+        ContentValues cvPedido = new ContentValues();
+        cvPedido.put(Pedido.ESTADO, estadoPedido);
+        String updateWherePedido = Pedido.ID + " =? ";
+        String[] updateWhereArgsPedido = new String[]{String.valueOf(idPedido)};
+
+        ContentValues cvItem = new ContentValues();
+        cvItem.put(DetallePedido.ESTADO_ART, estadoArtNuevo);
+        String updateWhereItem = DetallePedido.PEDIDO_ID + " =? "; //TODO : SI NECESITA SOLO LOS DE UN ESTADO USAR 'estadoArtActual' como una condicional adicional
+        String[] updateWhereArgsItem = new String[]{String.valueOf(idPedido)};
+
+
+        try {
+            dbHelper = DBHelper.getInstance(PedidoDAO.this.mContext);
+            db = dbHelper.getWritableDatabase();
+            db.beginTransaction();
+
+
+            resultDetalle = db.update(Tables.DETALLE_PEDIDO, cvItem, updateWhereItem, updateWhereArgsItem);
+            if (resultDetalle > 0) {
+                resultPedido = db.update(Tables.PEDIDO, cvPedido, updateWherePedido, updateWhereArgsPedido);
+            }
+
+            if (resultPedido > 0) {
+                db.setTransactionSuccessful();
+            }
+            return resultPedido;
+        } finally {
+            if (db != null) {
+                db.endTransaction();
+                db.close();
+            }
+        }
+    }
+
+
 }
