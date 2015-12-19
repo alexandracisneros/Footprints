@@ -1,6 +1,7 @@
 package com.neversoft.smartwaiter.ui;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -105,7 +106,7 @@ public class PedidosFacturarActivity extends Activity
         mMontoRestanteTextView = (TextView) findViewById(R.id.restanteTextView);
         mBuscarClieButton = (ImageButton) findViewById(R.id.buscarClieImageButton);
         mBuscarClieButton.setOnClickListener(this);
-        mAceptarButton= (Button) findViewById(R.id.aceptarButton);
+        mAceptarButton = (Button) findViewById(R.id.aceptarButton);
         mAceptarButton.setOnClickListener(this);
         mClienteRow = (TableRow) findViewById(R.id.clienteRow);
         mRucRow = (TableRow) findViewById(R.id.rucRow);
@@ -203,7 +204,18 @@ public class PedidosFacturarActivity extends Activity
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        return false;
+        String idPedido = ((TextView) view.findViewById(R.id.nroPedidoTextView)).getText().toString();
+        Bundle args = new Bundle();
+        args.putString(DetallePedidoFacturarDialogFragment.ARG_ID_PEDIDO, idPedido);
+        DialogFragment newFragment = new DetallePedidoFacturarDialogFragment();
+        newFragment.setArguments(args);
+        newFragment.show(getFragmentManager(), "dlgDetalleFacturar");
+
+        //TODO: ACA ME QUDE 7:51
+        //http://stackoverflow.com/questions/15459209/passing-argument-to-dialogfragment
+        //http://stackoverflow.com/questions/17622622/how-to-pass-data-from-a-fragment-to-a-dialogfragment
+
+        return true;
     }
 
     @Override

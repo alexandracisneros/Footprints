@@ -112,7 +112,7 @@ public class DetallePedidoDAO {
     }
 
     public List<DetallePedidoEE> getDetallePorEstado(String idPedido, int estado) throws Exception {
-        //<--ACA ME QUEDE -- 07:46 am
+
         //TODO: MODIFICAR PARA QUE ACEPTE CUALQUIER ESTADO o NINGUNO
         List<DetallePedidoEE> lista = new ArrayList<>();
         DBHelper dbHelper;

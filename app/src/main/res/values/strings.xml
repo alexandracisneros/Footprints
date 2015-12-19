@@ -77,6 +77,7 @@
     <string name="item_label">Item</string>
     <string name="articulo_label">Artículo</string>
     <string name="cantidad_label">Cantidad</string>
+    <string name="estado_label">Estado</string>
     <!--Cabecera pedido a recoger-->
 
     <!--Cabecera pedido a recoger-->
@@ -85,4 +86,6 @@
     <string name="importe_fact_label">Importe</string>
     <string name="title_activity_mi_layout">MiLayout</string>
     <!--Cabecera pedido a recoger-->
+
+    <string name="dialog_detalle_pedido_title">Detalle Pedido</string>
 </resources>
