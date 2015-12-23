@@ -1,6 +1,7 @@
 package com.neversoft.smartwaiter.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +10,14 @@ import android.widget.TextView;
 
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.model.entity.MesaPisoEE;
+import com.neversoft.smartwaiter.util.Funciones;
 
 import java.util.ArrayList;
 
 /**
  * Created by Usuario on 23/09/2015.
  */
-public class MesaItemAdapter  extends BaseAdapter {
+public class MesaItemAdapter extends BaseAdapter {
 
     LayoutInflater mLayoutInflater;
     Context mContext;
@@ -55,15 +57,22 @@ public class MesaItemAdapter  extends BaseAdapter {
         } else {
             wrapper = (ViewHolder) convertView.getTag();
         }
+        int perceivedBrightness= Funciones.PerceivedBrightness(mItems.get(position).getHTMLColor());
+        int fontColor=(perceivedBrightness>130? Color.BLACK : Color.WHITE );
         wrapper.nro.setText(Integer.toString(mItems.get(position).getNroMesa()));
+        wrapper.nro.setTextColor(fontColor);
         wrapper.estado.setText(mItems.get(position).getDescEstado());
+        wrapper.estado.setTextColor(fontColor);
         wrapper.reserva.setText(Integer.toString(mItems.get(position).getCodReserva()));
+        wrapper.reserva.setTextColor(fontColor);
+        convertView.setBackgroundColor(Color.parseColor(mItems.get(position).getHTMLColor()));
         return convertView;
     }
+
     public class ViewHolder {
         TextView nro = null;
         TextView estado = null;
-        TextView reserva=null;
+        TextView reserva = null;
 
         ViewHolder(View row) {
 

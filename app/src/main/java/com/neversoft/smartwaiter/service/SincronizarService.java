@@ -16,6 +16,8 @@ import com.neversoft.smartwaiter.model.business.ArticuloDAO;
 import com.neversoft.smartwaiter.model.business.CartaDAO;
 import com.neversoft.smartwaiter.model.business.CategoriaDAO;
 import com.neversoft.smartwaiter.model.business.ClienteDAO;
+import com.neversoft.smartwaiter.model.business.ConceptoDAO;
+import com.neversoft.smartwaiter.model.business.MesaInfoDAO;
 import com.neversoft.smartwaiter.model.business.MesaPisoDAO;
 import com.neversoft.smartwaiter.model.business.PrioridadDAO;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
@@ -162,6 +164,8 @@ public class SincronizarService extends IntentService {
         MesaPisoDAO mesaPisoDAO = new MesaPisoDAO(getApplicationContext());
         CartaDAO cartaDAO = new CartaDAO(getApplicationContext());
         ClienteDAO clienteDAO = new ClienteDAO(getApplicationContext());
+        ConceptoDAO conceptoDAO = new ConceptoDAO(getApplicationContext());
+        MesaInfoDAO mesaInfoDAO = new MesaInfoDAO(getApplicationContext());
         int nroClientes;
         JsonArray jsonArray;
         jsonArray = jsonObjectResponse.getAsJsonArray("tablaFamilia");
@@ -177,6 +181,12 @@ public class SincronizarService extends IntentService {
         exito = (nroClientes > 0);
         jsonArray = jsonObjectResponse.getAsJsonArray("tablaArticuloPrecio");
         exito = (articuloDAO.saveArticuloPrecioData(jsonArray) > 0);
+        jsonArray = jsonObjectResponse.getAsJsonArray("tablaEstadoPedido");
+        exito = (conceptoDAO.saveConceptoData(jsonArray, 1) > 0);
+        jsonArray = jsonObjectResponse.getAsJsonArray("tablaEstadoArticuloPedido");
+        exito = (conceptoDAO.saveConceptoData(jsonArray, 2) > 0);
+        jsonArray = jsonObjectResponse.getAsJsonArray("tablaMesaInfo");
+        exito = (mesaInfoDAO.saveMesaInfoData(jsonArray) > 0);
 
         return nroClientes;
     }

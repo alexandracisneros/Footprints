@@ -3,7 +3,6 @@ package com.neversoft.smartwaiter.database;
 import android.content.Context;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
@@ -18,7 +17,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static DBHelper mSingleton = null;
 
     private DBHelper(Context context) {
-        super(context,DB_NAME, null, DB_VERSION);
+        super(context, DB_NAME, null, DB_VERSION);
     }
 
     public synchronized static DBHelper getInstance(Context ctxt) {
@@ -126,6 +125,31 @@ public class DBHelper extends SQLiteOpenHelper {
                         + Articulo.URL + " TEXT"
                         + " )"
         );
+        db.execSQL("CREATE TABLE "
+                        + Tables.CONCEPTO + " ("
+                        + Concepto.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                        + Concepto.COD_ITEM + " TEXT NOT NULL,"
+                        + Concepto.DESC_ITEM + " TEXT NOT NULL,"
+                        + Concepto.TIPO_ITEM + " INTEGER NOT NULL"
+                        + " )"
+        );
+        db.execSQL("CREATE TABLE "
+                        + Tables.MESA_INFO + " ("
+                        + MesaInfo.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                        + MesaInfo.COD_ESTADO + " TEXT NOT NULL,"
+                        + MesaInfo.DESC_ESTADO + " TEXT NOT NULL,"
+                        + MesaInfo.COD_COLOR + " TEXT NOT NULL,"
+                        + MesaInfo.DESC_COLOR + " TEXT NOT NULL"
+                        + " )"
+        );
+        db.execSQL("CREATE INDEX "
+                        + Concepto.INDEX_COD_TIPO + " ON " + Tables.CONCEPTO + "("
+                        + Concepto.COD_ITEM + "," + Concepto.TIPO_ITEM + ")"
+        );
+        db.execSQL("CREATE INDEX "
+                        + MesaInfo.INDEX_CODMESA + " ON " + Tables.MESA_INFO + "("
+                        + MesaInfo.COD_ESTADO + ")"
+        );
     }
 
     @Override
@@ -138,6 +162,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + Tables.MESA_PISO);
         db.execSQL("DROP TABLE IF EXISTS " + Tables.CARTA);
         db.execSQL("DROP TABLE IF EXISTS " + Tables.ARTICULO);
+        db.execSQL("DROP TABLE IF EXISTS " + Tables.CONCEPTO);
+        db.execSQL("DROP TABLE IF EXISTS " + Tables.MESA_INFO);
     }
 
     /*******************************************
@@ -366,6 +392,41 @@ public class DBHelper extends SQLiteOpenHelper {
         int URL_COL = 6;
     }
 
+    public interface Concepto {
+        String ID = "_id";
+        int ID_COL = 0;
+
+        String COD_ITEM = "cod";
+        int COD_ITEM_COL = 1;
+
+        String DESC_ITEM = "desc";
+        int DESC_ITEM_COL = 2;
+
+        String TIPO_ITEM = "tipo";
+        int TIPO_ITEM_COL = 3;
+
+        String INDEX_COD_TIPO = "i_concepto_codtipo";
+    }
+
+    public interface MesaInfo {
+        String ID = "_id";
+        int ID_COL = 0;
+
+        String COD_ESTADO = "cod_estado";
+        int COD_ESTADO_COL = 1;
+
+        String DESC_ESTADO = "desc_estado";
+        int DESC_ESTADO_COL = 2;
+
+        String COD_COLOR = "cod_color";
+        int COD_COLOR_COL = 3;
+
+        String DESC_COLOR = "desc_color";
+        int DESC_COLOR_COL = 4;
+
+        String INDEX_CODMESA = "i_mesainfo_codmesa";
+    }
+
     public interface Tables {
         String PEDIDO = "pedido";
         String DETALLE_PEDIDO = "detalle_pedido";
@@ -375,9 +436,14 @@ public class DBHelper extends SQLiteOpenHelper {
         String MESA_PISO = "mesa_piso";
         String CARTA = "carta";
         String ARTICULO = "articulo";
+        String CONCEPTO = "concepto";
+        String MESA_INFO = "mesa_info";
 
         String ARTICULOS_JOIN_CARTA = ARTICULO + " JOIN " + CARTA
                 + " ON " + ARTICULO + "." + Articulo.ID + " = " + CARTA + "." + Carta.COD_ARTICULO;
+
+        String MESAPISO_JOIN_MESAINFO = MESA_PISO + " JOIN " + MESA_INFO
+                + " ON " + MESA_PISO + "." + MesaPiso.COD_ESTADO_MESA + " = " + MESA_INFO + "." + MesaInfo.COD_ESTADO;
 
     }
 

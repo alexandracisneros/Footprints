@@ -54,7 +54,7 @@ public class RestUtil {
                 .openConnection());
 
         connection.setReadTimeout(60000);
-        connection.setConnectTimeout(150000);
+        connection.setConnectTimeout(90000);
         connection.setDoInput(true);
 
         RestConnector connector = new RestConnector(connection);
@@ -68,7 +68,7 @@ public class RestUtil {
                 .openConnection();
 
         connection.setReadTimeout(60000);
-        connection.setConnectTimeout(150000);
+        connection.setConnectTimeout(90000);
         connection.setDoOutput(true);
 
         RestConnector connector = new RestConnector(connection);

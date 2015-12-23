@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.neversoft.smartwaiter.database.DBHelper;
+import com.neversoft.smartwaiter.database.DBHelper.MesaInfo;
 import com.neversoft.smartwaiter.database.DBHelper.MesaPiso;
 import com.neversoft.smartwaiter.database.DBHelper.Tables;
 import com.neversoft.smartwaiter.model.entity.MesaPisoEE;
@@ -81,8 +82,8 @@ public class MesaPisoDAO {
 
     public void getPisosAsync(final WeakReference<Activity> mReference) {
         final Activity activity = mReference.get();
-        final DBHelper dbHelper=DBHelper.getInstance(MesaPisoDAO.this.mContext);
-        final SQLiteDatabase db=dbHelper.getReadableDatabase();
+        final DBHelper dbHelper = DBHelper.getInstance(MesaPisoDAO.this.mContext);
+        final SQLiteDatabase db = dbHelper.getReadableDatabase();
         new AsyncTask<Void, Void, Cursor>() {
 
             @Override
@@ -130,8 +131,8 @@ public class MesaPisoDAO {
 
     public void getAmbientesAsync(final WeakReference<Activity> mReference, final int nroPiso) {
         final Activity activity = mReference.get();
-        final DBHelper dbHelper=DBHelper.getInstance(MesaPisoDAO.this.mContext);
-        final SQLiteDatabase db=dbHelper.getReadableDatabase();
+        final DBHelper dbHelper = DBHelper.getInstance(MesaPisoDAO.this.mContext);
+        final SQLiteDatabase db = dbHelper.getReadableDatabase();
         new AsyncTask<Void, Void, Cursor>() {
 
             @Override
@@ -177,12 +178,13 @@ public class MesaPisoDAO {
 
     public void getMesasAsync(final WeakReference<Activity> mReference, final int nroPiso, final int codAmbiente) {
         final Activity activity = mReference.get();
-        final DBHelper dbHelper=DBHelper.getInstance(MesaPisoDAO.this.mContext);
-        final SQLiteDatabase db=dbHelper.getReadableDatabase();
+        final DBHelper dbHelper = DBHelper.getInstance(MesaPisoDAO.this.mContext);
+        final SQLiteDatabase db = dbHelper.getReadableDatabase();
         new AsyncTask<Void, Void, Cursor>() {
             @Override
             protected Cursor doInBackground(Void... params) {
-                Cursor cursor = db.query(true, Tables.MESA_PISO, MesasQuery.PROJECTION, MesaPiso.NRO_PISO + "=? and " + MesaPiso.COD_AMBIENTE + "=? ", new String[]{String.valueOf(nroPiso), String.valueOf(codAmbiente)}, null, null, null, null);
+                Cursor cursor = db.query(true, Tables.MESAPISO_JOIN_MESAINFO, MesasQuery.PROJECTION, MesaPiso.NRO_PISO + "=? and " + MesaPiso.COD_AMBIENTE + "=? ",
+                        new String[]{String.valueOf(nroPiso), String.valueOf(codAmbiente)}, null, null, null, null);
                 return cursor;
             }
 
@@ -198,6 +200,7 @@ public class MesaPisoDAO {
                     item.setCodEstado(cursor.getString(MesasQuery.MESA_COD_ESTADO));
                     item.setDescEstado(cursor.getString(MesasQuery.MESA_DESC_ESTADO));
                     item.setCodReserva(cursor.getInt(MesasQuery.MESA_COD_RESERVA));
+                    item.setHTMLColor(cursor.getString(MesasQuery.MESA_COD_COLOR));
                     ((MesasActivity) activity).getListaMesas().add(item);
                 }
                 cursor.close();
@@ -229,14 +232,15 @@ public class MesaPisoDAO {
 
     private interface MesasQuery {
         String[] PROJECTION = {
-                MesaPiso.ID,
+                Tables.MESA_PISO + "." + MesaPiso.ID,
                 MesaPiso.NRO_PISO,
                 MesaPiso.COD_AMBIENTE,
                 MesaPiso.NRO_MESA,
                 MesaPiso.NRO_ASIENTOS,
                 MesaPiso.COD_ESTADO_MESA,
-                MesaPiso.DESC_ESTADO_MESA,
-                MesaPiso.COD_RESERVA
+                MesaInfo.DESC_ESTADO,
+                MesaPiso.COD_RESERVA,
+                MesaInfo.COD_COLOR
         };
         int MESA_ID = 0;
         int MESA_NRO_PISO = 1;
@@ -246,5 +250,6 @@ public class MesaPisoDAO {
         int MESA_COD_ESTADO = 5;
         int MESA_DESC_ESTADO = 6;
         int MESA_COD_RESERVA = 7;
+        int MESA_COD_COLOR=8;
     }
 }

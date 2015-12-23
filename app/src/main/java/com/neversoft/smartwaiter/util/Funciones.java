@@ -2,6 +2,7 @@ package com.neversoft.smartwaiter.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.EditText;
@@ -60,6 +61,7 @@ public class Funciones {
         return editText.getText().toString().trim().length() == 0;
 
     }
+
     public static boolean isNetworkAvailable(Context ctxt) {
         ConnectivityManager connectivityManager = (ConnectivityManager) ctxt
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -90,6 +92,7 @@ public class Funciones {
             throw new Exception("La red no está disponible. Verifique su conexión.");
         }
     }
+
     public static String makePlaceholders(int len) throws Exception {
         if (len < 1) {
             // It will lead to an invalid query anyway ..
@@ -102,5 +105,13 @@ public class Funciones {
             }
             return sb.toString();
         }
+    }
+
+    public static int PerceivedBrightness(String htmlColor) {
+        int c = Color.parseColor(htmlColor);
+        return (int) Math.sqrt(
+                Color.red(c) * Color.red(c) * .299 +
+                        Color.green(c) * Color.green(c) * .587 +
+                        Color.blue(c) * Color.blue(c) * .114);
     }
 }
