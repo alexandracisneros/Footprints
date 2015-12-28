@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="com.neversoft.smartwaiter"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest package="com.neversoft.smartwaiter"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -112,6 +111,11 @@
         </activity>
 
         <service android:name=".service.EnviarPedidoFacturadoService"/>
+
+        <activity
+            android:name=".ui.ConsultarReservasActivity"
+            android:label="@string/title_activity_consultar_reservas">
+        </activity>
     </application>
 
 </manifest>

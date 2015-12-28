@@ -15,10 +15,12 @@ public class DetallePedidoEE {
     private int mCodArticuloPrincipal;
     private String mComentario;
     private int mEstadoArticulo;
+    private String mDescEstadoArticulo;
     private String mDescArticulo; //FALTA AGREGARLO A LA BD PORQUE SINO AL MOSTRAR HABRIA QUE VOLVER A CONSULTAR LA BD SOLO X LOS NOMBRES
 
     public DetallePedidoEE() {
     }
+
     public DetallePedidoEE(ArticuloEE articulo) {
         this.setCodArticulo(articulo.getId());
         this.setUm(articulo.getUm());
@@ -26,6 +28,7 @@ public class DetallePedidoEE {
         this.setCantidad(1); //1 item por defecto.
         this.setPrecio(articulo.getPrecio());
         this.setEstadoArticulo(0); //No enviado a cocina
+        this.setDescEstadoArticulo("");
     }
 
     public int getId() {
@@ -116,6 +119,14 @@ public class DetallePedidoEE {
         mEstadoArticulo = estadoArticulo;
     }
 
+    public String getDescEstadoArticulo() {
+        return mDescEstadoArticulo;
+    }
+
+    public void setDescEstadoArticulo(String descEstadoArticulo) {
+        mDescEstadoArticulo = descEstadoArticulo;
+    }
+
     public String getDescArticulo() {
         return mDescArticulo;
     }
@@ -127,10 +138,10 @@ public class DetallePedidoEE {
     //This functions has been overriden so that I can use CONTAINS in the ArrayList of Details. See PedidoSharedPreference.addItem
     @Override
     public boolean equals(Object o) {
-        if(!(o instanceof DetallePedidoEE) ) {
+        if (!(o instanceof DetallePedidoEE)) {
             return false;
         }
-        DetallePedidoEE item = (DetallePedidoEE)o;
-        return this.getCodArticulo()==item.getCodArticulo();
+        DetallePedidoEE item = (DetallePedidoEE) o;
+        return this.getCodArticulo() == item.getCodArticulo();
     }
 }

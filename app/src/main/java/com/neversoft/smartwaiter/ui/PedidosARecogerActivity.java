@@ -33,7 +33,9 @@ import com.neversoft.smartwaiter.model.entity.PedidoEE;
 import com.neversoft.smartwaiter.service.ConsultarPedidosRecogerReceiver;
 import com.neversoft.smartwaiter.service.ConsultarPedidosRecogerService;
 import com.neversoft.smartwaiter.service.NotificarPedidosRecogidosService;
+import com.neversoft.smartwaiter.util.Funciones;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -108,7 +110,7 @@ public class PedidosARecogerActivity extends Activity implements
         ArrayAdapter<String> itemsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
         mMenuListView.setAdapter(itemsAdapter);
-        mMenuListView.setItemChecked(3, true);  //TODO: Put this in some sort of Constant
+        mMenuListView.setItemChecked(SmartWaiter.OPCION_PEDIDOS_RECOGER, true);
 
         ConsultarPedidosRecogerReceiver.scheduleAlarms(this);
 
@@ -165,7 +167,10 @@ public class PedidosARecogerActivity extends Activity implements
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         if (parent.getId() == R.id.menu_listview) {
-            opcionesMenu(position);
+            if (position != SmartWaiter.OPCION_PEDIDOS_RECOGER) {
+                WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
+                Funciones.selectMenuOption(weakActivity, position);
+            }
         } else if (parent.getId() == R.id.cabeceraPedidoRecogerListView) {
             if (mActionMode != null) {
                 mActionMode.finish();
@@ -175,40 +180,6 @@ public class PedidosARecogerActivity extends Activity implements
             mIdPedido = nroPedidoTextView.getText().toString();
             mIdPedidoServidor = nroPedServTextView.getText().toString();
             new ConsultarItemsPedidoDespachado().execute(mIdPedido);
-        }
-    }
-
-    private void opcionesMenu(int position) {
-        Intent intent;
-        switch (position) {
-            case 0:
-                intent = new Intent(this, IniciarDiaActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 1:
-                intent = new Intent(this, SincronizarActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 2:
-                intent = new Intent(this, MesasActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 3:
-                break;
-            case 4:
-                intent = new Intent(this, PedidosFacturarActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 5:
-                intent = new Intent(this, CerrarDiaActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-
         }
     }
 

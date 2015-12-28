@@ -3,6 +3,7 @@
     <string-array name="menu_items_array">
         <item>@string/opt_iniciar_dia</item>
         <item>@string/opt_sincronizar</item>
+        <item>@string/opt_reservas</item>
         <item>@string/opt_tomar_pedido</item>
         <item>@string/opt_pedidos_recoger</item>
         <item>@string/opt_pedido_facturar</item>

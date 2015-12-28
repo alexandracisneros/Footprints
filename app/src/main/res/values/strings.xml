@@ -21,6 +21,7 @@
     <!--Menu Opciones - INICIO-->
     <string name="opt_iniciar_dia">Iniciar Día</string>
     <string name="opt_sincronizar">Sincronizar Datos</string>
+    <string name="opt_reservas">Reservas</string>
     <string name="opt_tomar_pedido">Realizar Pedido</string>
     <string name="opt_pedidos_recoger">Pedidos a Recoger</string>
     <string name="opt_pedido_facturar">Pedidos a Facturar</string>
@@ -88,4 +89,5 @@
     <!--Cabecera pedido a recoger-->
 
     <string name="dialog_detalle_pedido_title">Detalle Pedido</string>
+    <string name="title_activity_consultar_reservas">ConsultarReservasActivity</string>
 </resources>

@@ -18,6 +18,7 @@ import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.model.business.MesaPisoDAO;
 import com.neversoft.smartwaiter.model.entity.MesaPisoEE;
 import com.neversoft.smartwaiter.model.entity.SpinnerEE;
+import com.neversoft.smartwaiter.util.Funciones;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class MesasActivity extends Activity implements AdapterView.OnItemClickLi
         ArrayAdapter<String> itemsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
         mMenuListView.setAdapter(itemsAdapter);
-        mMenuListView.setItemChecked(2,true); //TODO: Put this in some sort of Constant
+        mMenuListView.setItemChecked(SmartWaiter.OPCION_TOMAR_PEDIDO, true);
 
         //TODO: AGREGAR EL SWITCH PARA DECIDIR EN LAS OPCIONES Y VER QUE ACTIVITY ABRO
 
@@ -99,6 +100,12 @@ public class MesasActivity extends Activity implements AdapterView.OnItemClickLi
     public void loadAmbienteSpinner(final int nroPiso) {
         mListaAmbientes = new ArrayList<SpinnerEE>();
         WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
+        //TODO: Se debera tener en cuenta lo siguiente:
+        /*
+            1. Cada vez que se ingrese a esta pagina se debera consultar el webservice
+            2. Con la data recuperada actualizar los estados de las mesas
+            3. Refrescar la patalla con la data actual (revisa si se puede actualizar directamente con los retornado sin ncesidad de leer bd
+        * */
         mDataHelper.getAmbientesAsync(weakActivity, nroPiso);
     }
 
@@ -141,41 +148,10 @@ public class MesasActivity extends Activity implements AdapterView.OnItemClickLi
             startActivity(intent);
             //finish(); //TODO: Revisar si Tomar pedido deberia mostrar el menu lateral o no segun lineamientos de android
         } else if (parent.getId() == R.id.menu_listview) {
-            opcionesMenu(position);
-        }
-    }
-
-    private void opcionesMenu(int position) {
-        Intent intent;
-        switch (position) {
-            case 0:
-                intent = new Intent(this, IniciarDiaActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 1:
-                intent = new Intent(this, SincronizarActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 2:
-                break;
-            case 3:
-                intent = new Intent(this, PedidosARecogerActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 4:
-                intent = new Intent(this, PedidosFacturarActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 5:
-                intent = new Intent(this, CerrarDiaActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-
+            if (position != SmartWaiter.OPCION_TOMAR_PEDIDO) {
+                WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
+                Funciones.selectMenuOption(weakActivity, position);
+            }
         }
     }
 }

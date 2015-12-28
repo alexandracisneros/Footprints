@@ -32,7 +32,9 @@ import com.neversoft.smartwaiter.model.entity.ClienteEE;
 import com.neversoft.smartwaiter.model.entity.PedidoEE;
 import com.neversoft.smartwaiter.model.entity.SpinnerEE;
 import com.neversoft.smartwaiter.service.EnviarPedidoFacturadoService;
+import com.neversoft.smartwaiter.util.Funciones;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -95,7 +97,7 @@ public class PedidosFacturarActivity extends Activity
         ArrayAdapter<String> itemsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
         mMenuListView.setAdapter(itemsAdapter);
-        mMenuListView.setItemChecked(4, true);  //TODO: Put this in some sort of Constant
+        mMenuListView.setItemChecked(SmartWaiter.OPCION_PEDIDOS_FACTURAR, true);
 
         mTipoVentaSpinner = (Spinner) findViewById(R.id.tipoVentaSpinner);
         mTipoPagoSpinner = (Spinner) findViewById(R.id.tipoPagoSpinner);
@@ -195,7 +197,10 @@ public class PedidosFacturarActivity extends Activity
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (parent.getId() == R.id.menu_listview) {
-            opcionesMenu(position);
+            if (position != SmartWaiter.OPCION_PEDIDOS_FACTURAR) {
+                WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
+                Funciones.selectMenuOption(weakActivity, position);
+            }
         } else if (parent.getId() == R.id.cabeceraPedidoFacturarListView) {
             String montoTotal = ((TextView) view.findViewById(R.id.importePedidoTextView)).getText().toString();
             mTotalTextView.setText(montoTotal);
@@ -237,40 +242,6 @@ public class PedidosFacturarActivity extends Activity
             i.putExtra(EXTRA_TIPO_PAGO, tipoPago);
             i.putExtra(EXTRA_RUC, ruc);
             startService(i);
-        }
-    }
-
-    private void opcionesMenu(int position) {
-        Intent intent;
-        switch (position) {
-            case 0:
-                intent = new Intent(this, IniciarDiaActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 1:
-                intent = new Intent(this, SincronizarActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 2:
-                intent = new Intent(this, MesasActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 3:
-                intent = new Intent(this, PedidosARecogerActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 4:
-                break;
-            case 5:
-                intent = new Intent(this, CerrarDiaActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-
         }
     }
 

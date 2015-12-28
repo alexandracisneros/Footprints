@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.database.DBHelper.DetallePedido;
+import com.neversoft.smartwaiter.database.DBHelper.Concepto;
 import com.neversoft.smartwaiter.database.DBHelper.Tables;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 import com.neversoft.smartwaiter.util.Funciones;
@@ -131,6 +132,8 @@ public class DetallePedidoDAO {
             whereArgs = whereArgsArrayList.toArray(whereArgs);
             Cursor cursor = db.query(true, Tables.DETALLE_PEDIDO, null,where,
                     whereArgs, null, null, null, null);
+
+            //TODO:  DETALLE_PEDIDO JOIN CONCPETO ON estado_articulo=cod AND tipo=2
             while (cursor.moveToNext()) {
                 DetallePedidoEE item = new DetallePedidoEE();
                 item.setId(cursor.getInt(cursor.getColumnIndex(DetallePedido.ID)));
@@ -142,6 +145,7 @@ public class DetallePedidoDAO {
                 item.setPrecio(cursor.getFloat(cursor.getColumnIndex(DetallePedido.PRECIO)));
                 item.setTipoArticulo(cursor.getInt(cursor.getColumnIndex(DetallePedido.TIPO_ART)));
                 item.setEstadoArticulo(cursor.getInt(cursor.getColumnIndex(DetallePedido.ESTADO_ART)));
+                item.setDescEstadoArticulo(cursor.getString(cursor.getColumnIndex(Concepto.DESC_ITEM)));
                 item.setDescArticulo(cursor.getString(cursor.getColumnIndex(DetallePedido.DESC_ART)));
                 lista.add(item);
             }

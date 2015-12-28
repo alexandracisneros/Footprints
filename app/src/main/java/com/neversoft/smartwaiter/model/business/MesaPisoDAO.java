@@ -80,6 +80,49 @@ public class MesaPisoDAO {
 
     }
 
+    public int updateEstadoMesa(JsonArray jsonArrayMesa) throws Exception {
+
+        int numInserted = 0;
+        String updateQuery = "UPDATE " + Tables.MESA_PISO +
+                " SET " + MesaPiso.COD_ESTADO_MESA + "=? " +
+                " WHERE " + MesaPiso.COD_AMBIENTE + "=? AND" +
+                MesaPiso.NRO_PISO + "=? AND " +
+                MesaPiso.NRO_MESA + "=? ";
+
+        DBHelper dbHelper;
+        SQLiteDatabase db = null;
+        try {
+            dbHelper = DBHelper.getInstance(MesaPisoDAO.this.mContext);
+            db = dbHelper.getWritableDatabase();
+            SQLiteStatement statement = db.compileStatement(updateQuery);
+            db.beginTransaction();
+            if (jsonArrayMesa.size() > 0) {
+                for (int i = 0; i < jsonArrayMesa.size(); i++) {
+                    JsonObject jsonObjItem = jsonArrayMesa.get(i).getAsJsonObject();
+                    statement.clearBindings();
+                    statement.bindString(1, jsonObjItem.get("CEMESA").getAsString());
+                    statement.bindLong(2, jsonObjItem.get("CAMBIENTE").getAsInt());
+                    statement.bindLong(3, jsonObjItem.get("NROPISO").getAsInt());
+                    statement.bindLong(4, jsonObjItem.get("NROMESA").getAsInt());
+                    statement.execute();
+                }
+                db.setTransactionSuccessful();
+                numInserted = jsonArrayMesa.size();
+            } else {
+                throw new Exception("No hay 'Mesas' que actulizar.");
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (db != null) {
+                db.endTransaction();
+                db.close();
+            }
+        }
+        return numInserted;
+
+    }
+
     public void getPisosAsync(final WeakReference<Activity> mReference) {
         final Activity activity = mReference.get();
         final DBHelper dbHelper = DBHelper.getInstance(MesaPisoDAO.this.mContext);
@@ -250,6 +293,6 @@ public class MesaPisoDAO {
         int MESA_COD_ESTADO = 5;
         int MESA_DESC_ESTADO = 6;
         int MESA_COD_RESERVA = 7;
-        int MESA_COD_COLOR=8;
+        int MESA_COD_COLOR = 8;
     }
 }

@@ -1,12 +1,24 @@
 package com.neversoft.smartwaiter.util;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.EditText;
 
+import com.neversoft.smartwaiter.ui.CerrarDiaActivity;
+import com.neversoft.smartwaiter.ui.ConsultarReservasActivity;
+import com.neversoft.smartwaiter.ui.IniciarDiaActivity;
+import com.neversoft.smartwaiter.ui.MesasActivity;
+import com.neversoft.smartwaiter.ui.PedidosARecogerActivity;
+import com.neversoft.smartwaiter.ui.PedidosFacturarActivity;
+import com.neversoft.smartwaiter.ui.SincronizarActivity;
+import com.neversoft.smartwaiter.ui.SmartWaiter;
+
+import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -113,5 +125,49 @@ public class Funciones {
                 Color.red(c) * Color.red(c) * .299 +
                         Color.green(c) * Color.green(c) * .587 +
                         Color.blue(c) * Color.blue(c) * .114);
+    }
+
+    public static void selectMenuOption(final WeakReference<Activity> mReference, int position) {
+        final Activity activity = mReference.get();
+        Intent intent;
+        switch (position) {
+            case SmartWaiter.OPCION_INICIAR_DIA:
+                intent = new Intent(activity, IniciarDiaActivity.class);
+                activity.startActivity(intent);
+                activity.finish();
+                break;
+            case SmartWaiter.OPCION_SINCRONIZAR:
+                intent = new Intent(activity, SincronizarActivity.class);
+                activity.startActivity(intent);
+                activity.finish();
+                break;
+            case SmartWaiter.OPCION_RESERVAS:
+                intent = new Intent(activity, ConsultarReservasActivity.class);
+                activity.startActivity(intent);
+                activity.finish();
+                break;
+            case SmartWaiter.OPCION_TOMAR_PEDIDO:
+                intent = new Intent(activity, MesasActivity.class);
+                activity.startActivity(intent);
+                activity.finish();
+                break;
+            case SmartWaiter.OPCION_PEDIDOS_RECOGER:
+                intent = new Intent(activity, PedidosARecogerActivity.class);
+                activity.startActivity(intent);
+                activity.finish();
+                break;
+            case SmartWaiter.OPCION_PEDIDOS_FACTURAR:
+                intent = new Intent(activity, PedidosFacturarActivity.class);
+                activity.startActivity(intent);
+                activity.finish();
+                break;
+            case SmartWaiter.OPCION_CERRAR_DIA:
+                intent = new Intent(activity, CerrarDiaActivity.class);
+                activity.startActivity(intent);
+                activity.finish();
+                break;
+
+        }
+
     }
 }

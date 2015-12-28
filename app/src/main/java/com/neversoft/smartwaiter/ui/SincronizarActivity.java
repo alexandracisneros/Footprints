@@ -11,14 +11,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.service.SincronizarService;
+import com.neversoft.smartwaiter.util.Funciones;
 
-public class SincronizarActivity extends Activity implements AdapterView.OnItemClickListener{
+import java.lang.ref.WeakReference;
+
+public class SincronizarActivity extends Activity implements AdapterView.OnItemClickListener {
     private ListView mMenuListView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +38,7 @@ public class SincronizarActivity extends Activity implements AdapterView.OnItemC
         ArrayAdapter<String> itemsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
         mMenuListView.setAdapter(itemsAdapter);
-        mMenuListView.setItemChecked(1, true);  //TODO: Put this in some sort of Constant
+        mMenuListView.setItemChecked(SmartWaiter.OPCION_SINCRONIZAR, true);
     }
 
     @Override
@@ -60,6 +63,7 @@ public class SincronizarActivity extends Activity implements AdapterView.OnItemC
         return super.onOptionsItemSelected(item);
 
     }
+
     public void onClick(View v) {
         // here get SharedPreferences and send them with the Intent
         Intent inputIntent = new Intent(SincronizarActivity.this,
@@ -73,41 +77,11 @@ public class SincronizarActivity extends Activity implements AdapterView.OnItemC
     @Override
     public void onItemClick(AdapterView<?> parent, View v,
                             int position, long id) {
-       if (parent.getId() == R.id.menu_listview) {
-            opcionesMenu(position);
-        }
-    }
-    private void opcionesMenu(int position) {
-        Intent intent;
-        switch (position) {
-            case 0:
-                intent = new Intent(this, IniciarDiaActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 1:
-                break;
-            case 2:
-                intent = new Intent(this, MesasActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 3:
-                intent = new Intent(this, PedidosARecogerActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 4:
-                intent = new Intent(this, PedidosFacturarActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 5:
-                intent = new Intent(this, CerrarDiaActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-
+        if (parent.getId() == R.id.menu_listview) {
+            if (position != SmartWaiter.OPCION_SINCRONIZAR) {
+                WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
+                Funciones.selectMenuOption(weakActivity, position);
+            }
         }
     }
 }

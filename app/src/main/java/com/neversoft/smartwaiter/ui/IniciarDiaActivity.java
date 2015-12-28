@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
@@ -27,6 +26,7 @@ import com.neversoft.smartwaiter.preference.ConexionSharedPref;
 import com.neversoft.smartwaiter.preference.ControlSharedPref;
 import com.neversoft.smartwaiter.util.Funciones;
 
+import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.Locale;
 
@@ -65,7 +65,7 @@ public class IniciarDiaActivity extends Activity
         ArrayAdapter<String> itemsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
         mMenuListView.setAdapter(itemsAdapter);
-        mMenuListView.setItemChecked(0, true);  //TODO: Put this in some sort of Constant
+        mMenuListView.setItemChecked(SmartWaiter.OPCION_INICIAR_DIA, true);
 
     }
 
@@ -136,7 +136,10 @@ public class IniciarDiaActivity extends Activity
     public void onItemClick(AdapterView<?> parent, View v,
                             int position, long id) {
         if (parent.getId() == R.id.menu_listview) {
-            opcionesMenu(position);
+            if (position != SmartWaiter.OPCION_INICIAR_DIA) {
+                WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
+                Funciones.selectMenuOption(weakActivity, position);
+            }
         }
     }
 
@@ -176,37 +179,6 @@ public class IniciarDiaActivity extends Activity
             }
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void opcionesMenu(int position) {
-        Intent intent;
-        switch (position) {
-            case 0:
-                break;
-            case 1:
-                intent = new Intent(this, SincronizarActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 2:
-                intent = new Intent(this, MesasActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 3:
-                intent = new Intent(this, PedidosARecogerActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 4:
-                break;
-            case 5:
-                intent = new Intent(this, CerrarDiaActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-
         }
     }
 
