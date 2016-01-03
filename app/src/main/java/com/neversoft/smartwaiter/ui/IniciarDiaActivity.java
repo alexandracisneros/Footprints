@@ -152,7 +152,7 @@ public class IniciarDiaActivity extends Activity
         String usuario = mPrefConfig.getString("Usuario", "").toUpperCase(
                 Locale.getDefault());
         String ambiente = mPrefConexion.getString(ConexionSharedPref.AMBIENTE, "");
-        Log.d("QuickOrder", ambiente);
+        Log.d(DBHelper.TAG, ambiente);
         try {
             // Simple GET
             String mensajeError = "";

@@ -94,7 +94,7 @@ public class DBHelper extends SQLiteOpenHelper {
         );
         db.execSQL("CREATE TABLE "
                         + Tables.MESA_PISO + " ("
-                        + MesaPiso.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                        + MesaPiso.ID + " INTEGER PRIMARY KEY, "
                         + MesaPiso.NRO_PISO + " INTEGER NOT NULL,"
                         + MesaPiso.COD_AMBIENTE + " INTEGER,"
                         + MesaPiso.DESC_AMBIENTE + " TEXT,"
@@ -102,7 +102,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         + MesaPiso.NRO_ASIENTOS + " INTEGER,"
                         + MesaPiso.COD_ESTADO_MESA + " TEXT,"
                         + MesaPiso.DESC_ESTADO_MESA + " TEXT,"
-                        + MesaPiso.COD_RESERVA + " INTEGER"
+                        + MesaPiso.COD_RESERVA + " INTEGER,"
+                        + MesaPiso.ID_CLIE_RESERVA + " TEXT"
                         + " )"
         );
         db.execSQL("CREATE TABLE "
@@ -141,6 +142,23 @@ public class DBHelper extends SQLiteOpenHelper {
                         + MesaInfo.COD_COLOR + " TEXT NOT NULL,"
                         + MesaInfo.DESC_COLOR + " TEXT NOT NULL"
                         + " )"
+        );
+        db.execSQL("CREATE TABLE "
+                        + Tables.RESERVA + " ("
+                        + Reserva.ID + " INTEGER PRIMARY KEY , "
+                        + Reserva.ID_CLIENTE + " TEXT NOT NULL,"
+                        + Reserva.COD_MESA + " INTEGER NOT NULL,"
+                        + Reserva.EST_MESA + " TEXT NOT NULL,"
+                        + Reserva.EST_RESERVA + " TEXT NOT NULL"
+                        + " )"
+        );
+
+        /***************************  INDEXES  ***********************/
+        db.execSQL("CREATE UNIQUE INDEX "
+                        + MesaPiso.INDEX_PISO_AMB_MESA + " ON " + Tables.MESA_PISO + "("
+                        + MesaPiso.NRO_PISO + ","
+                        + MesaPiso.COD_AMBIENTE + ","
+                        + MesaPiso.NRO_MESA + ")"
         );
         db.execSQL("CREATE INDEX "
                         + Concepto.INDEX_COD_TIPO + " ON " + Tables.CONCEPTO + "("
@@ -350,6 +368,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String COD_RESERVA = "cod_reserva";
         int COD_RESERVA_COL = 8;
+
+        String ID_CLIE_RESERVA = "id_clie_reserva";
+        int ID_CLIE_RESERVA_COL = 9;
+
+        String INDEX_PISO_AMB_MESA = "i_mesapiso_pisoambmesa";
     }
 
     public interface Carta {
@@ -427,6 +450,23 @@ public class DBHelper extends SQLiteOpenHelper {
         String INDEX_CODMESA = "i_mesainfo_codmesa";
     }
 
+    public interface Reserva {
+        String ID = "_id";
+        int ID_COL = 0;
+
+        String ID_CLIENTE = "id_cliente";
+        int ID_CLIENTE_COL = 1;
+
+        String COD_MESA = "cod_mesa";
+        int COD_MESA_COL = 2;
+
+        String EST_MESA = "est_mesa";
+        int EST_MESA_COL = 3;
+
+        String EST_RESERVA = "est_reserva";
+        int EST_RESERVA_COL = 4;
+    }
+
     public interface Tables {
         String PEDIDO = "pedido";
         String DETALLE_PEDIDO = "detalle_pedido";
@@ -438,6 +478,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String ARTICULO = "articulo";
         String CONCEPTO = "concepto";
         String MESA_INFO = "mesa_info";
+        String RESERVA = "reserva";
 
         String ARTICULOS_JOIN_CARTA = ARTICULO + " JOIN " + CARTA
                 + " ON " + ARTICULO + "." + Articulo.ID + " = " + CARTA + "." + Carta.COD_ARTICULO;

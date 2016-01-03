@@ -54,8 +54,6 @@ public class MesasActivity extends Activity implements AdapterView.OnItemClickLi
         mMenuListView.setAdapter(itemsAdapter);
         mMenuListView.setItemChecked(SmartWaiter.OPCION_TOMAR_PEDIDO, true);
 
-        //TODO: AGREGAR EL SWITCH PARA DECIDIR EN LAS OPCIONES Y VER QUE ACTIVITY ABRO
-
 
         mPisosSpinner = (Spinner) findViewById(R.id.pisos_spinner);
         mAmbienteSpinner = (Spinner) findViewById(R.id.ambientes_spinner);
