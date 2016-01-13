@@ -22,12 +22,14 @@ public class MesaItemAdapter extends BaseAdapter {
     LayoutInflater mLayoutInflater;
     Context mContext;
     private ArrayList<MesaPisoEE> mItems;
+    private String mClickableState;
 
-    public MesaItemAdapter(Context context, ArrayList<MesaPisoEE> items) {
+    public MesaItemAdapter(Context context, ArrayList<MesaPisoEE> items, String clickableState) {
         this.mContext = context;
         this.mItems = items;
         this.mLayoutInflater = (LayoutInflater) this.mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.mClickableState = clickableState;
     }
 
     @Override
@@ -57,8 +59,8 @@ public class MesaItemAdapter extends BaseAdapter {
         } else {
             wrapper = (ViewHolder) convertView.getTag();
         }
-        int perceivedBrightness= Funciones.PerceivedBrightness(mItems.get(position).getHTMLColor());
-        int fontColor=(perceivedBrightness>130? Color.BLACK : Color.WHITE );
+        int perceivedBrightness = Funciones.PerceivedBrightness(mItems.get(position).getHTMLColor());
+        int fontColor = (perceivedBrightness > 130 ? Color.BLACK : Color.WHITE);
         wrapper.nro.setText(Integer.toString(mItems.get(position).getNroMesa()));
         wrapper.nro.setTextColor(fontColor);
         wrapper.estado.setText(mItems.get(position).getDescEstado());
@@ -67,6 +69,16 @@ public class MesaItemAdapter extends BaseAdapter {
         wrapper.reserva.setTextColor(fontColor);
         convertView.setBackgroundColor(Color.parseColor(mItems.get(position).getHTMLColor()));
         return convertView;
+    }
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return mItems.get(position).getCodEstado().equals(mClickableState);
     }
 
     public class ViewHolder {

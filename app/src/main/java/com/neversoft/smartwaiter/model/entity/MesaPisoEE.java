@@ -13,6 +13,7 @@ public class MesaPisoEE {
     private String mCodEstado;
     private String mDescEstado;
     private int mCodReserva;
+    private String mIDCliente;
     private String mHTMLColor;
 
     public MesaPisoEE() {
@@ -88,6 +89,14 @@ public class MesaPisoEE {
 
     public void setCodReserva(int codReserva) {
         mCodReserva = codReserva;
+    }
+
+    public String getIDCliente() {
+        return mIDCliente;
+    }
+
+    public void setIDCliente(String IDCliente) {
+        mIDCliente = IDCliente;
     }
 
     public String getHTMLColor() {

@@ -1,11 +1,17 @@
 package com.neversoft.smartwaiter.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,6 +20,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -28,6 +35,7 @@ import com.neversoft.smartwaiter.model.business.ReservaDAO;
 import com.neversoft.smartwaiter.model.entity.ClienteEE;
 import com.neversoft.smartwaiter.model.entity.MesaPisoEE;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
+import com.neversoft.smartwaiter.service.ActualizarEstadoMesaService;
 import com.neversoft.smartwaiter.util.Funciones;
 
 import java.lang.ref.WeakReference;
@@ -39,16 +47,43 @@ public class ConsultarReservasActivity extends Activity
         implements AdapterView.OnItemClickListener, View.OnClickListener {
     private EditText mIdClienteEditText;
     private EditText mCodigoReservaEditText;
+    private TextView mRazonSocialBusqTextView;
+    private TextView mIDClieBusqTextView;
     private ImageButton mBuscarReservaImageButton;
     private GridView mMesasGridView;
     private ListView mMenuListView;
     private ArrayList<MesaPisoEE> mMesaPisoLista;
     private String mColorReserva;
+    private MesaPisoEE mMesaPisoSeleccionado;
 
     private String mUrlServer;
     private SharedPreferences mPrefConfig;
     private SharedPreferences mPrefConexion;
 
+    private BroadcastReceiver onEventActualizarEstadoMesa = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean resultadoOperacion = intent.getBooleanExtra(ActualizarEstadoMesaService.EXTRA_RESULTADO_ACTUALIZACION, false);
+            //ANTES DE ESTO DEBERIA HABERSE UTILIZANDO UN LOADING QUE NO DEJE SELECCIONAR NADA MAS PARA PODER REFRESCAR LOS ITEMS PREVIAMENTE SELECCIONADOS
+            if (resultadoOperacion) {
+                Toast.makeText(ConsultarReservasActivity.this, "Resultado de Actualizar Estado: " + resultadoOperacion, Toast.LENGTH_SHORT).show();
+//                String idReserva = (mCodigoReservaEditText.getText().toString().trim().equals("") ? null : mCodigoReservaEditText.getText().toString().trim());
+//                String nroID = (mIdClienteEditText.getText().toString().trim().equals("") ? null : mIdClienteEditText.getText().toString().trim());
+
+                String[] params = {String.valueOf(mMesaPisoSeleccionado.getId()),
+                        String.valueOf(mMesaPisoSeleccionado.getCodReserva()),
+                        mIDClieBusqTextView.getText().toString()};
+                new ActualizarMesa_Reserva().execute(params);
+
+            } else {
+                String response = "Error";
+                //response = ((Exception) result).getMessage();
+                Log.d(DBHelper.TAG, "Se produjó la excepción: " + response);
+                Toast.makeText(ConsultarReservasActivity.this, response, Toast.LENGTH_LONG)
+                        .show();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,13 +104,16 @@ public class ConsultarReservasActivity extends Activity
         mMenuListView.setAdapter(itemsAdapter);
         mMenuListView.setItemChecked(SmartWaiter.OPCION_RESERVAS, true);
 
+        mRazonSocialBusqTextView = (TextView) findViewById(R.id.razonSocialBusqTextView);
+        mIDClieBusqTextView = (TextView) findViewById(R.id.IDClieBusqTextView);
+
         mIdClienteEditText = (EditText) findViewById(R.id.idClienteEditText);
         mCodigoReservaEditText = (EditText) findViewById(R.id.codReservaEditText);
         mBuscarReservaImageButton = (ImageButton) findViewById(R.id.buscarClieImageButton);
         mBuscarReservaImageButton.setOnClickListener(this);
 
         mMesasGridView = (GridView) findViewById(R.id.mesasGridView);
-        //mMesasGridView.setOnItemClickListener(this);
+        mMesasGridView.setOnItemClickListener(this);
 
         mUrlServer = RestUtil.obtainURLServer(getApplicationContext());
         mPrefConfig = getSharedPreferences(LoginActivity.PREF_CONFIG, MODE_PRIVATE);
@@ -85,17 +123,65 @@ public class ConsultarReservasActivity extends Activity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filterNotificarRecojo = new IntentFilter(ActualizarEstadoMesaService.ACTION_UPDATE_TABLE_STATUS);
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(onEventActualizarEstadoMesa, filterNotificarRecojo);
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(onEventActualizarEstadoMesa);
+        super.onPause();
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> parent, View v,
                             int position, long id) {
         if (parent.getId() == R.id.mesasGridView) {
-            Intent intent = new Intent(this, TomarPedidoActivity.class);
-            startActivity(intent);
+            mMesaPisoSeleccionado = mMesaPisoLista.get(position);
+            confirmarActualizarEstadoMesa(mMesaPisoSeleccionado);
+
+
         } else if (parent.getId() == R.id.menu_listview) {
             if (position != SmartWaiter.OPCION_RESERVAS) {
                 WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
                 Funciones.selectMenuOption(weakActivity, position);
             }
         }
+    }
+
+    private void confirmarActualizarEstadoMesa(final MesaPisoEE mesaPisoEE) {
+
+        new AlertDialog.Builder(this)
+                .setTitle("Confirmación")
+                .setMessage("¿Realmente desea proceder a efectuar un pedido sobre la mesa :" + mesaPisoEE.getNroMesa() + " ?")
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Start daily operations
+                        dialog.cancel();
+                        Gson gson = new Gson();
+                        String mesaString = gson.toJson(mesaPisoEE);
+                        Intent serviceIntent = new Intent(ConsultarReservasActivity.this,
+                                ActualizarEstadoMesaService.class);
+                        serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_TABLE, mesaString);
+                        serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_CLASS_NAME, this.getClass().getName());
+                        Log.d(DBHelper.TAG, "Antes de startService ActualizarEstadoMesaService");
+                        startService(serviceIntent);
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+
+                    }
+                }).setIcon(android.R.drawable.ic_dialog_alert).show();
+
     }
 
     @Override
@@ -174,6 +260,8 @@ public class ConsultarReservasActivity extends Activity
                     clienteEE.setRazonSocial(jsonObject.get("razonSocial").getAsString());
                     JsonArray jsonReservas = jsonObject.getAsJsonArray("detalle");
 
+                    mRazonSocialBusqTextView.setText(clienteEE.getRazonSocial());
+                    mIDClieBusqTextView.setText(clienteEE.getNroDocumento());
 
                     String idReserva = (mCodigoReservaEditText.getText().toString().trim().equals("") ? null : mCodigoReservaEditText.getText().toString().trim());
                     String nroID = (mIdClienteEditText.getText().toString().trim().equals("") ? null : mIdClienteEditText.getText().toString().trim());
@@ -184,7 +272,7 @@ public class ConsultarReservasActivity extends Activity
 
                 } else {
                     mMesaPisoLista = new ArrayList<>();
-                    mMesasGridView.setAdapter(new MesaItemAdapter(ConsultarReservasActivity.this, mMesaPisoLista));
+                    mMesasGridView.setAdapter(new MesaItemAdapter(ConsultarReservasActivity.this, mMesaPisoLista, "RES"));
                 }
 
             } else if (result instanceof Exception) {
@@ -221,7 +309,44 @@ public class ConsultarReservasActivity extends Activity
         protected void onPostExecute(Object result) {
             if (result instanceof List<?>) {
                 mMesaPisoLista = (ArrayList<MesaPisoEE>) result;
-                mMesasGridView.setAdapter(new MesaItemAdapter(ConsultarReservasActivity.this, mMesaPisoLista));
+                mMesasGridView.setAdapter(new MesaItemAdapter(ConsultarReservasActivity.this, mMesaPisoLista, "RES"));
+            } else if (result instanceof Exception) {
+                String response;
+                response = ((Exception) result).getMessage();
+                Log.d(DBHelper.TAG, "Se produjó la excepción: " + response);
+                Toast.makeText(ConsultarReservasActivity.this, response, Toast.LENGTH_LONG)
+                        .show();
+            }
+        }
+
+    }
+
+    private class ActualizarMesa_Reserva extends AsyncTask<String, Void, Object> {
+        @Override
+        protected Object doInBackground(String... params) {
+
+
+            Object requestObject;
+            String idMesa = params[0];
+            String idReservaLocal = params[1];
+            String idClienteLocal = params[2];
+            try {
+
+                MesaPisoDAO mesaPisoDAO = new MesaPisoDAO(getApplicationContext());
+                int resultado = mesaPisoDAO.updateEstadoMesaYReserva(Integer.parseInt(idMesa), Integer.parseInt(idReservaLocal),
+                        "EFE", "OCU");
+                requestObject = mesaPisoDAO.getListaMesasReservadas(idReservaLocal, idClienteLocal);
+            } catch (Exception e) {
+                requestObject = e;
+            }
+            return requestObject;
+        }
+
+        @Override
+        protected void onPostExecute(Object result) {
+            if (result instanceof List<?>) {
+                mMesaPisoLista = (ArrayList<MesaPisoEE>) result;
+                mMesasGridView.setAdapter(new MesaItemAdapter(ConsultarReservasActivity.this, mMesaPisoLista, "RES"));
             } else if (result instanceof Exception) {
                 String response;
                 response = ((Exception) result).getMessage();

@@ -485,7 +485,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String MESAPISO_JOIN_MESAINFO = MESA_PISO + " JOIN " + MESA_INFO
                 + " ON " + MESA_PISO + "." + MesaPiso.COD_ESTADO_MESA + " = " + MESA_INFO + "." + MesaInfo.COD_ESTADO;
-
+        String RESERVA_JOIN_MESAPISO_JOIN_MESAINFO =
+                RESERVA + " JOIN " + MESA_PISO + " ON " + Reserva.COD_MESA + "=" + MESA_PISO + "." + MesaPiso.ID +
+                        " JOIN " + MESA_INFO + " ON " + MESA_PISO + "." + MesaPiso.COD_ESTADO_MESA + " = " + MESA_INFO + "." + MesaInfo.COD_ESTADO;
     }
 
 }

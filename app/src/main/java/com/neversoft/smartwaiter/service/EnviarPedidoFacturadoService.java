@@ -37,7 +37,7 @@ import java.util.List;
 public class EnviarPedidoFacturadoService extends IntentService {
     public static final String ACTION_SEND_ORDERS_TO_INVOICE = "com.neversoft.smartwaiter.service.SEND_ORDERS_TO_INVOICE";
     private static final String NAME = "EnviarPedidoFacturado";
-    private static int NOTIFY_ID = 1338;
+    private static int NOTIFY_ID = 1339;
     private boolean exito = false;
     private String mensaje = "";
     private String mUrlServer;

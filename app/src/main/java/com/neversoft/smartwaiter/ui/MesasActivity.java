@@ -110,7 +110,7 @@ public class MesasActivity extends Activity implements AdapterView.OnItemClickLi
     public void loadMesas(int nroPiso, int codAmbiente) {
         mListaMesas = new ArrayList<MesaPisoEE>();
         WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
-        mDataHelper.getMesasAsync(weakActivity, nroPiso, codAmbiente);
+        mDataHelper.getMesasAsync(weakActivity, nroPiso, codAmbiente, "LIB");
     }
 
     @Override
