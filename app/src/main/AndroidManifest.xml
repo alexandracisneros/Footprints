@@ -117,7 +117,9 @@
             android:name=".ui.ConsultarReservasActivity"
             android:label="@string/title_activity_consultar_reservas">
         </activity>
+
         <service android:name=".service.ActualizarEstadoMesaService"/>
+        <service android:name=".service.ObtenerListaMesasService"/>
     </application>
 
 </manifest>

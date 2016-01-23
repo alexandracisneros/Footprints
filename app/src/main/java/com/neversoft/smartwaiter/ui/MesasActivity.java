@@ -1,9 +1,14 @@
 package com.neversoft.smartwaiter.ui;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,15 +20,19 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.neversoft.smartwaiter.R;
+import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.model.business.MesaPisoDAO;
 import com.neversoft.smartwaiter.model.entity.MesaPisoEE;
 import com.neversoft.smartwaiter.model.entity.SpinnerEE;
+import com.neversoft.smartwaiter.service.ObtenerListaMesasService;
 import com.neversoft.smartwaiter.util.Funciones;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class MesasActivity extends Activity implements AdapterView.OnItemClickListener {
+public class MesasActivity extends Activity
+        implements AdapterView.OnItemClickListener {
+    public static final String EXTRA_CANTIDAD_MESAS_ACTUALIZADOS = "cantidad_mesas_actualizadas";
     private Spinner mPisosSpinner;
     private Spinner mAmbienteSpinner;
     private GridView mMesasGridView;
@@ -34,6 +43,17 @@ public class MesasActivity extends Activity implements AdapterView.OnItemClickLi
     private ArrayList<MesaPisoEE> mListaMesas;
     // The ScheduleHelper is responsible for feeding data in a format suitable to the Adapter.
     private MesaPisoDAO mDataHelper;
+
+    private BroadcastReceiver onEventRefrescarListadoMesas = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int cantMesasActualizadas = intent.getIntExtra(EXTRA_CANTIDAD_MESAS_ACTUALIZADOS, 0);
+            Toast.makeText(MesasActivity.this, "Nro de mesas actualizadas : " + cantMesasActualizadas, Toast.LENGTH_SHORT).show();
+            int nroPiso = Integer.parseInt((mListaPisos.get(mPisosSpinner.getSelectedItemPosition()).getCodigo()));
+            int codAmbiente = Integer.parseInt((mListaAmbientes.get(mAmbienteSpinner.getSelectedItemPosition()).getCodigo()));
+            loadMesas(nroPiso, codAmbiente);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +83,21 @@ public class MesasActivity extends Activity implements AdapterView.OnItemClickLi
         loadPisosSpinner();
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filterNotificarRefrescarListado = new IntentFilter(ObtenerListaMesasService.ACTION_GET_TABLES_STATUS);
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(onEventRefrescarListadoMesas, filterNotificarRefrescarListado);
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(onEventRefrescarListadoMesas);
+        super.onPause();
     }
 
     public Spinner getPisosSpinner() {
@@ -111,6 +146,14 @@ public class MesasActivity extends Activity implements AdapterView.OnItemClickLi
         mListaMesas = new ArrayList<MesaPisoEE>();
         WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
         mDataHelper.getMesasAsync(weakActivity, nroPiso, codAmbiente, "LIB");
+    }
+
+    public void startActualizarEstadoMesas() {
+        //Desde aca mostrar la pantalla de Loading y terminarla cuando regrese el servicio
+        Intent serviceIntent = new Intent(MesasActivity.this,
+                ObtenerListaMesasService.class);
+        Log.d(DBHelper.TAG, "Antes de startService ObtenerListaMesasServiceService");
+        startService(serviceIntent);
     }
 
     @Override

@@ -334,7 +334,7 @@ public class ConsultarReservasActivity extends Activity
 
                 MesaPisoDAO mesaPisoDAO = new MesaPisoDAO(getApplicationContext());
                 int resultado = mesaPisoDAO.updateEstadoMesaYReserva(Integer.parseInt(idMesa), Integer.parseInt(idReservaLocal),
-                        "EFE", "OCU");
+                        "OCU", "EFE");
                 requestObject = mesaPisoDAO.getListaMesasReservadas(idReservaLocal, idClienteLocal);
             } catch (Exception e) {
                 requestObject = e;
@@ -347,6 +347,7 @@ public class ConsultarReservasActivity extends Activity
             if (result instanceof List<?>) {
                 mMesaPisoLista = (ArrayList<MesaPisoEE>) result;
                 mMesasGridView.setAdapter(new MesaItemAdapter(ConsultarReservasActivity.this, mMesaPisoLista, "RES"));
+                //TODO: Si lista vacia limpia codigo y nombre de cliente
             } else if (result instanceof Exception) {
                 String response;
                 response = ((Exception) result).getMessage();

@@ -92,6 +92,42 @@ public class MesaPisoDAO {
 
     }
 
+    public int updateEstadoMesa(JsonArray jsonArrayMesa) throws Exception {
+        int numToUpdate = 0;
+        int numAffectedRows;
+        String updateQuery = "UPDATE " + Tables.MESA_PISO + " SET  " +
+                MesaPiso.COD_ESTADO_MESA + "=? WHERE " + MesaPiso.ID + "=? ";
+        DBHelper dbHelper;
+        SQLiteDatabase db = null;
+        try {
+            dbHelper = DBHelper.getInstance(MesaPisoDAO.this.mContext);
+            db = dbHelper.getWritableDatabase();
+            SQLiteStatement statement = db.compileStatement(updateQuery);
+            db.beginTransaction();
+            
+            for (int i = 0; i < jsonArrayMesa.size(); i++) {
+                JsonObject jsonObjItem = jsonArrayMesa.get(i).getAsJsonObject();
+                statement.clearBindings();
+                statement.bindString(1, jsonObjItem.get("CEMESA").getAsString());
+                statement.bindLong(2, jsonObjItem.get("CODMESA").getAsInt());
+                numAffectedRows = statement.executeUpdateDelete();
+                if (numAffectedRows > 0) {
+                    numToUpdate++;
+                }
+            }
+            db.setTransactionSuccessful();
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (db != null) {
+                db.endTransaction();
+                db.close();
+            }
+        }
+        return numToUpdate;
+    }
+
     public int updateEstadoMesaYReserva(int idMesa, int idReserva, String nuevoEstadoMesa, String nuevoEstadoReserva) throws Exception {
         DBHelper dbHelper;
         SQLiteDatabase db = null;
@@ -217,7 +253,7 @@ public class MesaPisoDAO {
                                                int position, long id) {
                         int codAmbiente = Integer.parseInt(((MesasActivity) activity).getListaAmbientes().get(position).getCodigo());
 
-                        ((MesasActivity) activity).loadMesas(nroPiso, codAmbiente);
+                        ((MesasActivity) activity).startActualizarEstadoMesas();
 
                     }
 

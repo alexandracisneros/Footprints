@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.neversoft.smartwaiter.R;
@@ -78,10 +77,11 @@ public class ActualizarEstadoMesaService extends IntentService {
             if (codCia != "") {
                 String encondedAmbiente = URLEncoder.encode(ambiente,
                         "utf-8");
+                //OCU es el estado al que pasará la mesa
                 String urlWithParams = String.format(url, mesaPisoEE.getNroMesa(), mesaPisoEE.getCodAmbiente(),
-                        mesaPisoEE.getCodEstado(), idReserva, estadoReserva,
+                        "OCU", idReserva, estadoReserva,
                         codCia, encondedAmbiente);
-                Toast.makeText(this, "ID_RESERVA: " + idReserva, Toast.LENGTH_SHORT).show();
+                Log.d(DBHelper.TAG, "ID_RESERVA: " + idReserva);
                 procesoOK = sendRequestToServer(urlWithParams);
                 if (procesoOK) {
                     Intent event = new Intent(ActualizarEstadoMesaService.ACTION_UPDATE_TABLE_STATUS);
@@ -112,7 +112,7 @@ public class ActualizarEstadoMesaService extends IntentService {
                 throw new Exception(mensajeError);
             }
         } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.d(DBHelper.TAG, e.getMessage());
             mensaje = e.getMessage();
             exito = false;
         }
