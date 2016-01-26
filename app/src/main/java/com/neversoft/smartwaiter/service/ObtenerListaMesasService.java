@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.io.RestConnector;
@@ -112,10 +113,11 @@ public class ObtenerListaMesasService extends IntentService {
                     // Only if the request was successful parse the returned value otherwise re-throw the exception
                     result = (String) requestObject;
                     Gson gson = new Gson();
-                    JsonArray jsonResponse = gson.fromJson(result, JsonArray.class);
-                    if (jsonResponse != null && jsonResponse.size() > 0) {
+                    JsonObject jsonResponse = gson.fromJson(result, JsonObject.class);
+                    JsonArray jsonArray = jsonResponse.getAsJsonArray("Table");
+                    if (jsonArray != null && jsonArray.size() > 0) {
                         MesaPisoDAO mesaPisoDAO = new MesaPisoDAO(getApplicationContext());
-                        cantidadActualizados = mesaPisoDAO.updateEstadoMesa(jsonResponse);
+                        cantidadActualizados = mesaPisoDAO.updateEstadoMesa(jsonArray);
                     }
 
                     return cantidadActualizados;

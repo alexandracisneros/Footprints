@@ -67,12 +67,9 @@ public class ConsultarReservasActivity extends Activity
             //ANTES DE ESTO DEBERIA HABERSE UTILIZANDO UN LOADING QUE NO DEJE SELECCIONAR NADA MAS PARA PODER REFRESCAR LOS ITEMS PREVIAMENTE SELECCIONADOS
             if (resultadoOperacion) {
                 Toast.makeText(ConsultarReservasActivity.this, "Resultado de Actualizar Estado: " + resultadoOperacion, Toast.LENGTH_SHORT).show();
-//                String idReserva = (mCodigoReservaEditText.getText().toString().trim().equals("") ? null : mCodigoReservaEditText.getText().toString().trim());
-//                String nroID = (mIdClienteEditText.getText().toString().trim().equals("") ? null : mIdClienteEditText.getText().toString().trim());
 
                 String[] params = {String.valueOf(mMesaPisoSeleccionado.getId()),
-                        String.valueOf(mMesaPisoSeleccionado.getCodReserva()),
-                        mIDClieBusqTextView.getText().toString()};
+                        String.valueOf(mMesaPisoSeleccionado.getCodReserva())};
                 new ActualizarMesa_Reserva().execute(params);
 
             } else {
@@ -329,13 +326,11 @@ public class ConsultarReservasActivity extends Activity
             Object requestObject;
             String idMesa = params[0];
             String idReservaLocal = params[1];
-            String idClienteLocal = params[2];
             try {
 
                 MesaPisoDAO mesaPisoDAO = new MesaPisoDAO(getApplicationContext());
-                int resultado = mesaPisoDAO.updateEstadoMesaYReserva(Integer.parseInt(idMesa), Integer.parseInt(idReservaLocal),
+                requestObject = mesaPisoDAO.updateEstadoMesaYReserva(Integer.parseInt(idMesa), Integer.parseInt(idReservaLocal),
                         "OCU", "EFE");
-                requestObject = mesaPisoDAO.getListaMesasReservadas(idReservaLocal, idClienteLocal);
             } catch (Exception e) {
                 requestObject = e;
             }
@@ -344,10 +339,10 @@ public class ConsultarReservasActivity extends Activity
 
         @Override
         protected void onPostExecute(Object result) {
-            if (result instanceof List<?>) {
-                mMesaPisoLista = (ArrayList<MesaPisoEE>) result;
-                mMesasGridView.setAdapter(new MesaItemAdapter(ConsultarReservasActivity.this, mMesaPisoLista, "RES"));
-                //TODO: Si lista vacia limpia codigo y nombre de cliente
+            if (result instanceof Integer) {
+                Intent intent = new Intent(ConsultarReservasActivity.this, TomarPedidoActivity.class);
+                startActivity(intent);
+                //finish(); //TODO: Revisar si Tomar pedido deberia mostrar el menu lateral o no segun lineamientos de android
             } else if (result instanceof Exception) {
                 String response;
                 response = ((Exception) result).getMessage();

@@ -57,7 +57,8 @@ public class ActualizarEstadoMesaService extends IntentService {
         ///ActualizarEstadoMesa/?nroMesa=10&idAmbiente=1&estadoMesa=PAT&idReserva=0&estadoReserva=&nbsp&codCia=001&cadenaConexion=Initial%20Catalog=PRUEBAMOVILJHAV
         //ActualizarEstadoMesa/?nroMesa=10&idAmbiente=1&estadoMesa=PAT&idReserva=2&estadoReserva=EFE&codCia=001&cadenaConexion=Initial%20Catalog=PRUEBAMOVILJHAV
 
-        String estadoReserva = "EFE";
+        String nuevoEstadoReserva = "EFE";
+        String nuevoEstadoMesa = "OCU";
         String codCia = mPrefConfig.getString("CodCia", "");
         String ambiente = mPrefConexion.getString(ConexionSharedPref.AMBIENTE, "");
         String className = intent.getStringExtra(EXTRA_CLASS_NAME);
@@ -79,7 +80,7 @@ public class ActualizarEstadoMesaService extends IntentService {
                         "utf-8");
                 //OCU es el estado al que pasará la mesa
                 String urlWithParams = String.format(url, mesaPisoEE.getNroMesa(), mesaPisoEE.getCodAmbiente(),
-                        "OCU", idReserva, estadoReserva,
+                        nuevoEstadoMesa, idReserva, nuevoEstadoReserva,
                         codCia, encondedAmbiente);
                 Log.d(DBHelper.TAG, "ID_RESERVA: " + idReserva);
                 procesoOK = sendRequestToServer(urlWithParams);

@@ -149,7 +149,7 @@ public class MesaPisoDAO {
                 filas_reserva = db.update(Tables.RESERVA, cvReserva, updateWhereReserva,
                         updateWhereArgsReserva);
             }
-            if (idReserva > 0 && filas_reserva > 0) {
+            if (idReserva==0 || (idReserva>0 && filas_reserva>0)) {
                 ContentValues cvMesa = new ContentValues();
                 cvMesa.put(MesaPiso.COD_ESTADO_MESA, nuevoEstadoMesa);
                 String updateWhereMesa = MesaPiso.ID + " =? ";
