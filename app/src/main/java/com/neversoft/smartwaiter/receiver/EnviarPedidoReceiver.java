@@ -1,4 +1,4 @@
-package com.neversoft.smartwaiter.service;
+package com.neversoft.smartwaiter.receiver;
 
 import android.app.Notification;
 import android.app.NotificationManager;

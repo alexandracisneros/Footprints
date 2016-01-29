@@ -1,4 +1,4 @@
-package com.neversoft.smartwaiter.service;
+package com.neversoft.smartwaiter.receiver;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.SystemClock;
 
 import com.commonsware.cwac.wakeful.WakefulIntentService;
+import com.neversoft.smartwaiter.service.ConsultarPedidosRecogerService;
 
 /**
  * Created by Usuario on 05/11/2015.

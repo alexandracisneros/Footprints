@@ -2,6 +2,7 @@ package com.neversoft.smartwaiter.util;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -170,4 +171,15 @@ public class Funciones {
         }
 
     }
+
+    public boolean isThisServiceRunning(Class<?> serviceClass, Context ctxt) {
+        ActivityManager manager = (ActivityManager) ctxt.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

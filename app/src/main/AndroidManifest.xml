@@ -38,7 +38,11 @@
 
         <service android:name=".service.SincronizarService">
         </service>
-
+        <receiver android:name=".receiver.SincronizarReceiver">
+            <intent-filter>
+                <action android:name="com.neversoft.smartwaiter.SYNC_DATA"/>
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".ui.TomarPedidoActivity"
             android:label="@string/title_activity_tomar_pedido">
@@ -53,7 +57,7 @@
 
         <service android:name=".service.EnviarPedidoService"/>
 
-        <receiver android:name=".service.EnviarPedidoReceiver">
+        <receiver android:name=".receiver.EnviarPedidoReceiver">
             <intent-filter>
                 <action android:name="com.neversoft.smartwaiter.ENVIAR_PEDIDO"/>
             </intent-filter>
@@ -100,7 +104,7 @@
 
         <service android:name=".service.ConsultarPedidosRecogerService"/>
 
-        <receiver android:name=".service.ConsultarPedidosRecogerReceiver">
+        <receiver android:name=".receiver.ConsultarPedidosRecogerReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>

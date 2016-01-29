@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -98,11 +99,13 @@ public class SincronizarService extends IntentService {
                     "FINALIZA Insercion DataSincronizada: "
                             + Funciones
                             .getCurrentDate("yyyy/MM/dd hh:mm:ss"));
+            exito = true;
         } catch (Exception e) {
 
             mensaje = e.getMessage();
             exito = false;
         }
+        SystemClock.sleep(5000);
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction(SincronizarService.ACTION_SYNC_DATA);
 

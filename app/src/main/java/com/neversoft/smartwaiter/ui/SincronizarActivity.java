@@ -1,7 +1,10 @@
 package com.neversoft.smartwaiter.ui;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,7 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
@@ -21,6 +27,36 @@ import java.lang.ref.WeakReference;
 
 public class SincronizarActivity extends Activity implements AdapterView.OnItemClickListener {
     private ListView mMenuListView;
+    private FrameLayout mIndicatorFrameLayout;
+    private RelativeLayout mMainRelativeLayout;
+
+
+    private BroadcastReceiver onEventSincronizarDatosIniciales = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(DBHelper.TAG, "onEventSincronizarDatosIniciales broadcast receiveed.");
+            // if necessary get data from intent
+            boolean exito = intent.getBooleanExtra("exito", false);
+            abortBroadcast();
+            showProgressIndicator(false);
+            String mensaje;
+            if (exito) {
+                mensaje = String.valueOf(intent.getIntExtra("resultado", 0));
+                Log.d(DBHelper.TAG,
+                        "Success from BroadcastReceiver within SincronizarActivity : "
+                                + mensaje);
+            } else {
+                mensaje = intent.getStringExtra("mensaje");
+                Log.d(DBHelper.TAG,
+                        "Exception from BroadcastReceiver within SincronizarActivity :"
+                                + mensaje);
+                // update the display
+                //PREF_Control.save(mPrefControl, null, null, null, null, null, "", false);
+                Toast.makeText(SincronizarActivity.this, mensaje, Toast.LENGTH_LONG).show();
+            }
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +75,49 @@ public class SincronizarActivity extends Activity implements AdapterView.OnItemC
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
         mMenuListView.setAdapter(itemsAdapter);
         mMenuListView.setItemChecked(SmartWaiter.OPCION_SINCRONIZAR, true);
+
+        mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
+        mMainRelativeLayout = (RelativeLayout) findViewById(R.id.mainRelativeLayout);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(DBHelper.TAG, "Entre a onResume - SincronizarActivity");
+        IntentFilter filter = new IntentFilter(SincronizarService.ACTION_SYNC_DATA);
+        filter.setPriority(2);
+        registerReceiver(onEventSincronizarDatosIniciales, filter);
+
+        //TODO : <--- ACA ME QUEDE
+//        if (!isMyServiceRunning(SincronizarService.class)) {
+//            boolean isDataSynchronized = mPrefControl.getBoolean(
+//                    PREF_Control.DATA_SINCRONIZADA, false);
+//            if (isDataSynchronized) { // if data is already synchronized
+//
+//                enableControles(true);
+//
+//            } else { // data is not synchronized yet
+//
+//                enableControles(false);
+//                String exceptionMessageInService = mPrefControl.getString(
+//                        PREF_Control.EXCEPCION_SERVICIO, "");
+//                if (exceptionMessageInService != "") {
+//
+//                    //Clear out the value of 'excepcionServicio'
+//                    PREF_Control.save(mPrefControl, null, null, null, null, null, "", false);
+//                    Toast.makeText(SincronizarActivity.this,
+//                            exceptionMessageInService,
+//                            Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        }
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(onEventSincronizarDatosIniciales);
+        Log.d(DBHelper.TAG, "Entre a onPause - SincronizarActivity");
+        super.onPause();
     }
 
     @Override
@@ -64,12 +143,23 @@ public class SincronizarActivity extends Activity implements AdapterView.OnItemC
 
     }
 
+    private void showProgressIndicator(boolean showValue) {
+        if (showValue) {
+            mMainRelativeLayout.setVisibility(View.GONE);
+            mIndicatorFrameLayout.setVisibility(View.VISIBLE);
+        } else {
+            mMainRelativeLayout.setVisibility(View.VISIBLE);
+            mIndicatorFrameLayout.setVisibility(View.GONE);
+        }
+    }
+
     public void onClick(View v) {
         // here get SharedPreferences and send them with the Intent
         Intent inputIntent = new Intent(SincronizarActivity.this,
                 SincronizarService.class);
         Log.d(DBHelper.TAG, "Antes de startService");
         // Display progress to the user
+        showProgressIndicator(true);
         startService(inputIntent);
 
     }

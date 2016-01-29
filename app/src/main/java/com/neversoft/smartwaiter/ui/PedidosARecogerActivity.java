@@ -30,7 +30,7 @@ import com.neversoft.smartwaiter.model.business.DetallePedidoDAO;
 import com.neversoft.smartwaiter.model.business.PedidoDAO;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 import com.neversoft.smartwaiter.model.entity.PedidoEE;
-import com.neversoft.smartwaiter.service.ConsultarPedidosRecogerReceiver;
+import com.neversoft.smartwaiter.receiver.ConsultarPedidosRecogerReceiver;
 import com.neversoft.smartwaiter.service.ConsultarPedidosRecogerService;
 import com.neversoft.smartwaiter.service.NotificarPedidosRecogidosService;
 import com.neversoft.smartwaiter.util.Funciones;
