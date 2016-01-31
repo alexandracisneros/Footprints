@@ -14,7 +14,14 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"/>
 
+    <include
+        layout="@layout/screen_overlay"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"/>
+
     <RelativeLayout
+        android:id="@+id/mainRelativeLayout"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="4"

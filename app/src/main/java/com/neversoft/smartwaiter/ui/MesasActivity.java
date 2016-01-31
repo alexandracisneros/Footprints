@@ -17,7 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -47,6 +49,8 @@ public class MesasActivity extends Activity
     private ArrayList<SpinnerEE> mListaAmbientes;
     private ArrayList<SpinnerEE> mListaPisos;
     private ArrayList<MesaPisoEE> mListaMesas;
+    private FrameLayout mIndicatorFrameLayout;
+    private LinearLayout mMainLinearLayout;
     // The ScheduleHelper is responsible for feeding data in a format suitable to the Adapter.
     private MesaPisoDAO mDataHelper;
 
@@ -58,6 +62,8 @@ public class MesasActivity extends Activity
             int nroPiso = Integer.parseInt((mListaPisos.get(mPisosSpinner.getSelectedItemPosition()).getCodigo()));
             int codAmbiente = Integer.parseInt((mListaAmbientes.get(mAmbienteSpinner.getSelectedItemPosition()).getCodigo()));
             loadMesas(nroPiso, codAmbiente);
+            //TODO: If it takes too long you could put a delay here to play for time for the tables to be loaded
+            showProgressIndicator(false);
         }
     };
     private BroadcastReceiver onEventActualizarEstadoMesa = new BroadcastReceiver() {
@@ -76,7 +82,9 @@ public class MesasActivity extends Activity
                 Log.d(DBHelper.TAG, "Se produjó la excepción: " + response);
                 Toast.makeText(MesasActivity.this, response, Toast.LENGTH_LONG)
                         .show();
+                showProgressIndicator(false);
             }
+
         }
     };
 
@@ -105,6 +113,9 @@ public class MesasActivity extends Activity
 
         mMesasGridView = (GridView) findViewById(R.id.mesasGridView);
         mMesasGridView.setOnItemClickListener(this);
+
+        mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
+        mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
         loadPisosSpinner();
 
 
@@ -183,7 +194,18 @@ public class MesasActivity extends Activity
         Intent serviceIntent = new Intent(MesasActivity.this,
                 ObtenerListaMesasService.class);
         Log.d(DBHelper.TAG, "Antes de startService ObtenerListaMesasServiceService");
+        showProgressIndicator(true);
         startService(serviceIntent);
+    }
+
+    private void showProgressIndicator(boolean showValue) {
+        if (showValue) {
+            mMainLinearLayout.setVisibility(View.GONE);
+            mIndicatorFrameLayout.setVisibility(View.VISIBLE);
+        } else {
+            mMainLinearLayout.setVisibility(View.VISIBLE);
+            mIndicatorFrameLayout.setVisibility(View.GONE);
+        }
     }
 
     private void confirmarActualizarEstadoMesa(final MesaPisoEE mesaPisoEE) {
@@ -203,6 +225,7 @@ public class MesasActivity extends Activity
                         serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_TABLE, mesaString);
                         serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_CLASS_NAME, this.getClass().getName());
                         Log.d(DBHelper.TAG, "Antes de startService ActualizarEstadoMesaService");
+                        showProgressIndicator(true);
                         startService(serviceIntent);
 
                     }

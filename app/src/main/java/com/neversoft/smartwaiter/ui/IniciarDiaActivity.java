@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +16,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.neversoft.smartwaiter.R;
@@ -38,7 +41,8 @@ public class IniciarDiaActivity extends Activity
     private SharedPreferences mPrefControl;
     private SharedPreferences mPrefConfig;
     private SharedPreferences mPrefConexion;
-    private ProgressDialog mProgress;
+    private FrameLayout mIndicatorFrameLayout;
+    private RelativeLayout mMainRelativeLayout;
     private String mFechaInicioDia;
 
 
@@ -67,6 +71,9 @@ public class IniciarDiaActivity extends Activity
         mMenuListView.setAdapter(itemsAdapter);
         mMenuListView.setItemChecked(SmartWaiter.OPCION_INICIAR_DIA, true);
 
+        mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
+        mMainRelativeLayout = (RelativeLayout) findViewById(R.id.mainRelativeLayout);
+
     }
 
     @Override
@@ -89,6 +96,16 @@ public class IniciarDiaActivity extends Activity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showProgressIndicator(boolean showValue) {
+        if (showValue) {
+            mMainRelativeLayout.setVisibility(View.GONE);
+            mIndicatorFrameLayout.setVisibility(View.VISIBLE);
+        } else {
+            mMainRelativeLayout.setVisibility(View.VISIBLE);
+            mIndicatorFrameLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -185,11 +202,7 @@ public class IniciarDiaActivity extends Activity
     class DoIniciarDia extends AsyncTask<String, Void, Object> {
         @Override
         protected void onPreExecute() {
-            mProgress = new ProgressDialog(IniciarDiaActivity.this);
-            mProgress.setTitle("Procesando");
-            mProgress.setCancelable(false);
-            mProgress.setMessage("Espere por favor...");
-            mProgress.show();
+            showProgressIndicator(true);
         }
 
         @Override
@@ -207,6 +220,7 @@ public class IniciarDiaActivity extends Activity
             } catch (Exception e) {
                 requestObject = e;
             }
+            SystemClock.sleep(5000);
             return requestObject;
         }
 
@@ -214,9 +228,7 @@ public class IniciarDiaActivity extends Activity
         protected void onPostExecute(Object result) {
             // Clear progress indicator
             String response = "";
-            if (mProgress != null) {
-                mProgress.dismiss();
-            }
+            showProgressIndicator(false);
             if (result instanceof String) {
                 response = (String) result;
                 if (response.equals("1")) {

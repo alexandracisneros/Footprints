@@ -2,12 +2,12 @@ package com.neversoft.smartwaiter.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +15,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.neversoft.smartwaiter.R;
@@ -40,7 +42,8 @@ public class CerrarDiaActivity extends Activity implements View.OnClickListener,
     private SharedPreferences mPrefConfig;
     private SharedPreferences mPrefControl;
     private SharedPreferences mPrefConexion;
-    private ProgressDialog mProgress;
+    private FrameLayout mIndicatorFrameLayout;
+    private RelativeLayout mMainRelativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +69,9 @@ public class CerrarDiaActivity extends Activity implements View.OnClickListener,
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
         mMenuListView.setAdapter(itemsAdapter);
         mMenuListView.setItemChecked(SmartWaiter.OPCION_CERRAR_DIA, true);
+
+        mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
+        mMainRelativeLayout = (RelativeLayout) findViewById(R.id.mainRelativeLayout);
     }
 
     @Override
@@ -89,6 +95,16 @@ public class CerrarDiaActivity extends Activity implements View.OnClickListener,
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showProgressIndicator(boolean showValue) {
+        if (showValue) {
+            mMainRelativeLayout.setVisibility(View.GONE);
+            mIndicatorFrameLayout.setVisibility(View.VISIBLE);
+        } else {
+            mMainRelativeLayout.setVisibility(View.VISIBLE);
+            mIndicatorFrameLayout.setVisibility(View.GONE);
+        }
     }
 
     public void confirmarCerrarDiaSinPedidos() {
@@ -232,11 +248,7 @@ public class CerrarDiaActivity extends Activity implements View.OnClickListener,
 
         @Override
         protected void onPreExecute() {
-            mProgress = new ProgressDialog(CerrarDiaActivity.this);
-            mProgress.setTitle("Procesando");
-            mProgress.setCancelable(false);
-            mProgress.setMessage("Espere por favor...");
-            mProgress.show();
+            showProgressIndicator(true);
         }
 
         @Override
@@ -254,6 +266,7 @@ public class CerrarDiaActivity extends Activity implements View.OnClickListener,
             } catch (Exception e) {
                 requestObject = e;
             }
+            SystemClock.sleep(5000);
             return requestObject;
 
         }
@@ -262,9 +275,7 @@ public class CerrarDiaActivity extends Activity implements View.OnClickListener,
         protected void onPostExecute(Object result) {
             // Clear progress indicator
             String mensaje = "";
-            if (mProgress != null) {
-                mProgress.dismiss();
-            }
+            showProgressIndicator(false);
             if (result instanceof String) {
                 mensaje = (String) result;
                 if (mensaje.equals("1")) {
