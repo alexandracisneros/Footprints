@@ -299,6 +299,7 @@ public class MesasActivity extends Activity
         protected void onPostExecute(Object result) {
             if (result instanceof Integer) {
                 Intent intent = new Intent(MesasActivity.this, TomarPedidoActivity.class);
+                intent.putExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS, MesasActivity.this.getClass().getName());
                 startActivity(intent);
                 //finish(); //TODO: Revisar si Tomar pedido deberia mostrar el menu lateral o no segun lineamientos de android
             } else if (result instanceof Exception) {

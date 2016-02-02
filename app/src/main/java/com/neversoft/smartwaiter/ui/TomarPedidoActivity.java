@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -43,6 +41,7 @@ import java.util.HashMap;
 
 public class TomarPedidoActivity extends Activity
         implements OnItemClickListener {
+    public static final String EXTRA_PREVIOUS_ACTIVITY_CLASS = "extra_prev_act_class";
     private ListView mCategoriasListView;
     private ListView mArticulosListView;
     private ListView mPedidoListView;
@@ -108,6 +107,20 @@ public class TomarPedidoActivity extends Activity
         loadCategorias();
     }
 
+    @Override
+    public void onBackPressed() {
+        String prevClassName = getIntent().getStringExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS);
+        try {
+            Class<?> prevActivityClass = Class.forName(prevClassName);
+            Intent intent = new Intent(this, prevActivityClass);
+            startActivity(intent);
+            Log.d(DBHelper.TAG, prevClassName);
+            finish();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public ListView getCategoriasListView() {
         return mCategoriasListView;
     }
@@ -164,7 +177,7 @@ public class TomarPedidoActivity extends Activity
             @Override
             protected Object doInBackground(Void... voids) {
                 try {
-                    return pedidoDAO.savePedido(pedido,0); //0=NO ENVIADO A COCINA
+                    return pedidoDAO.savePedido(pedido, 0); //0=NO ENVIADO A COCINA
                 } catch (Exception e) {
                     return e;
                 }

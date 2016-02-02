@@ -17,8 +17,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +61,8 @@ public class ConsultarReservasActivity extends Activity
     private String mUrlServer;
     private SharedPreferences mPrefConfig;
     private SharedPreferences mPrefConexion;
+    private FrameLayout mIndicatorFrameLayout;
+    private LinearLayout mMainLinearLayout;
 
     private BroadcastReceiver onEventActualizarEstadoMesa = new BroadcastReceiver() {
         @Override
@@ -73,6 +77,7 @@ public class ConsultarReservasActivity extends Activity
                 new ActualizarMesa_Reserva().execute(params);
 
             } else {
+                showProgressIndicator(false);
                 String response = "Error";
                 //response = ((Exception) result).getMessage();
                 Log.d(DBHelper.TAG, "Se produjó la excepción: " + response);
@@ -116,6 +121,9 @@ public class ConsultarReservasActivity extends Activity
         mPrefConfig = getSharedPreferences(LoginActivity.PREF_CONFIG, MODE_PRIVATE);
         mPrefConexion = getSharedPreferences(ConexionSharedPref.NAME, MODE_PRIVATE);
         mColorReserva = "#3333ff";
+
+        mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
+        mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
 
     }
 
@@ -167,6 +175,7 @@ public class ConsultarReservasActivity extends Activity
                         serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_TABLE, mesaString);
                         serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_CLASS_NAME, this.getClass().getName());
                         Log.d(DBHelper.TAG, "Antes de startService ActualizarEstadoMesaService");
+                        showProgressIndicator(true);
                         startService(serviceIntent);
 
                     }
@@ -224,7 +233,22 @@ public class ConsultarReservasActivity extends Activity
         }
     }
 
+    private void showProgressIndicator(boolean showValue) {
+        if (showValue) {
+            mMainLinearLayout.setVisibility(View.GONE);
+            mIndicatorFrameLayout.setVisibility(View.VISIBLE);
+        } else {
+            mMainLinearLayout.setVisibility(View.VISIBLE);
+            mIndicatorFrameLayout.setVisibility(View.GONE);
+        }
+    }
+
     private class BuscarMesaRerservada extends AsyncTask<String, Void, Object> {
+        @Override
+        protected void onPreExecute() {
+            showProgressIndicator(true);
+        }
+
         @Override
         protected Object doInBackground(String... params) {
             Object requestObject = null;
@@ -270,9 +294,11 @@ public class ConsultarReservasActivity extends Activity
                 } else {
                     mMesaPisoLista = new ArrayList<>();
                     mMesasGridView.setAdapter(new MesaItemAdapter(ConsultarReservasActivity.this, mMesaPisoLista, "RES"));
+                    showProgressIndicator(false);
                 }
 
             } else if (result instanceof Exception) {
+                showProgressIndicator(false);
                 String response;
                 response = ((Exception) result).getMessage();
                 Log.d(DBHelper.TAG, "Se produjó la excepción: " + response);
@@ -304,6 +330,7 @@ public class ConsultarReservasActivity extends Activity
 
         @Override
         protected void onPostExecute(Object result) {
+            showProgressIndicator(false);
             if (result instanceof List<?>) {
                 mMesaPisoLista = (ArrayList<MesaPisoEE>) result;
                 mMesasGridView.setAdapter(new MesaItemAdapter(ConsultarReservasActivity.this, mMesaPisoLista, "RES"));
@@ -341,9 +368,12 @@ public class ConsultarReservasActivity extends Activity
         protected void onPostExecute(Object result) {
             if (result instanceof Integer) {
                 Intent intent = new Intent(ConsultarReservasActivity.this, TomarPedidoActivity.class);
+                intent.putExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS, ConsultarReservasActivity.this.getClass().getName());
                 startActivity(intent);
+                showProgressIndicator(false); //<----TODO ACA ME QUEDE DEBERIA LIMPIAR ANTES DE TODO PORQUE SE QUEDA CON LA ANTERIOR BUSQUEDA
                 //finish(); //TODO: Revisar si Tomar pedido deberia mostrar el menu lateral o no segun lineamientos de android
             } else if (result instanceof Exception) {
+                showProgressIndicator(false);
                 String response;
                 response = ((Exception) result).getMessage();
                 Log.d(DBHelper.TAG, "Se produjó la excepción: " + response);
