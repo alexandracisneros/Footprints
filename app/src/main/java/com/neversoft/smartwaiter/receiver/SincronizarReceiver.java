@@ -21,13 +21,11 @@ public class SincronizarReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intentFrom) {
         boolean exito = intentFrom.getBooleanExtra("exito", false);
         String mensajeError = intentFrom.getStringExtra("mensaje");
-        String resultado = intentFrom.getStringExtra("resultado");
+
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         Intent intentTo = new Intent(context, SincronizarActivity.class);
-        intentTo.putExtra("exito", exito);
-        intentTo.putExtra("resultado", resultado);
-        intentTo.putExtra("mensaje", mensajeError);
+        intentTo.putExtras(intentFrom);
         intentTo.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         builder.setAutoCancel(true).setDefaults(Notification.DEFAULT_ALL)
                 .setWhen(System.currentTimeMillis());

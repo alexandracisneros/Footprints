@@ -16,7 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,33 +56,43 @@ public class TomarPedidoActivity extends Activity
     private TextView mSubTotalPedidoTextView;
     private TextView mIGVPedidoTextView;
     private TextView mTotalPedidoTextView;
+
+    private FrameLayout mIndicatorFrameLayout;
+    private RelativeLayout mMainRelativeLayout;
     private float mTotal = 0;
+    private String mPrevClassName;
     private BroadcastReceiver sendDataReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("QuickOrder", "sendData broadcast received");
-            // if necessary get data from intent
-            boolean exito = intent.getBooleanExtra("exito", false);
+            Log.d(DBHelper.TAG, "sendData broadcast received");
+            //Retrieve extras
+            boolean exito = intent.getBooleanExtra(EnviarPedidoService.EXTRA_RESULTADO_EXITO, false);
+            String mensaje = intent.getStringExtra(EnviarPedidoService.EXTRA_RESULTADO_MENSAJE);
+
             abortBroadcast();
-            String mensaje;
+
             if (exito) {
-                PedidoSharedPref.clear(context);
-                mItems = new ArrayList<>();
-                showItems();
                 mensaje = "Pedidos enviados correctamente.";
-                Log.d(DBHelper.TAG,
-                        "Success from BroadcastReceiver within EnviarDatosActivity : "
-                                + mensaje);
+                Log.d(DBHelper.TAG, "Success from BroadcastReceiver within EnviarDatosActivity : "
+                        + mensaje);
+                Class<?> clase = MesasActivity.class; //Clase por defecto para evitar asignar null
+
+                try {
+                    clase = Class.forName(mPrevClassName);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                PedidoSharedPref.clear(TomarPedidoActivity.this);
+                Intent toIntent = new Intent(TomarPedidoActivity.this, clase);
+                startActivity(toIntent);
+                finish();
             } else {
-                mensaje = intent.getStringExtra("mensaje");
+                showProgressIndicator(false);
                 Log.d(DBHelper.TAG, "Exception from BroadcastReceiver within EnviarDatosActivity :"
                         + mensaje);
             }
-
-            // update the display
-            Toast.makeText(TomarPedidoActivity.this,
-                    mensaje, Toast.LENGTH_LONG).show();
+            Toast.makeText(TomarPedidoActivity.this, mensaje, Toast.LENGTH_LONG).show();
         }
 
     };
@@ -90,6 +102,9 @@ public class TomarPedidoActivity extends Activity
         super.onCreate(savedInstanceState);
         overridePendingTransition(0, 0);
         setContentView(R.layout.activity_tomar_pedido);
+        //Retrieve Extra
+        mPrevClassName = getIntent().getStringExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS);
+
         mCategoriaDAO = new CategoriaDAO(getApplicationContext());
         mArticuloDAO = new ArticuloDAO(getApplicationContext());
 
@@ -104,21 +119,35 @@ public class TomarPedidoActivity extends Activity
         mTotalPedidoTextView = (TextView) findViewById(R.id.totalPedidoTextView);
         mPedidoListView = (ListView) findViewById(R.id.detallePedidoListView);
 
+        mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
+        mMainRelativeLayout = (RelativeLayout) findViewById(R.id.mainRelativeLayout);
+
         loadCategorias();
     }
 
     @Override
     public void onBackPressed() {
-        String prevClassName = getIntent().getStringExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS);
         try {
-            Class<?> prevActivityClass = Class.forName(prevClassName);
+            Class<?> prevActivityClass = Class.forName(mPrevClassName);
             Intent intent = new Intent(this, prevActivityClass);
             startActivity(intent);
-            Log.d(DBHelper.TAG, prevClassName);
+            Log.d(DBHelper.TAG, mPrevClassName);
             finish();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showProgressIndicator(boolean showValue) {
+        if (showValue) {
+            mMainRelativeLayout.setVisibility(View.GONE);
+            mIndicatorFrameLayout.setVisibility(View.VISIBLE);
+        } else {
+            mMainRelativeLayout.setVisibility(View.VISIBLE);
+            mIndicatorFrameLayout.setVisibility(View.GONE);
+        }
+        mCategoriasListView.setEnabled(!showValue);
+        mArticulosListView.setEnabled(!showValue);
     }
 
     public ListView getCategoriasListView() {
@@ -279,11 +308,23 @@ public class TomarPedidoActivity extends Activity
 
 
                                 String pedidosString = gson.toJson(pedido);
-                                Intent iniciarServiceIntent = new Intent(TomarPedidoActivity.this,
-                                        EnviarPedidoService.class);
-                                iniciarServiceIntent.putExtra("json", pedidosString);
+                                Intent iniciarServiceIntent = new Intent(TomarPedidoActivity.this, EnviarPedidoService.class);
+                                //Put extras
+                                iniciarServiceIntent.putExtra(EnviarPedidoService.EXTRA_PEDIDO_JSON, pedidosString);
+                                iniciarServiceIntent.putExtra(EXTRA_PREVIOUS_ACTIVITY_CLASS, mPrevClassName);
+
                                 Log.d(DBHelper.TAG, "Antes de startService SendDataService");
+                                showProgressIndicator(true);
                                 startService(iniciarServiceIntent);
+
+                                //TODO <---- ACA ME QUEDE 10/02/2016 07:22 pm
+                                //No se puede terminar la actividad
+                                //No queda mas que mostrar el cargando y cada que se quiera presionar un boton de la action bar bloquearlo si la vista cargando es visible
+                                //1) Si el pedido se envia exitosamente retornar automaticamente a la actividad inicial y mostrar un toast con el mensaje de exito.
+                                //2) Si el pedido no se envia con exito, se vuelve a Tomar Pedido y se carga el pedido nuevamente y con toast se explica el error y se pide que reintente
+                                //Si se envia una notificacion hay dos casos, es lo mismo que lo anterior pero al hacer click sobre la notificacion
+
+
                             }
                         })
                 .setNegativeButton("No",

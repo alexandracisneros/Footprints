@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -69,18 +68,16 @@ public class MesasActivity extends Activity
     private BroadcastReceiver onEventActualizarEstadoMesa = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            boolean resultadoOperacion = intent.getBooleanExtra(ActualizarEstadoMesaService.EXTRA_RESULTADO_ACTUALIZACION, false);
-            if (resultadoOperacion) {
-                Toast.makeText(MesasActivity.this, "Resultado de Actualizar Estado: " + resultadoOperacion, Toast.LENGTH_SHORT).show();
-                String[] params = {String.valueOf(mMesaPisoSeleccionado.getId()),
-                        String.valueOf(mMesaPisoSeleccionado.getCodReserva())};
-                new ActualizarMesa_Reserva().execute(params);
-
+            int resultadoOperacion = intent.getIntExtra(ActualizarEstadoMesaService.EXTRA_RESULTADO_ACTUALIZACION, 0);
+            String mensajeOperacion = intent.getStringExtra(ActualizarEstadoMesaService.EXTRA_MENSAJE_ACTUALIZACION);
+            if (mensajeOperacion.equals("")) {
+                Intent toIntent = new Intent(MesasActivity.this, TomarPedidoActivity.class);
+                toIntent.putExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS, MesasActivity.this.getClass().getName());
+                startActivity(toIntent);
+                finish(); // finaliza actividad para que al volver necesariamente se tenga que volver a cargar la actividad
             } else {
-                String response = "Error";
-                //response = ((Exception) result).getMessage();
-                Log.d(DBHelper.TAG, "Se produjó la excepción: " + response);
-                Toast.makeText(MesasActivity.this, response, Toast.LENGTH_LONG)
+                Log.d(DBHelper.TAG, "Se produjó la excepción: " + mensajeOperacion);
+                Toast.makeText(MesasActivity.this, resultadoOperacion, Toast.LENGTH_LONG)
                         .show();
                 showProgressIndicator(false);
             }
@@ -117,8 +114,6 @@ public class MesasActivity extends Activity
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
         mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
         loadPisosSpinner();
-
-
     }
 
     @Override
@@ -208,22 +203,22 @@ public class MesasActivity extends Activity
         }
     }
 
-    private void confirmarActualizarEstadoMesa(final MesaPisoEE mesaPisoEE) {
+    private void confirmarActualizarEstadoMesa() {
 
         new AlertDialog.Builder(this)
                 .setTitle("Confirmación")
-                .setMessage("¿Realmente desea proceder a efectuar un pedido sobre la mesa :" + mesaPisoEE.getNroMesa() + " ?")
+                .setMessage("¿Realmente desea proceder a efectuar un pedido sobre la mesa :" + mMesaPisoSeleccionado.getNroMesa() + " ?")
                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        // Start daily operations
+
                         dialog.cancel();
                         Gson gson = new Gson();
-                        String mesaString = gson.toJson(mesaPisoEE);
-                        Intent serviceIntent = new Intent(MesasActivity.this,
-                                ActualizarEstadoMesaService.class);
+                        String mesaString = gson.toJson(mMesaPisoSeleccionado);
+                        Intent serviceIntent = new Intent(MesasActivity.this, ActualizarEstadoMesaService.class);
+                        //Extras
                         serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_TABLE, mesaString);
-                        serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_CLASS_NAME, this.getClass().getName());
+                        serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_CLASS_NAME, MesasActivity.this.getClass().getName());
                         Log.d(DBHelper.TAG, "Antes de startService ActualizarEstadoMesaService");
                         showProgressIndicator(true);
                         startService(serviceIntent);
@@ -267,49 +262,12 @@ public class MesasActivity extends Activity
                             int position, long id) {
         if (parent.getId() == R.id.mesasGridView) {
             mMesaPisoSeleccionado = getListaMesas().get(position);
-            confirmarActualizarEstadoMesa(mMesaPisoSeleccionado);
+            confirmarActualizarEstadoMesa();
         } else if (parent.getId() == R.id.menu_listview) {
             if (position != SmartWaiter.OPCION_TOMAR_PEDIDO) {
                 WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
                 Funciones.selectMenuOption(weakActivity, position);
             }
         }
-    }
-
-    private class ActualizarMesa_Reserva extends AsyncTask<String, Void, Object> {
-        @Override
-        protected Object doInBackground(String... params) {
-
-
-            Object requestObject;
-            String idMesa = params[0];
-            String idReservaLocal = params[1];
-            try {
-
-                MesaPisoDAO mesaPisoDAO = new MesaPisoDAO(getApplicationContext());
-                requestObject = mesaPisoDAO.updateEstadoMesaYReserva(Integer.parseInt(idMesa), Integer.parseInt(idReservaLocal),
-                        "OCU", "EFE");
-            } catch (Exception e) {
-                requestObject = e;
-            }
-            return requestObject;
-        }
-
-        @Override
-        protected void onPostExecute(Object result) {
-            if (result instanceof Integer) {
-                Intent intent = new Intent(MesasActivity.this, TomarPedidoActivity.class);
-                intent.putExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS, MesasActivity.this.getClass().getName());
-                startActivity(intent);
-                //finish(); //TODO: Revisar si Tomar pedido deberia mostrar el menu lateral o no segun lineamientos de android
-            } else if (result instanceof Exception) {
-                String response;
-                response = ((Exception) result).getMessage();
-                Log.d(DBHelper.TAG, "Se produjó la excepción: " + response);
-                Toast.makeText(MesasActivity.this, response, Toast.LENGTH_LONG)
-                        .show();
-            }
-        }
-
     }
 }

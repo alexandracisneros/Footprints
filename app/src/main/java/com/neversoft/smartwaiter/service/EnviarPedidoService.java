@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -17,6 +18,7 @@ import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 import com.neversoft.smartwaiter.model.entity.PedidoEE;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
 import com.neversoft.smartwaiter.ui.LoginActivity;
+import com.neversoft.smartwaiter.ui.TomarPedidoActivity;
 import com.neversoft.smartwaiter.util.Funciones;
 
 import org.apache.http.NameValuePair;
@@ -31,6 +33,10 @@ import java.util.Locale;
  */
 public class EnviarPedidoService extends IntentService {
     public static final String ACTION_SEND_DATA = "com.neversoft.smartwaiter.ENVIAR_PEDIDO";
+    public static final String EXTRA_PEDIDO_JSON = "pedido_json";
+
+    public static final String EXTRA_RESULTADO_EXITO = "resut_exito";
+    public static final String EXTRA_RESULTADO_MENSAJE = "result_mesnaje";
     private static final String NAME = "EnviarPedidoService";
     // define SharedPreferences object
     private SharedPreferences mPrefConfig;
@@ -51,9 +57,10 @@ public class EnviarPedidoService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         String mensaje = "";
-        int procesoOK = 0;
+        int idOrderFromServer = 0;
         boolean exito = false;
         long idPedido = 0;
+        String prevClass = "";
 
         // get SharedPreferences
         mPrefConfig = getApplicationContext().getSharedPreferences(
@@ -64,8 +71,8 @@ public class EnviarPedidoService extends IntentService {
 
         mCodCia = mPrefConfig.getString("CodCia", "");
         mCodMozo = mPrefConfig.getString("CodMozo", "");
-        mUsuario = mPrefConfig.getString("Usuario", "").toUpperCase(
-                Locale.getDefault());
+        mUsuario = mPrefConfig.getString("Usuario", "").toUpperCase(Locale.getDefault());
+        prevClass = intent.getStringExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS);
         try {
             if (Funciones.hasActiveInternetConnection(getApplicationContext())) {
 
@@ -75,7 +82,7 @@ public class EnviarPedidoService extends IntentService {
                 //todo
                 //get data as string convert it back to an Order and again to JSON???
                 //wouldn't it be better if they all already had the same names as the WebApi Project?
-                String stringPedido = intent.getStringExtra("json");
+                String stringPedido = intent.getStringExtra(EXTRA_PEDIDO_JSON);
                 Gson gson = new Gson();
                 PedidoEE pedido = gson.fromJson(stringPedido,
                         PedidoEE.class);
@@ -90,13 +97,12 @@ public class EnviarPedidoService extends IntentService {
                     String dataToSend = getEnvio(listaPedidosRegistrados, idPedido);//TODO  //PASA ARRAY
                     // Log.d("QuickOrder", dataToSend);
                     //TODO : BEFORE YOU SEND THE ORDER REGISTER IT IN THE DATABASE SO YOU HAVE  AN ORDER ID
-                    procesoOK = sendDataToServer(dataToSend);
-                    if (procesoOK > 0) { // Return the id of the order
+                    idOrderFromServer = sendDataToServer(dataToSend);
+                    if (idOrderFromServer > 0) {
                         exito = true;
 
                     } else {
-                        throw new Exception(
-                                "Pedido enviado pero no guardado");
+                        throw new Exception("Pedido enviado pero no guardado");
                     }
                 }
 
@@ -105,15 +111,15 @@ public class EnviarPedidoService extends IntentService {
             mensaje = e.getMessage();
             exito = false;
         }
-
+        SystemClock.sleep(3000);
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction(EnviarPedidoService.ACTION_SEND_DATA);
+        //Put Extras
+        broadcastIntent.putExtra(EXTRA_RESULTADO_EXITO, exito);
+        broadcastIntent.putExtra(EXTRA_RESULTADO_MENSAJE, mensaje);
+        broadcastIntent.putExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS, prevClass);
 
-        broadcastIntent.putExtra("exito", exito);
-        broadcastIntent.putExtra("resultado", procesoOK);
-        broadcastIntent.putExtra("mensaje", mensaje);
-
-        Log.d(DBHelper.TAG, "El resultado de la operacion fue :  " + procesoOK);
+        Log.d(DBHelper.TAG, "El id del pedido generado en el servidor es :  " + idOrderFromServer);
 
         sendOrderedBroadcast(broadcastIntent, null);
 

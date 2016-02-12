@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -16,9 +17,11 @@ import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.io.RestConnector;
 import com.neversoft.smartwaiter.io.RestUtil;
+import com.neversoft.smartwaiter.model.business.MesaPisoDAO;
 import com.neversoft.smartwaiter.model.entity.MesaPisoEE;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
 import com.neversoft.smartwaiter.ui.LoginActivity;
+import com.neversoft.smartwaiter.ui.MesasActivity;
 import com.neversoft.smartwaiter.util.Funciones;
 
 import java.net.URLEncoder;
@@ -29,14 +32,17 @@ import java.net.URLEncoder;
 public class ActualizarEstadoMesaService extends IntentService {
     public static final String ACTION_UPDATE_TABLE_STATUS = "com.neversoft.smartwaiter.service.SEND_UPDATE_TABLE_STATUS";
     public static final String EXTRA_RESULTADO_ACTUALIZACION = "resultado_actualizacion";
+    public static final String EXTRA_MENSAJE_ACTUALIZACION = "mensaje_actualizacion";
     public static final String EXTRA_CLASS_NAME = "class_name";
     public static final String EXTRA_TABLE = "table";
     private static final String NAME = "ActualizarEstadoMesa";
     private static int NOTIFY_ID = 1340;
     private boolean exito = false;
-    private String mensaje = "";
+    private String mMensaje = "";
+    private int mResultado = 0;
     private SharedPreferences mPrefConfig;
     private SharedPreferences mPrefConexion;
+
 
     public ActualizarEstadoMesaService() {
         super(NAME);
@@ -49,6 +55,7 @@ public class ActualizarEstadoMesaService extends IntentService {
         // get SharedPreferences
         mPrefConfig = getApplication().getSharedPreferences(LoginActivity.PREF_CONFIG, Context.MODE_PRIVATE);
         mPrefConexion = getApplication().getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
+
         MesaPisoEE mesaPisoEE = new MesaPisoEE();
         String urlServer = RestUtil.obtainURLServer(getApplicationContext());
         String url = urlServer
@@ -61,18 +68,20 @@ public class ActualizarEstadoMesaService extends IntentService {
         String nuevoEstadoMesa = "OCU";
         String codCia = mPrefConfig.getString("CodCia", "");
         String ambiente = mPrefConexion.getString(ConexionSharedPref.AMBIENTE, "");
-        String className = intent.getStringExtra(EXTRA_CLASS_NAME);
-
+        //Retrieving extras
         String mesaString = intent.getStringExtra(EXTRA_TABLE);
+        String className =intent.getStringExtra(EXTRA_CLASS_NAME);
+
         Gson gson = new Gson();
         mesaPisoEE = gson.fromJson(mesaString,
                 MesaPisoEE.class);
         String idReserva = String.valueOf(mesaPisoEE.getCodReserva());
+        Class<?> clase = MesasActivity.class; //Clase por defecto para evitar asignar null
 
         Log.d(DBHelper.TAG, ambiente);
         try {
             // Simple GET
-            Class<?> clase = Class.forName(className);
+            clase = Class.forName(className);
             String mensajeError = "";
 
             if (codCia != "") {
@@ -85,24 +94,11 @@ public class ActualizarEstadoMesaService extends IntentService {
                 Log.d(DBHelper.TAG, "ID_RESERVA: " + idReserva);
                 procesoOK = sendRequestToServer(urlWithParams);
                 if (procesoOK) {
-                    Intent event = new Intent(ActualizarEstadoMesaService.ACTION_UPDATE_TABLE_STATUS);
-                    event.putExtra(EXTRA_RESULTADO_ACTUALIZACION, procesoOK);
-                    if (!LocalBroadcastManager.getInstance(this).sendBroadcast(event)) {
-
-                        NotificationCompat.Builder b = new NotificationCompat.Builder(this);
-                        Intent ui = new Intent(this, clase);
-
-                        b.setAutoCancel(true).setDefaults(Notification.DEFAULT_SOUND)
-                                .setContentTitle(getString(R.string.notif_title))
-                                .setContentText("true")
-                                .setSmallIcon(android.R.drawable.stat_notify_more)
-                                .setTicker(getString(R.string.notif_title))
-                                .setContentIntent(PendingIntent.getActivity(this, 0, ui, 0));
-
-                        NotificationManager mgr =
-                                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-                        mgr.notify(NOTIFY_ID, b.build());
+                    MesaPisoDAO mesaPisoDAO = new MesaPisoDAO(getApplicationContext());
+                    mResultado = mesaPisoDAO.updateEstadoMesaYReserva(mesaPisoEE.getId(), mesaPisoEE.getCodReserva(),
+                            "OCU", "EFE");
+                    if (mResultado == 0) {
+                        mensajeError = "No se pudo actualizar el estado de la mesa nro" + mesaPisoEE.getNroMesa();
                     }
                 }
 
@@ -114,8 +110,29 @@ public class ActualizarEstadoMesaService extends IntentService {
             }
         } catch (Exception e) {
             Log.d(DBHelper.TAG, e.getMessage());
-            mensaje = e.getMessage();
+            mMensaje = e.getMessage();
             exito = false;
+        }
+        Intent event = new Intent(ActualizarEstadoMesaService.ACTION_UPDATE_TABLE_STATUS);
+        event.putExtra(EXTRA_RESULTADO_ACTUALIZACION, mResultado);
+        event.putExtra(EXTRA_MENSAJE_ACTUALIZACION, mMensaje);
+        SystemClock.sleep(2000);
+        if (!LocalBroadcastManager.getInstance(this).sendBroadcast(event)) {
+
+            NotificationCompat.Builder b = new NotificationCompat.Builder(this);
+            Intent ui = new Intent(this, clase);
+
+            b.setAutoCancel(true).setDefaults(Notification.DEFAULT_SOUND)
+                    .setContentTitle(getString(R.string.notif_title))
+                    .setContentText("true")
+                    .setSmallIcon(android.R.drawable.stat_notify_more)
+                    .setTicker(getString(R.string.notif_title))
+                    .setContentIntent(PendingIntent.getActivity(this, 0, ui, 0));
+
+            NotificationManager mgr =
+                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+            mgr.notify(NOTIFY_ID, b.build());
         }
     }
 
