@@ -70,14 +70,16 @@ public class MesasActivity extends Activity
         public void onReceive(Context context, Intent intent) {
             int resultadoOperacion = intent.getIntExtra(ActualizarEstadoMesaService.EXTRA_RESULTADO_ACTUALIZACION, 0);
             String mensajeOperacion = intent.getStringExtra(ActualizarEstadoMesaService.EXTRA_MENSAJE_ACTUALIZACION);
-            if (mensajeOperacion.equals("")) {
-                Intent toIntent = new Intent(MesasActivity.this, TomarPedidoActivity.class);
-                toIntent.putExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS, MesasActivity.this.getClass().getName());
-                startActivity(toIntent);
+            if (resultadoOperacion > 0) {
+                Log.d(DBHelper.TAG, "Resultado de Actualizar Estado de Mesa: " + resultadoOperacion);
+
+                Intent intentTo = new Intent(MesasActivity.this, TomarPedidoActivity.class);
+                intentTo.putExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS, MesasActivity.this.getClass().getName());
+                startActivity(intentTo);
                 finish(); // finaliza actividad para que al volver necesariamente se tenga que volver a cargar la actividad
             } else {
                 Log.d(DBHelper.TAG, "Se produjó la excepción: " + mensajeOperacion);
-                Toast.makeText(MesasActivity.this, resultadoOperacion, Toast.LENGTH_LONG)
+                Toast.makeText(MesasActivity.this, mensajeOperacion, Toast.LENGTH_LONG)
                         .show();
                 showProgressIndicator(false);
             }
@@ -216,9 +218,10 @@ public class MesasActivity extends Activity
                         Gson gson = new Gson();
                         String mesaString = gson.toJson(mMesaPisoSeleccionado);
                         Intent serviceIntent = new Intent(MesasActivity.this, ActualizarEstadoMesaService.class);
-                        //Extras
+                        //Put Extras
                         serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_TABLE, mesaString);
                         serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_CLASS_NAME, MesasActivity.this.getClass().getName());
+
                         Log.d(DBHelper.TAG, "Antes de startService ActualizarEstadoMesaService");
                         showProgressIndicator(true);
                         startService(serviceIntent);

@@ -124,6 +124,16 @@
 
         <service android:name=".service.ActualizarEstadoMesaService"/>
         <service android:name=".service.ObtenerListaMesasService"/>
+
+
+        <!--SO-->
+        <!--QA1-->
+        <!-- -->
+        <!--tr4ck18_t0xY-->
+        <!--SQL SERVER-->
+        <!-- -->
+        <!--sa-->
+        <!--calidad$123-->
     </application>
 
 </manifest>

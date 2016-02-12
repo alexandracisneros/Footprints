@@ -34,6 +34,8 @@ import java.net.URLEncoder;
  */
 public class SincronizarService extends IntentService {
     public static final String ACTION_SYNC_DATA = "com.neversoft.smartwaiter.SYNC_DATA";
+    public static final String EXTRA_RESULTADO_EXITO = "resut_exito";
+    public static final String EXTRA_RESULTADO_MENSAJE = "result_mesnaje";
     private static final String NAME = "SincronizarService";
     private Exception miExcepcion = null;
     private boolean exito = false;
@@ -90,18 +92,11 @@ public class SincronizarService extends IntentService {
         mUrlServer = RestUtil.obtainURLServer(getApplicationContext());
         try {
             mAmbiente = URLEncoder.encode(mAmbiente, "utf-8");
-            Log.d(DBHelper.TAG,
-                    "INICIA Insercion DataSincronizada: "
-                            + Funciones
-                            .getCurrentDate("yyyy/MM/dd hh:mm:ss"));
+            Log.d(DBHelper.TAG, "INICIA Insercion DataSincronizada: " + Funciones.getCurrentDate("yyyy/MM/dd hh:mm:ss"));
             leerDataWebService();
-            Log.d(DBHelper.TAG,
-                    "FINALIZA Insercion DataSincronizada: "
-                            + Funciones
-                            .getCurrentDate("yyyy/MM/dd hh:mm:ss"));
+            Log.d(DBHelper.TAG, "FINALIZA Insercion DataSincronizada: " + Funciones.getCurrentDate("yyyy/MM/dd hh:mm:ss"));
             exito = true;
         } catch (Exception e) {
-
             mensaje = e.getMessage();
             exito = false;
         }
@@ -109,9 +104,8 @@ public class SincronizarService extends IntentService {
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction(SincronizarService.ACTION_SYNC_DATA);
 
-        broadcastIntent.putExtra("exito", exito);
-        broadcastIntent.putExtra("resultado", "2");
-        broadcastIntent.putExtra("mensaje", mensaje);
+        broadcastIntent.putExtra(EXTRA_RESULTADO_EXITO, exito);
+        broadcastIntent.putExtra(EXTRA_RESULTADO_MENSAJE, mensaje);
 
         Log.d(DBHelper.TAG, "Mesaje Final Sincronizacion: " + mensaje);
 

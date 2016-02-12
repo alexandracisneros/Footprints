@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
+import com.neversoft.smartwaiter.service.SincronizarService;
 import com.neversoft.smartwaiter.ui.SincronizarActivity;
 
 /**
@@ -19,8 +20,8 @@ public class SincronizarReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intentFrom) {
-        boolean exito = intentFrom.getBooleanExtra("exito", false);
-        String mensajeError = intentFrom.getStringExtra("mensaje");
+        boolean exito = intentFrom.getBooleanExtra(SincronizarService.EXTRA_RESULTADO_EXITO, false);
+        String mensajeError = intentFrom.getStringExtra(SincronizarService.EXTRA_RESULTADO_MENSAJE);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);

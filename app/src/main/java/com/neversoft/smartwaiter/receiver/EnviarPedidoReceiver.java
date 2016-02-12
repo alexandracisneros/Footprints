@@ -26,6 +26,7 @@ public class EnviarPedidoReceiver extends BroadcastReceiver {
         boolean exito = intentFrom.getBooleanExtra(EnviarPedidoService.EXTRA_RESULTADO_EXITO, false);
         String mensajeError = intentFrom.getStringExtra(EnviarPedidoService.EXTRA_RESULTADO_MENSAJE);
         String className = intentFrom.getStringExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS);
+
         Class<?> clase = MesasActivity.class; //Clase por defecto para evitar asignar null
         try {
             clase = Class.forName(className);

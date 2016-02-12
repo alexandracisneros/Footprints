@@ -36,24 +36,20 @@ public class SincronizarActivity extends Activity implements AdapterView.OnItemC
         public void onReceive(Context context, Intent intent) {
             Log.d(DBHelper.TAG, "onEventSincronizarDatosIniciales broadcast receiveed.");
             // if necessary get data from intent
-            boolean exito = intent.getBooleanExtra("exito", false);
+            boolean exito = intent.getBooleanExtra(SincronizarService.EXTRA_RESULTADO_EXITO, false);
+            String mensajeError = intent.getStringExtra(SincronizarService.EXTRA_RESULTADO_MENSAJE);
             abortBroadcast();
             showProgressIndicator(false);
-            String mensaje;
             if (exito) {
-                mensaje = String.valueOf(intent.getIntExtra("resultado", 0));
-                Log.d(DBHelper.TAG,
-                        "Success from BroadcastReceiver within SincronizarActivity : "
-                                + mensaje);
+                mensajeError = "Sincronización Realizada con éxito.";
+                Log.d(DBHelper.TAG, "Success from BroadcastReceiver within SincronizarActivity : " + exito);
             } else {
-                mensaje = intent.getStringExtra("mensaje");
-                Log.d(DBHelper.TAG,
-                        "Exception from BroadcastReceiver within SincronizarActivity :"
-                                + mensaje);
+                Log.d(DBHelper.TAG, "Exception from BroadcastReceiver within SincronizarActivity :"
+                        + mensajeError);
                 // update the display
                 //PREF_Control.save(mPrefControl, null, null, null, null, null, "", false);
-                Toast.makeText(SincronizarActivity.this, mensaje, Toast.LENGTH_LONG).show();
             }
+            Toast.makeText(SincronizarActivity.this, mensajeError, Toast.LENGTH_LONG).show();
 
         }
     };
