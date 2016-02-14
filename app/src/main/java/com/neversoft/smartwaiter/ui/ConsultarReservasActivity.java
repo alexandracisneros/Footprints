@@ -37,6 +37,7 @@ import com.neversoft.smartwaiter.model.business.ReservaDAO;
 import com.neversoft.smartwaiter.model.entity.ClienteEE;
 import com.neversoft.smartwaiter.model.entity.MesaPisoEE;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
+import com.neversoft.smartwaiter.preference.PedidoExtraSharedPref;
 import com.neversoft.smartwaiter.service.ActualizarEstadoMesaService;
 import com.neversoft.smartwaiter.util.Funciones;
 
@@ -63,6 +64,7 @@ public class ConsultarReservasActivity extends Activity
     private SharedPreferences mPrefConexion;
     private FrameLayout mIndicatorFrameLayout;
     private LinearLayout mMainLinearLayout;
+    private SharedPreferences mPrefPedidoExtras;
 
     private BroadcastReceiver onEventActualizarEstadoMesa = new BroadcastReceiver() {
         @Override
@@ -73,7 +75,6 @@ public class ConsultarReservasActivity extends Activity
                 Log.d(DBHelper.TAG, "Resultado de Actualizar Estado de Mesa: " + resultadoOperacion);
 
                 Intent intentTo = new Intent(ConsultarReservasActivity.this, TomarPedidoActivity.class);
-                intentTo.putExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS, ConsultarReservasActivity.this.getClass().getName());
                 startActivity(intentTo);
                 finish(); // finaliza actividad para que al volver necesariamente se tenga que volver a cargar la actividad
             } else {
@@ -122,6 +123,8 @@ public class ConsultarReservasActivity extends Activity
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
         mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
 
+        mPrefPedidoExtras=getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
+
     }
 
     @Override
@@ -144,7 +147,7 @@ public class ConsultarReservasActivity extends Activity
                             int position, long id) {
         if (parent.getId() == R.id.mesasGridView) {
             mMesaPisoSeleccionado = mMesaPisoLista.get(position);
-            confirmarActualizarEstadoMesa(mMesaPisoSeleccionado);
+            confirmarActualizarEstadoMesa();
 
 
         } else if (parent.getId() == R.id.menu_listview) {
@@ -155,22 +158,25 @@ public class ConsultarReservasActivity extends Activity
         }
     }
 
-    private void confirmarActualizarEstadoMesa(final MesaPisoEE mesaPisoEE) {
+    private void confirmarActualizarEstadoMesa() {
 
         new AlertDialog.Builder(this)
                 .setTitle("Confirmación")
-                .setMessage("¿Realmente desea proceder a efectuar un pedido sobre la mesa :" + mesaPisoEE.getNroMesa() + " ?")
+                .setMessage("¿Realmente desea proceder a efectuar un pedido sobre la mesa :" + mMesaPisoSeleccionado.getNroMesa() + " ?")
                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
 
                         dialog.cancel();
                         Gson gson = new Gson();
-                        String mesaString = gson.toJson(mesaPisoEE);
+                        String mesaString = gson.toJson(mMesaPisoSeleccionado);
                         Intent serviceIntent = new Intent(ConsultarReservasActivity.this, ActualizarEstadoMesaService.class);
                         //Put Extras
-                        serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_TABLE, mesaString);
-                        serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_CLASS_NAME, ConsultarReservasActivity.this.getClass().getName());
+                        serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_NUEVO_ESTADO_MESA, "OCU");
+                        serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_NUEVO_ESTADO_RESERVA, "EFE");
+
+                        //Store extra info as preference
+                        PedidoExtraSharedPref.save(mPrefPedidoExtras, mesaString, ConsultarReservasActivity.this.getClass().getName());
 
                         Log.d(DBHelper.TAG, "Antes de startService ActualizarEstadoMesaService");
                         showProgressIndicator(true);

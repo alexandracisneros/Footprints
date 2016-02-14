@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -29,6 +30,7 @@ import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.model.business.MesaPisoDAO;
 import com.neversoft.smartwaiter.model.entity.MesaPisoEE;
 import com.neversoft.smartwaiter.model.entity.SpinnerEE;
+import com.neversoft.smartwaiter.preference.PedidoExtraSharedPref;
 import com.neversoft.smartwaiter.service.ActualizarEstadoMesaService;
 import com.neversoft.smartwaiter.service.ObtenerListaMesasService;
 import com.neversoft.smartwaiter.util.Funciones;
@@ -50,8 +52,9 @@ public class MesasActivity extends Activity
     private ArrayList<MesaPisoEE> mListaMesas;
     private FrameLayout mIndicatorFrameLayout;
     private LinearLayout mMainLinearLayout;
-    // The ScheduleHelper is responsible for feeding data in a format suitable to the Adapter.
+
     private MesaPisoDAO mDataHelper;
+    private SharedPreferences mPrefPedidoExtras;
 
     private BroadcastReceiver onEventRefrescarListadoMesas = new BroadcastReceiver() {
         @Override
@@ -70,11 +73,11 @@ public class MesasActivity extends Activity
         public void onReceive(Context context, Intent intent) {
             int resultadoOperacion = intent.getIntExtra(ActualizarEstadoMesaService.EXTRA_RESULTADO_ACTUALIZACION, 0);
             String mensajeOperacion = intent.getStringExtra(ActualizarEstadoMesaService.EXTRA_MENSAJE_ACTUALIZACION);
+
             if (resultadoOperacion > 0) {
                 Log.d(DBHelper.TAG, "Resultado de Actualizar Estado de Mesa: " + resultadoOperacion);
 
                 Intent intentTo = new Intent(MesasActivity.this, TomarPedidoActivity.class);
-                intentTo.putExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS, MesasActivity.this.getClass().getName());
                 startActivity(intentTo);
                 finish(); // finaliza actividad para que al volver necesariamente se tenga que volver a cargar la actividad
             } else {
@@ -115,6 +118,8 @@ public class MesasActivity extends Activity
 
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
         mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
+
+        mPrefPedidoExtras = getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
         loadPisosSpinner();
     }
 
@@ -188,8 +193,7 @@ public class MesasActivity extends Activity
 
     public void startActualizarEstadoMesas() {
         //Desde aca mostrar la pantalla de Loading y terminarla cuando regrese el servicio
-        Intent serviceIntent = new Intent(MesasActivity.this,
-                ObtenerListaMesasService.class);
+        Intent serviceIntent = new Intent(MesasActivity.this, ObtenerListaMesasService.class);
         Log.d(DBHelper.TAG, "Antes de startService ObtenerListaMesasServiceService");
         showProgressIndicator(true);
         startService(serviceIntent);
@@ -219,8 +223,11 @@ public class MesasActivity extends Activity
                         String mesaString = gson.toJson(mMesaPisoSeleccionado);
                         Intent serviceIntent = new Intent(MesasActivity.this, ActualizarEstadoMesaService.class);
                         //Put Extras
-                        serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_TABLE, mesaString);
-                        serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_CLASS_NAME, MesasActivity.this.getClass().getName());
+                        serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_NUEVO_ESTADO_MESA, "OCU");
+                        serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_NUEVO_ESTADO_RESERVA, "EFE");
+
+                        //Store extra info as preference
+                        PedidoExtraSharedPref.save(mPrefPedidoExtras, mesaString, MesasActivity.this.getClass().getName());
 
                         Log.d(DBHelper.TAG, "Antes de startService ActualizarEstadoMesaService");
                         showProgressIndicator(true);

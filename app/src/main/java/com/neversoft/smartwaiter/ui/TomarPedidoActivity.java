@@ -8,8 +8,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,22 +29,25 @@ import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.model.business.ArticuloDAO;
 import com.neversoft.smartwaiter.model.business.CategoriaDAO;
-import com.neversoft.smartwaiter.model.business.PedidoDAO;
 import com.neversoft.smartwaiter.model.entity.ArticuloEE;
 import com.neversoft.smartwaiter.model.entity.CategoriaEE;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
+import com.neversoft.smartwaiter.model.entity.MesaPisoEE;
 import com.neversoft.smartwaiter.model.entity.PedidoEE;
+import com.neversoft.smartwaiter.preference.PedidoExtraSharedPref;
 import com.neversoft.smartwaiter.preference.PedidoSharedPref;
+import com.neversoft.smartwaiter.service.ActualizarEstadoMesaService;
 import com.neversoft.smartwaiter.service.EnviarPedidoService;
 import com.neversoft.smartwaiter.util.Funciones;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class TomarPedidoActivity extends Activity
         implements OnItemClickListener {
-    public static final String EXTRA_PREVIOUS_ACTIVITY_CLASS = "extra_prev_act_class";
+
     private ListView mCategoriasListView;
     private ListView mArticulosListView;
     private ListView mPedidoListView;
@@ -52,6 +56,7 @@ public class TomarPedidoActivity extends Activity
     private CategoriaDAO mCategoriaDAO;
     private ArticuloDAO mArticuloDAO;
     private ArrayList<DetallePedidoEE> mItems;
+    private MesaPisoEE mMesaPisoEE;
 
     private TextView mSubTotalPedidoTextView;
     private TextView mIGVPedidoTextView;
@@ -61,6 +66,36 @@ public class TomarPedidoActivity extends Activity
     private RelativeLayout mMainRelativeLayout;
     private float mTotal = 0;
     private String mPrevClassName;
+    private SharedPreferences mPrefPedidoExtras;
+    private BroadcastReceiver onEventActualizarEstadoMesa = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int resultadoOperacion = intent.getIntExtra(ActualizarEstadoMesaService.EXTRA_RESULTADO_ACTUALIZACION, 0);
+            String mensajeOperacion = intent.getStringExtra(ActualizarEstadoMesaService.EXTRA_MENSAJE_ACTUALIZACION);
+
+            if (resultadoOperacion > 0) {
+                Log.d(DBHelper.TAG, "Resultado de Actualizar Estado de Mesa: " + resultadoOperacion);
+                Class<?> clase = MesasActivity.class; //Clase por defecto para evitar asignar null
+                try {
+                    clase = Class.forName(mPrevClassName);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                PedidoSharedPref.clear(TomarPedidoActivity.this);
+                PedidoExtraSharedPref.remove(mPrefPedidoExtras);
+
+                Intent intentTo = new Intent(TomarPedidoActivity.this, clase);
+                startActivity(intentTo);
+                finish(); // finaliza actividad para que al volver necesariamente se tenga que volver a cargar la actividad
+            } else {
+                Log.d(DBHelper.TAG, "Se produjó la excepción: " + mensajeOperacion);
+                Toast.makeText(TomarPedidoActivity.this, mensajeOperacion, Toast.LENGTH_LONG)
+                        .show();
+                showProgressIndicator(false);
+            }
+
+        }
+    };
     private BroadcastReceiver sendDataReceiver = new BroadcastReceiver() {
 
         @Override
@@ -84,6 +119,7 @@ public class TomarPedidoActivity extends Activity
                     e.printStackTrace();
                 }
                 PedidoSharedPref.clear(TomarPedidoActivity.this);
+                PedidoExtraSharedPref.remove(mPrefPedidoExtras);
                 Intent toIntent = new Intent(TomarPedidoActivity.this, clase);
                 startActivity(toIntent);
                 finish();
@@ -102,8 +138,13 @@ public class TomarPedidoActivity extends Activity
         super.onCreate(savedInstanceState);
         overridePendingTransition(0, 0);
         setContentView(R.layout.activity_tomar_pedido);
-        //Retrieve Extra
-        mPrevClassName = getIntent().getStringExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS);
+        //Retrieve Preferences
+        mPrefPedidoExtras = getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
+        mPrevClassName = mPrefPedidoExtras.getString(PedidoExtraSharedPref.STARTING_ACTIVITY, MesasActivity.class.getClass().getName());
+        String mesaString = mPrefPedidoExtras.getString(PedidoExtraSharedPref.SELECTED_TABLE_JSON, null);
+
+        Gson gson = new Gson();
+        mMesaPisoEE = gson.fromJson(mesaString, MesaPisoEE.class);
 
         mCategoriaDAO = new CategoriaDAO(getApplicationContext());
         mArticuloDAO = new ArticuloDAO(getApplicationContext());
@@ -172,56 +213,46 @@ public class TomarPedidoActivity extends Activity
                 //Toast.makeText(this, "Save & Send", Toast.LENGTH_SHORT).show();
                 sendData();
                 break;
-            case R.id.action_just_save:
-                saveOrder();
-                //Toast.makeText(getActivity(), "Just Save", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.action_cancelar:
-                Toast.makeText(this, "Cancel", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Cancel", Toast.LENGTH_SHORT).show();
+                confirmarCancelarPedido();
+                //TODO:
+                //1 Confirmación. "Cancelar Pedido Si o No??"
+                //2 Eliminar Pedido de Preferencia y Actualizar el estado de la mesa (tanto del webService como de la bd local
+                //3 Volver a la actividad de origen automaticamente (Mesas o BusacarReservas)
                 break;
         }
         return true;
     }
 
-    private void saveOrder() {
-        final PedidoDAO pedidoDAO = new PedidoDAO(getApplicationContext());
-        final PedidoEE pedido = new PedidoEE();
-        pedido.setFecha(Funciones.getCurrentDate("yyyy/MM/dd"));
-        pedido.setNroMesa(2);
-        pedido.setNroPiso(1);
-        pedido.setCantRecogida("");
-        pedido.setAmbiente(1);
-        pedido.setCodUsuario("200");
-        pedido.setCodCliente(100);
-        pedido.setTipoVenta("020");
-        pedido.setTipoPago("030");
-        pedido.setMoneda("SOL");
-        pedido.setMontoTotal(mTotal);
-        pedido.setMontoRecibido(1500);
-        pedido.setEstado("010"); //Se realizo el guardado del pedido pero no se ha enviado a cocina
-        pedido.setCodCia("001");
-        pedido.setDetalle(mItems);
-        new AsyncTask<Void, Void, Object>() {
+    private void confirmarCancelarPedido() {
+        new AlertDialog.Builder(this)
+                .setTitle("Confirmación")
+                .setMessage("¿Realmente desea cancelar el pedido actual?")
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
 
-            @Override
-            protected Object doInBackground(Void... voids) {
-                try {
-                    return pedidoDAO.savePedido(pedido, 0); //0=NO ENVIADO A COCINA
-                } catch (Exception e) {
-                    return e;
-                }
-            }
+                        dialog.cancel();
 
-            @Override
-            protected void onPostExecute(Object result) {
-                if (result instanceof Long) {
-                    Toast.makeText(TomarPedidoActivity.this, "Operación completada con exito. Id =" + result, Toast.LENGTH_SHORT).show();
-                } else if (result instanceof Exception) {
-                    Toast.makeText(TomarPedidoActivity.this, "Se produjo la excepción: " + result, Toast.LENGTH_SHORT).show();
-                }
-            }
-        }.execute();
+                        Intent serviceIntent = new Intent(TomarPedidoActivity.this, ActualizarEstadoMesaService.class);
+                        //Put Extras
+                        serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_NUEVO_ESTADO_MESA, "LIB"); //LIBRE
+                        serviceIntent.putExtra(ActualizarEstadoMesaService.EXTRA_NUEVO_ESTADO_RESERVA, "CAN"); //CANCELADO
 
+                        Log.d(DBHelper.TAG, "Antes de startService ActualizarEstadoMesaService (Cancelar Pedido)");
+                        showProgressIndicator(true);
+                        startService(serviceIntent);
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+
+                    }
+                }).setIcon(android.R.drawable.ic_dialog_alert).show();
     }
 
     @Override
@@ -287,43 +318,17 @@ public class TomarPedidoActivity extends Activity
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                                 Gson gson = new Gson();
-                                //PONER EN FUCNION
-                                PedidoEE pedido = new PedidoEE();
-                                pedido.setFecha(Funciones.getCurrentDate("yyyy/MM/dd"));
-                                pedido.setNroMesa(2);
-                                pedido.setNroPiso(1);
-                                pedido.setCantRecogida("");
-                                pedido.setAmbiente(1);
-                                pedido.setCodUsuario("200");
-                                pedido.setCodCliente(100);
-                                pedido.setTipoVenta("020"); // QUE ESTO?
-                                pedido.setTipoPago("030"); // QUE ESTO??
-                                pedido.setMoneda("SOL");
-                                pedido.setMontoTotal(mTotal);  // ESTE TOTAL NO ESTA COMPLETO ESTA VIAJANDO SOLO LA SUMATORIA Y NO EL TOTAL CON IGV
-                                pedido.setMontoRecibido(1500);
-                                pedido.setEstado("020"); //Se realizo el guardado del Pedido y se envío a cocina //TODO Mejor pasalo el estado en "savePedido"
-                                pedido.setCodCia("001");
-                                pedido.setDetalle(mItems);
-                                //PONER EN FUNCION
-
+                                PedidoEE pedido;
+                                pedido = createPedido();
 
                                 String pedidosString = gson.toJson(pedido);
                                 Intent iniciarServiceIntent = new Intent(TomarPedidoActivity.this, EnviarPedidoService.class);
                                 //Put extras
                                 iniciarServiceIntent.putExtra(EnviarPedidoService.EXTRA_PEDIDO_JSON, pedidosString);
-                                iniciarServiceIntent.putExtra(EXTRA_PREVIOUS_ACTIVITY_CLASS, mPrevClassName);
 
                                 Log.d(DBHelper.TAG, "Antes de startService SendDataService");
                                 showProgressIndicator(true);
                                 startService(iniciarServiceIntent);
-
-                                //TODO <---- ACA ME QUEDE 10/02/2016 07:22 pm
-                                //No se puede terminar la actividad
-                                //No queda mas que mostrar el cargando y cada que se quiera presionar un boton de la action bar bloquearlo si la vista cargando es visible
-                                //1) Si el pedido se envia exitosamente retornar automaticamente a la actividad inicial y mostrar un toast con el mensaje de exito.
-                                //2) Si el pedido no se envia con exito, se vuelve a Tomar Pedido y se carga el pedido nuevamente y con toast se explica el error y se pide que reintente
-                                //Si se envia una notificacion hay dos casos, es lo mismo que lo anterior pero al hacer click sobre la notificacion
-
 
                             }
                         })
@@ -341,18 +346,20 @@ public class TomarPedidoActivity extends Activity
     protected void onPause() {
         super.onPause();
         unregisterReceiver(sendDataReceiver);
-        Log.d(DBHelper.TAG, "Entre a onPause - EnviarDatosActivity");
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onEventActualizarEstadoMesa);
+        Log.d(DBHelper.TAG, "Entre a onPause - TomarPedidoActivity");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        Log.d(DBHelper.TAG, "Entre a onResume - EnviarDatosActivity");
-        IntentFilter filter = new IntentFilter(
-                EnviarPedidoService.ACTION_SEND_DATA);
+        Log.d(DBHelper.TAG, "Entre a onResume - TomarPedidoActivity");
+        IntentFilter filter = new IntentFilter(EnviarPedidoService.ACTION_SEND_DATA);
         filter.setPriority(2);
         registerReceiver(sendDataReceiver, filter);
+        IntentFilter filterNotificarActualizarEstadoMesa = new IntentFilter(ActualizarEstadoMesaService.ACTION_UPDATE_TABLE_STATUS);
+        LocalBroadcastManager.getInstance(this).registerReceiver(onEventActualizarEstadoMesa, filterNotificarActualizarEstadoMesa);
 
     }
 
@@ -374,5 +381,32 @@ public class TomarPedidoActivity extends Activity
         mListaArticulos = new ArrayList<ArticuloEE>();
         WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
         mArticuloDAO.getArticuloPorFamiliaAsync(weakActivity, familiaId);
+    }
+
+    private PedidoEE createPedido() {
+        // Retrieve  Shared Preferences
+        SharedPreferences prefConfig = getApplicationContext().getSharedPreferences(
+                LoginActivity.PREF_CONFIG, Context.MODE_PRIVATE);
+        String codUsuario = prefConfig.getString("Usuario", "").toUpperCase(Locale.getDefault());
+        String codCia = prefConfig.getString("CodCia", "");
+
+        PedidoEE pedido = new PedidoEE();
+
+        pedido.setFecha(Funciones.getCurrentDate("yyyy/MM/dd"));
+        pedido.setNroMesa(mMesaPisoEE.getNroMesa());
+        pedido.setNroPiso(mMesaPisoEE.getNroPiso());
+        pedido.setCantRecogida("");
+        pedido.setAmbiente(mMesaPisoEE.getCodAmbiente());
+        pedido.setCodUsuario(codUsuario);
+        pedido.setCodCliente(0);
+        pedido.setTipoVenta("");
+        pedido.setTipoPago("");
+        pedido.setMoneda("SOL");
+        pedido.setMontoTotal(mTotal);  // ESTE TOTAL NO ESTA COMPLETO ESTA VIAJANDO SOLO LA SUMATORIA Y NO EL TOTAL CON IGV
+        pedido.setMontoRecibido(0);
+        pedido.setEstado("020"); //020 = Se realizo el guardado del Pedido y se envío a cocina // 010 = Se realizo el guardado del pedido pero no se ha enviado a cocina
+        pedido.setCodCia(codCia);
+        pedido.setDetalle(mItems);
+        return pedido;
     }
 }

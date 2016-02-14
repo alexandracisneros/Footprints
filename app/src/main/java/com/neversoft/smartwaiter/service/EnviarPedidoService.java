@@ -17,8 +17,9 @@ import com.neversoft.smartwaiter.model.business.PedidoDAO;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 import com.neversoft.smartwaiter.model.entity.PedidoEE;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
+import com.neversoft.smartwaiter.preference.PedidoExtraSharedPref;
 import com.neversoft.smartwaiter.ui.LoginActivity;
-import com.neversoft.smartwaiter.ui.TomarPedidoActivity;
+import com.neversoft.smartwaiter.ui.MesasActivity;
 import com.neversoft.smartwaiter.util.Funciones;
 
 import org.apache.http.NameValuePair;
@@ -60,19 +61,16 @@ public class EnviarPedidoService extends IntentService {
         int idOrderFromServer = 0;
         boolean exito = false;
         long idPedido = 0;
-        String prevClass = "";
 
         // get SharedPreferences
-        mPrefConfig = getApplicationContext().getSharedPreferences(
-                LoginActivity.PREF_CONFIG, Context.MODE_PRIVATE);
-        mPrefConexion = getApplicationContext().getSharedPreferences(
-                ConexionSharedPref.NAME, Context.MODE_PRIVATE);
-        mAmbiente = mPrefConexion.getString(ConexionSharedPref.AMBIENTE, "");
+        mPrefConfig = getApplicationContext().getSharedPreferences(LoginActivity.PREF_CONFIG, Context.MODE_PRIVATE);
+        mPrefConexion = getApplicationContext().getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
 
+        mAmbiente = mPrefConexion.getString(ConexionSharedPref.AMBIENTE, "");
         mCodCia = mPrefConfig.getString("CodCia", "");
         mCodMozo = mPrefConfig.getString("CodMozo", "");
         mUsuario = mPrefConfig.getString("Usuario", "").toUpperCase(Locale.getDefault());
-        prevClass = intent.getStringExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS);
+
         try {
             if (Funciones.hasActiveInternetConnection(getApplicationContext())) {
 
@@ -117,8 +115,6 @@ public class EnviarPedidoService extends IntentService {
         //Put Extras
         broadcastIntent.putExtra(EXTRA_RESULTADO_EXITO, exito);
         broadcastIntent.putExtra(EXTRA_RESULTADO_MENSAJE, mensaje);
-        broadcastIntent.putExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS, prevClass);
-
         Log.d(DBHelper.TAG, "El id del pedido generado en el servidor es :  " + idOrderFromServer);
 
         sendOrderedBroadcast(broadcastIntent, null);

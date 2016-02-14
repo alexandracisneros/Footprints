@@ -6,8 +6,10 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
 
+import com.neversoft.smartwaiter.preference.PedidoExtraSharedPref;
 import com.neversoft.smartwaiter.preference.PedidoSharedPref;
 import com.neversoft.smartwaiter.service.EnviarPedidoService;
 import com.neversoft.smartwaiter.ui.MesasActivity;
@@ -22,10 +24,13 @@ public class EnviarPedidoReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intentFrom) {
 
-        //Retrive Extras
+        //Retrieve Extras
         boolean exito = intentFrom.getBooleanExtra(EnviarPedidoService.EXTRA_RESULTADO_EXITO, false);
         String mensajeError = intentFrom.getStringExtra(EnviarPedidoService.EXTRA_RESULTADO_MENSAJE);
-        String className = intentFrom.getStringExtra(TomarPedidoActivity.EXTRA_PREVIOUS_ACTIVITY_CLASS);
+
+        //Retrieve Preferences
+        SharedPreferences prefPedidoExtras=context.getSharedPreferences(PedidoExtraSharedPref.NAME, context.MODE_PRIVATE);
+        String className =prefPedidoExtras.getString(PedidoExtraSharedPref.STARTING_ACTIVITY, MesasActivity.class.getClass().getName());
 
         Class<?> clase = MesasActivity.class; //Clase por defecto para evitar asignar null
         try {
@@ -45,6 +50,7 @@ public class EnviarPedidoReceiver extends BroadcastReceiver {
                     .setSmallIcon(android.R.drawable.stat_sys_upload)
                     .setTicker("Pedido enviado correctamente");
             PedidoSharedPref.clear(context);
+            PedidoExtraSharedPref.remove(prefPedidoExtras);
         } else {
             intentTo = new Intent(context, TomarPedidoActivity.class);
             builder.setContentTitle("Error de Envio")

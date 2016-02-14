@@ -20,6 +20,7 @@ import com.neversoft.smartwaiter.io.RestUtil;
 import com.neversoft.smartwaiter.model.business.MesaPisoDAO;
 import com.neversoft.smartwaiter.model.entity.MesaPisoEE;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
+import com.neversoft.smartwaiter.preference.PedidoExtraSharedPref;
 import com.neversoft.smartwaiter.ui.LoginActivity;
 import com.neversoft.smartwaiter.ui.MesasActivity;
 import com.neversoft.smartwaiter.util.Funciones;
@@ -31,10 +32,13 @@ import java.net.URLEncoder;
  */
 public class ActualizarEstadoMesaService extends IntentService {
     public static final String ACTION_UPDATE_TABLE_STATUS = "com.neversoft.smartwaiter.service.SEND_UPDATE_TABLE_STATUS";
+    //inputs
+    public static final String EXTRA_NUEVO_ESTADO_RESERVA = "estado_reserva";
+    public static final String EXTRA_NUEVO_ESTADO_MESA = "estado_mesa";
+    //outputs
     public static final String EXTRA_RESULTADO_ACTUALIZACION = "resultado_actualizacion";
     public static final String EXTRA_MENSAJE_ACTUALIZACION = "mensaje_actualizacion";
-    public static final String EXTRA_CLASS_NAME = "class_name";
-    public static final String EXTRA_TABLE = "table";
+
     private static final String NAME = "ActualizarEstadoMesa";
     private static int NOTIFY_ID = 1340;
     private boolean exito = false;
@@ -42,7 +46,7 @@ public class ActualizarEstadoMesaService extends IntentService {
     private int mResultado = 0;
     private SharedPreferences mPrefConfig;
     private SharedPreferences mPrefConexion;
-
+    private SharedPreferences mPrefPedidoExtras;
 
     public ActualizarEstadoMesaService() {
         super(NAME);
@@ -52,9 +56,15 @@ public class ActualizarEstadoMesaService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         boolean procesoOK;
 
-        // get SharedPreferences
+        // Retrieve Shared Preferences
         mPrefConfig = getApplication().getSharedPreferences(LoginActivity.PREF_CONFIG, Context.MODE_PRIVATE);
         mPrefConexion = getApplication().getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
+        mPrefPedidoExtras = getApplication().getSharedPreferences(PedidoExtraSharedPref.NAME, Context.MODE_PRIVATE);
+
+        // Retrieve Extras
+        String nuevoEstadoReserva = intent.getStringExtra(EXTRA_NUEVO_ESTADO_RESERVA);
+        String nuevoEstadoMesa = intent.getStringExtra(EXTRA_NUEVO_ESTADO_MESA);
+
 
         MesaPisoEE mesaPisoEE = new MesaPisoEE();
         String urlServer = RestUtil.obtainURLServer(getApplicationContext());
@@ -64,17 +74,16 @@ public class ActualizarEstadoMesaService extends IntentService {
         ///ActualizarEstadoMesa/?nroMesa=10&idAmbiente=1&estadoMesa=PAT&idReserva=0&estadoReserva=&nbsp&codCia=001&cadenaConexion=Initial%20Catalog=PRUEBAMOVILJHAV
         //ActualizarEstadoMesa/?nroMesa=10&idAmbiente=1&estadoMesa=PAT&idReserva=2&estadoReserva=EFE&codCia=001&cadenaConexion=Initial%20Catalog=PRUEBAMOVILJHAV
 
-        String nuevoEstadoReserva = "EFE";
-        String nuevoEstadoMesa = "OCU";
+        //String nuevoEstadoReserva = "EFE";
+        //String nuevoEstadoMesa = "OCU";
         String codCia = mPrefConfig.getString("CodCia", "");
         String ambiente = mPrefConexion.getString(ConexionSharedPref.AMBIENTE, "");
         //Retrieving extras
-        String mesaString = intent.getStringExtra(EXTRA_TABLE);
-        String className =intent.getStringExtra(EXTRA_CLASS_NAME);
+        String mesaString = mPrefPedidoExtras.getString(PedidoExtraSharedPref.SELECTED_TABLE_JSON, null);
+        String className = mPrefPedidoExtras.getString(PedidoExtraSharedPref.STARTING_ACTIVITY, MesasActivity.class.getClass().getName());
 
         Gson gson = new Gson();
-        mesaPisoEE = gson.fromJson(mesaString,
-                MesaPisoEE.class);
+        mesaPisoEE = gson.fromJson(mesaString, MesaPisoEE.class);
         String idReserva = String.valueOf(mesaPisoEE.getCodReserva());
         Class<?> clase = MesasActivity.class; //Clase por defecto para evitar asignar null
 
@@ -89,14 +98,13 @@ public class ActualizarEstadoMesaService extends IntentService {
                         "utf-8");
                 //OCU es el estado al que pasará la mesa
                 String urlWithParams = String.format(url, mesaPisoEE.getNroMesa(), mesaPisoEE.getCodAmbiente(),
-                        nuevoEstadoMesa, idReserva, nuevoEstadoReserva,
-                        codCia, encondedAmbiente);
+                        nuevoEstadoMesa, idReserva, nuevoEstadoReserva, codCia, encondedAmbiente);
                 Log.d(DBHelper.TAG, "ID_RESERVA: " + idReserva);
                 procesoOK = sendRequestToServer(urlWithParams);
                 if (procesoOK) {
                     MesaPisoDAO mesaPisoDAO = new MesaPisoDAO(getApplicationContext());
                     mResultado = mesaPisoDAO.updateEstadoMesaYReserva(mesaPisoEE.getId(), mesaPisoEE.getCodReserva(),
-                            "OCU", "EFE");
+                            nuevoEstadoMesa, nuevoEstadoReserva);
                     if (mResultado == 0) {
                         mensajeError = "No se pudo actualizar el estado de la mesa nro" + mesaPisoEE.getNroMesa();
                     }
@@ -116,6 +124,7 @@ public class ActualizarEstadoMesaService extends IntentService {
         Intent event = new Intent(ActualizarEstadoMesaService.ACTION_UPDATE_TABLE_STATUS);
         event.putExtra(EXTRA_RESULTADO_ACTUALIZACION, mResultado);
         event.putExtra(EXTRA_MENSAJE_ACTUALIZACION, mMensaje);
+
         SystemClock.sleep(2000);
         if (!LocalBroadcastManager.getInstance(this).sendBroadcast(event)) {
 
