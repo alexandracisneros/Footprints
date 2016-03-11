@@ -103,8 +103,8 @@ public class ActualizarEstadoMesaService extends IntentService {
                 procesoOK = sendRequestToServer(urlWithParams);
                 if (procesoOK) {
                     MesaPisoDAO mesaPisoDAO = new MesaPisoDAO(getApplicationContext());
-                    mResultado = mesaPisoDAO.updateEstadoMesaYReserva(mesaPisoEE.getId(), mesaPisoEE.getCodReserva(),
-                            nuevoEstadoMesa, nuevoEstadoReserva);
+                    mResultado = mesaPisoDAO.updateEstadoMesa(mesaPisoEE.getId(),
+                            nuevoEstadoMesa);
                     if (mResultado == 0) {
                         mensajeError = "No se pudo actualizar el estado de la mesa nro" + mesaPisoEE.getNroMesa();
                     }

@@ -4,13 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.neversoft.smartwaiter.database.DBHelper;
-import com.neversoft.smartwaiter.database.DBHelper.DetallePedido;
 import com.neversoft.smartwaiter.database.DBHelper.Concepto;
+import com.neversoft.smartwaiter.database.DBHelper.DetallePedido;
 import com.neversoft.smartwaiter.database.DBHelper.Tables;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 import com.neversoft.smartwaiter.util.Funciones;
@@ -79,28 +78,21 @@ public class DetallePedidoDAO {
     }
 
     private void updateEstadoArticulo(String idPedido, List<String> IDsArray, int estadoOriginal, int nuevoEstado, SQLiteDatabase db) throws Exception {
-        try {
-            ContentValues cv = new ContentValues();
-            cv.put(DetallePedido.ESTADO_ART, nuevoEstado);
-            String updateWhere = null;
-            String[] updateWhereArgs = null;
 
+        ContentValues cv = new ContentValues();
+        cv.put(DetallePedido.ESTADO_ART, nuevoEstado);
+        String updateWhere;
+        String[] updateWhereArgs;
 
-            updateWhere = DetallePedido.ITEM + " IN ("
-                    + Funciones.makePlaceholders(IDsArray.size()) + ") AND "
-                    + DetallePedido.PEDIDO_ID + "=? AND "
-                    + DetallePedido.ESTADO_ART + "=?";
-            IDsArray.add(idPedido);
-            IDsArray.add(String.valueOf(estadoOriginal));
+        updateWhere = DetallePedido.ITEM + " IN (" + Funciones.makePlaceholders(IDsArray.size())
+                + ") AND " + DetallePedido.PEDIDO_ID + "=? AND " + DetallePedido.ESTADO_ART + "=?";
+        IDsArray.add(idPedido);
+        IDsArray.add(String.valueOf(estadoOriginal));
 
-            updateWhereArgs = IDsArray.toArray(new String[IDsArray.size()]);
+        updateWhereArgs = IDsArray.toArray(new String[IDsArray.size()]);
 
-            db.update(Tables.DETALLE_PEDIDO, cv, updateWhere,
-                    updateWhereArgs);
-        } catch (Exception e) {
-            Log.d(DBHelper.TAG, "DAMN ERROR:" + e.getMessage());
-            throw e;
-        }
+        db.update(Tables.DETALLE_PEDIDO, cv, updateWhere, updateWhereArgs);
+
     }
 
     private List<String> getIdsDetalleActualizar(JsonArray items) {
@@ -125,12 +117,12 @@ public class DetallePedidoDAO {
             ArrayList<String> whereArgsArrayList = new ArrayList<String>();
             whereArgsArrayList.add(idPedido);
             if (estado != -1) {
-                where +=" AND " + DetallePedido.ESTADO_ART + "=? ";
+                where += " AND " + DetallePedido.ESTADO_ART + "=? ";
                 whereArgsArrayList.add(String.valueOf(estado));
             }
             String[] whereArgs = new String[whereArgsArrayList.size()];
             whereArgs = whereArgsArrayList.toArray(whereArgs);
-            Cursor cursor = db.query(true, Tables.DETALLE_PEDIDO, null,where,
+            Cursor cursor = db.query(true, Tables.DETALLE_PEDIDO, null, where,
                     whereArgs, null, null, null, null);
 
             //TODO:  DETALLE_PEDIDO JOIN CONCPETO ON estado_articulo=cod AND tipo=2

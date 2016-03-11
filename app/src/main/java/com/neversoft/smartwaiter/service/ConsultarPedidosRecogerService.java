@@ -57,24 +57,19 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
 
         // get SharedPreferences
 
-        mPrefConfig = getApplicationContext().getSharedPreferences(
-                LoginActivity.PREF_CONFIG, Context.MODE_PRIVATE);
-        mPrefLogin = getApplication().getSharedPreferences(LoginSharedPref.NAME,
-                Context.MODE_PRIVATE);
+        mPrefConfig = getApplicationContext().getSharedPreferences(LoginActivity.PREF_CONFIG, Context.MODE_PRIVATE);
+        mPrefLogin = getApplication().getSharedPreferences(LoginSharedPref.NAME, Context.MODE_PRIVATE);
         mPrefConexion = getApplication().getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
         mAmbiente = mPrefConexion.getString(ConexionSharedPref.AMBIENTE, "");
         mCodCia = mPrefConfig.getString("CodCia", "");
         mCodMozo = mPrefConfig.getString("CodMozo", "");
-
         mUrlServer = RestUtil.obtainURLServer(getApplicationContext());
         int cantidadActualizar = 0;
         try {
             mAmbiente = URLEncoder.encode(mAmbiente, "utf-8");
-            Log.d(DBHelper.TAG,
-                    "Llamada a  ObtenerPedidosDespachados: " + Funciones.getCurrentDate("yyyy/MM/dd hh:mm:ss"));
+            Log.d(DBHelper.TAG, "Llamada a  ObtenerPedidosDespachados: " + Funciones.getCurrentDate("yyyy/MM/dd hh:mm:ss"));
             cantidadActualizar = actualizarItemsPedidoDespachados();
         } catch (Exception e) {
-
             mensaje = e.getMessage();
             exito = false;
         }
@@ -116,11 +111,10 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
     private int actualizarItemsPedidoDespachados() throws Exception {
         int cantidadAActualizar = 0;
         DetallePedidoDAO detallePedidoDAO = new DetallePedidoDAO(getApplicationContext());
-        Object requestObject = null;
+        Object requestObject;
         String result;
 
-        String GET_URI = mUrlServer + "restaurante/ObtenerPedidosDespachados/?"
-                + "codMozo=%s&codCia=%s&cadenaConexion=%s";
+        String GET_URI = mUrlServer + "restaurante/ObtenerPedidosDespachados/?codMozo=%s&codCia=%s&cadenaConexion=%s";
         String url = String.format(GET_URI, mCodMozo, mCodCia, mAmbiente);
 
         Log.d(DBHelper.TAG, url);

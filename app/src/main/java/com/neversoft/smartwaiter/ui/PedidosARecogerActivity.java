@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -58,8 +60,10 @@ public class PedidosARecogerActivity extends Activity implements
     private ActionMode mActionMode;
     private String mIdPedido;
     private String mIdPedidoServidor;
+    private FrameLayout mIndicatorFrameLayout;
+    private LinearLayout mMainLinearLayout;
 
-    private BroadcastReceiver onEvent = new BroadcastReceiver() {
+    private BroadcastReceiver onEventConsultarPedidosARecoger = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -70,17 +74,18 @@ public class PedidosARecogerActivity extends Activity implements
             }
         }
     };
-    private BroadcastReceiver onEventNotificarRecojo = new BroadcastReceiver() {
+    private BroadcastReceiver onEventNotificarPedidosRecojidos = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String idPedidoRefrescar = intent.getStringExtra(EXTRA_ID_PEDIDO_REFRESCAR);
             //ANTES DE ESTO DEBERIA HABERSE UTILIZANDO UN LOADING QUE NO DEJE SELECCIONAR NADA MAS PARA PODER REFRESCAR LOS ITEMS PREVIAMENTE SELECCIONADOS
             if (idPedidoRefrescar == "0") {
                 new ConsultarPedidosDespachados().execute();
-                new ConsultarItemsPedidoDespachado().execute(idPedidoRefrescar);
-            } else {
-                new ConsultarItemsPedidoDespachado().execute(idPedidoRefrescar);
             }
+            new ConsultarItemsPedidoDespachado().execute(idPedidoRefrescar);
+            //TODO : Verificar si los AsyncTask "ConsultarPedidoDespachados" y "ConsultarItemsPedidoDespachado" no se pueden fucionar en uno solo
+            //Para hacer lo anterior factible crea una inner class que tenga dos retornos,uno para cada AsyncTask,
+
         }
     };
 
@@ -112,10 +117,12 @@ public class PedidosARecogerActivity extends Activity implements
         mMenuListView.setAdapter(itemsAdapter);
         mMenuListView.setItemChecked(SmartWaiter.OPCION_PEDIDOS_RECOGER, true);
 
+        mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
+        mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
+
         ConsultarPedidosRecogerReceiver.scheduleAlarms(this);
 
-        Toast.makeText(this, R.string.alarms_scheduled, Toast.LENGTH_LONG)
-                .show();
+        Toast.makeText(this, R.string.alarms_scheduled, Toast.LENGTH_LONG).show();
         ConsultarPedidosRecogerReceiver.scheduleAlarms(this);
         new ConsultarPedidosDespachados().execute();
     }
@@ -124,21 +131,17 @@ public class PedidosARecogerActivity extends Activity implements
     protected void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter(ConsultarPedidosRecogerService.ACTION_CHECK_READY_ORDERS);
+        LocalBroadcastManager.getInstance(this).registerReceiver(onEventConsultarPedidosARecoger, filter);
 
-        LocalBroadcastManager.getInstance(this)
-                .registerReceiver(onEvent, filter);
         IntentFilter filterNotificarRecojo = new IntentFilter(NotificarPedidosRecogidosService.ACTION_NOTIFICAR_RECOJO_PEDIDO);
-        LocalBroadcastManager.getInstance(this)
-                .registerReceiver(onEventNotificarRecojo, filterNotificarRecojo);
+        LocalBroadcastManager.getInstance(this).registerReceiver(onEventNotificarPedidosRecojidos, filterNotificarRecojo);
 
     }
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this)
-                .unregisterReceiver(onEvent);
-        LocalBroadcastManager.getInstance(this)
-                .unregisterReceiver(onEventNotificarRecojo);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onEventConsultarPedidosARecoger);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onEventNotificarPedidosRecojidos);
         super.onPause();
     }
 
@@ -290,7 +293,22 @@ public class PedidosARecogerActivity extends Activity implements
         startService(i);
     }
 
+    private void showProgressIndicator(boolean showValue) {
+        if (showValue) {
+            mMainLinearLayout.setVisibility(View.GONE);
+            mIndicatorFrameLayout.setVisibility(View.VISIBLE);
+        } else {
+            mMainLinearLayout.setVisibility(View.VISIBLE);
+            mIndicatorFrameLayout.setVisibility(View.GONE);
+        }
+    }
+
     private class ConsultarPedidosDespachados extends AsyncTask<Void, Void, Object> {
+        @Override
+        protected void onPreExecute() {
+            showProgressIndicator(true);
+        }
+
         @Override
         protected Object doInBackground(Void... voids) {
             Object requestObject;
@@ -317,6 +335,7 @@ public class PedidosARecogerActivity extends Activity implements
                 Toast.makeText(PedidosARecogerActivity.this, response, Toast.LENGTH_LONG)
                         .show();
             }
+            showProgressIndicator(false);
         }
 
     }
@@ -345,8 +364,7 @@ public class PedidosARecogerActivity extends Activity implements
                 String response;
                 response = ((Exception) result).getMessage();
                 Log.d(DBHelper.TAG, "Se produjó la excepción: " + response);
-                Toast.makeText(PedidosARecogerActivity.this, response, Toast.LENGTH_LONG)
-                        .show();
+                Toast.makeText(PedidosARecogerActivity.this, response, Toast.LENGTH_LONG).show();
             }
         }
     }

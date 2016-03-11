@@ -32,15 +32,14 @@ public class PedidoDAO {
         ContentValues cv = new ContentValues();
         cv.put(Pedido.CANT_RECOGIDA, nuevaCantidad.trim());
         cv.put(Pedido.NRO_PED_SERVIDOR, idPedidoServidor);
-        String updateWhere = null;
-        String[] updateWhereArgs = null;
+        String updateWhere;
+        String[] updateWhereArgs;
 
 
         updateWhere = Pedido.ID + " =? ";
         updateWhereArgs = new String[]{idPedido};
 
-        db.update(Tables.PEDIDO, cv, updateWhere,
-                updateWhereArgs);
+        db.update(Tables.PEDIDO, cv, updateWhere,updateWhereArgs);
     }
 
     public long savePedido(final PedidoEE pedido, int estadoArticulo) throws Exception {

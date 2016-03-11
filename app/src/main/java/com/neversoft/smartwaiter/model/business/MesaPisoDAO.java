@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,7 +16,6 @@ import com.google.gson.JsonObject;
 import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.database.DBHelper.MesaInfo;
 import com.neversoft.smartwaiter.database.DBHelper.MesaPiso;
-import com.neversoft.smartwaiter.database.DBHelper.Reserva;
 import com.neversoft.smartwaiter.database.DBHelper.Tables;
 import com.neversoft.smartwaiter.model.entity.MesaPisoEE;
 import com.neversoft.smartwaiter.model.entity.SpinnerEE;
@@ -25,8 +23,6 @@ import com.neversoft.smartwaiter.ui.MesaItemAdapter;
 import com.neversoft.smartwaiter.ui.MesasActivity;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Usuario on 05/09/2015.
@@ -128,39 +124,27 @@ public class MesaPisoDAO {
         return numToUpdate;
     }
 
-    public int updateEstadoMesaYReserva(int idMesa, int idReserva, String nuevoEstadoMesa, String nuevoEstadoReserva) throws Exception {
+    public int updateEstadoMesa(int idMesa, String nuevoEstadoMesa) throws Exception {
         DBHelper dbHelper;
         SQLiteDatabase db = null;
         int filas_mesa = 0;
-        int filas_reserva = 0;
         try {
             dbHelper = DBHelper.getInstance(MesaPisoDAO.this.mContext);
             db = dbHelper.getWritableDatabase();
             db.beginTransaction();
 
             //TODO: Solo si idRserva Mayor a Cero
-            if (idReserva > 0) {
-                ContentValues cvReserva = new ContentValues();
-                cvReserva.put(Reserva.EST_MESA, nuevoEstadoMesa);
-                cvReserva.put(Reserva.EST_RESERVA, nuevoEstadoReserva);
-                String updateWhereReserva = Reserva.ID + " =? AND " + Reserva.COD_MESA + " =?";
-                String[] updateWhereArgsReserva = new String[]{String.valueOf(idReserva), String.valueOf(idMesa)};
 
-                filas_reserva = db.update(Tables.RESERVA, cvReserva, updateWhereReserva,
-                        updateWhereArgsReserva);
-            }
-            if (idReserva == 0 || (idReserva > 0 && filas_reserva > 0)) {
-                ContentValues cvMesa = new ContentValues();
-                cvMesa.put(MesaPiso.COD_ESTADO_MESA, nuevoEstadoMesa);
-                String updateWhereMesa = MesaPiso.ID + " =? ";
-                String[] updateWhereArgsMesa = new String[]{String.valueOf(idMesa)};
+            ContentValues cvMesa = new ContentValues();
+            cvMesa.put(MesaPiso.COD_ESTADO_MESA, nuevoEstadoMesa);
+            String updateWhereMesa = MesaPiso.ID + " =? ";
+            String[] updateWhereArgsMesa = new String[]{String.valueOf(idMesa)};
 
-                filas_mesa = db.update(Tables.MESA_PISO, cvMesa, updateWhereMesa,
-                        updateWhereArgsMesa);
-                if (filas_mesa > 0) {
-                    db.setTransactionSuccessful();
-                }
+            filas_mesa = db.update(Tables.MESA_PISO, cvMesa, updateWhereMesa, updateWhereArgsMesa);
+            if (filas_mesa > 0) {
+                db.setTransactionSuccessful();
             }
+
         } catch (Exception e) {
             throw e;
         } finally {
@@ -289,42 +273,10 @@ public class MesaPisoDAO {
                 cursor.close();
                 db.close();//ITV
                 ((MesasActivity) activity).getMesasGridView().setAdapter(new MesaItemAdapter(mContext, ((MesasActivity) activity).getListaMesas(), clickableState));
-                //((MesasActivity) activity).getMesasGridView().setOnItemClickListener(mContext);
-//                ((MesasActivity) activity).getRecylerView().setAdapter(((MesasActivity) activity).getMesasAdapter());
+
 
             }
         }.execute();
-    }
-
-    public List<MesaPisoEE> getListaMesasReservadas(String idReserva, String idCliente) {
-        List<MesaPisoEE> listaMesas = new ArrayList<>();
-        DBHelper dbHelper;
-        SQLiteDatabase db = null;
-        try {
-            dbHelper = DBHelper.getInstance(MesaPisoDAO.this.mContext);
-            db = dbHelper.getReadableDatabase();
-            idReserva = (idReserva == null ? Tables.RESERVA + "." + Reserva.ID : idReserva);
-            idCliente = (idCliente == null ? Reserva.ID_CLIENTE : idCliente);
-            String query = " SELECT " + TextUtils.join(",", MesasInfoReservaQuery.PROJECTION) +
-                    " FROM " + Tables.RESERVA_JOIN_MESAPISO_JOIN_MESAINFO +
-                    " WHERE " +
-                    Tables.RESERVA + "." + Reserva.ID + "=" + idReserva + " AND " +
-                    Reserva.ID_CLIENTE + "=" + idCliente + " AND " +
-                    Reserva.EST_RESERVA + "='PDT'";
-
-            Cursor cursor = db.rawQuery(query, null);
-            while (cursor.moveToNext()) {
-                MesaPisoEE item = getMesasPisoReservaFromCursor(cursor);
-                listaMesas.add(item);
-            }
-            cursor.close();
-
-        } finally {
-            if (db != null) {
-                db.close();
-            }
-        }
-        return listaMesas;
     }
 
     private MesaPisoEE getMesasPisoFromCursor(Cursor cursor) {
@@ -341,31 +293,6 @@ public class MesaPisoDAO {
                 mesaPisoEE.setCodEstado(cursor.getString(MesasInfoQuery.MESA_COD_ESTADO));
                 mesaPisoEE.setDescEstado(cursor.getString(MesasInfoQuery.MESA_DESC_ESTADO));
                 mesaPisoEE.setHTMLColor(cursor.getString(MesasInfoQuery.MESA_COD_COLOR));
-
-                return mesaPisoEE;
-
-            } catch (Exception e) {
-                return null;
-            }
-        }
-    }
-
-    private MesaPisoEE getMesasPisoReservaFromCursor(Cursor cursor) {
-        if (cursor == null || cursor.getCount() == 0) {
-            return null;
-        } else {
-            try {
-                MesaPisoEE mesaPisoEE = new MesaPisoEE();
-                mesaPisoEE.setId(cursor.getInt(MesasInfoReservaQuery.MESA_ID));
-                mesaPisoEE.setNroPiso(cursor.getInt(MesasInfoReservaQuery.MESA_NRO_PISO));
-                mesaPisoEE.setCodAmbiente(cursor.getInt(MesasInfoReservaQuery.MESA_COD_AMBIENTE));
-                mesaPisoEE.setNroMesa(cursor.getInt(MesasInfoReservaQuery.MESA_NRO_MESA));
-                mesaPisoEE.setNroAsientos(cursor.getInt(MesasInfoReservaQuery.MESA_NRO_ASIENTOS));
-                mesaPisoEE.setCodEstado(cursor.getString(MesasInfoReservaQuery.MESA_COD_ESTADO));
-                mesaPisoEE.setDescEstado(cursor.getString(MesasInfoReservaQuery.MESA_DESC_ESTADO));
-                mesaPisoEE.setHTMLColor(cursor.getString(MesasInfoReservaQuery.MESA_COD_COLOR));
-                mesaPisoEE.setCodReserva(cursor.getInt(MesasInfoReservaQuery.RESERVA_COD_RESERVA));
-                mesaPisoEE.setIDCliente(cursor.getString(MesasInfoReservaQuery.RESERVA_COD_CLIE));
 
                 return mesaPisoEE;
 
@@ -413,29 +340,4 @@ public class MesaPisoDAO {
         int MESA_COD_COLOR = 7;
     }
 
-    private interface MesasInfoReservaQuery {
-        String[] PROJECTION = {
-                Tables.MESA_PISO + "." + MesaPiso.ID,
-                MesaPiso.NRO_PISO,
-                MesaPiso.COD_AMBIENTE,
-                MesaPiso.NRO_MESA,
-                MesaPiso.NRO_ASIENTOS,
-                Reserva.EST_MESA,
-                MesaInfo.DESC_ESTADO,
-                MesaInfo.COD_COLOR,
-                Tables.RESERVA + "." + Reserva.ID,
-                Reserva.ID_CLIENTE
-        };
-        int MESA_ID = 0;
-        int MESA_NRO_PISO = 1;
-        int MESA_COD_AMBIENTE = 2;
-        int MESA_NRO_MESA = 3;
-        int MESA_NRO_ASIENTOS = 4;
-        int MESA_COD_ESTADO = 5;
-        int MESA_DESC_ESTADO = 6;
-        int MESA_COD_COLOR = 7;
-        int RESERVA_COD_RESERVA = 8;
-        int RESERVA_COD_CLIE = 9;
-
-    }
 }

@@ -125,7 +125,6 @@
         <service android:name=".service.ActualizarEstadoMesaService"/>
         <service android:name=".service.ObtenerListaMesasService"/>
 
-
         <!--SO-->
         <!--QA1-->
         <!-- -->

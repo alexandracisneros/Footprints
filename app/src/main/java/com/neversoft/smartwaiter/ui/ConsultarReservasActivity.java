@@ -27,13 +27,12 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.io.RestConnector;
 import com.neversoft.smartwaiter.io.RestUtil;
-import com.neversoft.smartwaiter.model.business.MesaPisoDAO;
-import com.neversoft.smartwaiter.model.business.ReservaDAO;
 import com.neversoft.smartwaiter.model.entity.ClienteEE;
 import com.neversoft.smartwaiter.model.entity.MesaPisoEE;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
@@ -44,7 +43,6 @@ import com.neversoft.smartwaiter.util.Funciones;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ConsultarReservasActivity extends Activity
         implements AdapterView.OnItemClickListener, View.OnClickListener {
@@ -123,7 +121,7 @@ public class ConsultarReservasActivity extends Activity
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
         mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
 
-        mPrefPedidoExtras=getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
+        mPrefPedidoExtras = getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
 
     }
 
@@ -215,10 +213,8 @@ public class ConsultarReservasActivity extends Activity
             String mensajeError = "";
             if (!(nroID.equals("") && idReserva.equals("0"))) {
                 if (codCia != "") {
-                    String encondedAmbiente = URLEncoder.encode(ambiente,
-                            "utf-8");
-                    String urlWithParams = String.format(url, idReserva, nroID,
-                            codCia, encondedAmbiente);
+                    String encondedAmbiente = URLEncoder.encode(ambiente, "utf-8");
+                    String urlWithParams = String.format(url, idReserva, nroID, codCia, encondedAmbiente);
                     new BuscarMesaRerservada().execute(urlWithParams);
 
                 } else {
@@ -247,6 +243,29 @@ public class ConsultarReservasActivity extends Activity
         }
     }
 
+    private ArrayList<MesaPisoEE> parseJsonToMesaPiso(JsonArray jsonMesasReservadas, String idClienteReserva) {
+        ArrayList<MesaPisoEE> mesaPisoLista = new ArrayList<>();
+        MesaPisoEE mesaPiso;
+        JsonObject mesaJsonObject;
+        for (JsonElement element : jsonMesasReservadas) {
+            mesaJsonObject = element.getAsJsonObject();
+            mesaPiso = new MesaPisoEE();
+            mesaPiso.setId(mesaJsonObject.get("CODMESA").getAsInt());
+            mesaPiso.setNroPiso(mesaJsonObject.get("NROPISO").getAsInt());
+            mesaPiso.setCodAmbiente(mesaJsonObject.get("CAMBIENTE").getAsInt());
+            mesaPiso.setDescAmbiente(mesaJsonObject.get("DAMBIENTE").getAsString());
+            mesaPiso.setNroMesa(mesaJsonObject.get("NROMESA").getAsInt());
+            mesaPiso.setNroAsientos(mesaJsonObject.get("NROASIENTOS").getAsInt());
+            mesaPiso.setCodEstado(mesaJsonObject.get("CEMESA").getAsString());
+            mesaPiso.setDescEstado(mesaJsonObject.get("DEMESA").getAsString());
+            mesaPiso.setCodReserva(mesaJsonObject.get("CODRESERVA").getAsInt());
+            mesaPiso.setHTMLColor("#0099FF"); //Temporal //TODO Solicitar a Alex que cruce data y te traiga ese valor
+            mesaPiso.setIDCliente(idClienteReserva);
+            mesaPisoLista.add(mesaPiso);
+        }
+        return mesaPisoLista;
+    }
+
     private class BuscarMesaRerservada extends AsyncTask<String, Void, Object> {
         @Override
         protected void onPreExecute() {
@@ -260,8 +279,7 @@ public class ConsultarReservasActivity extends Activity
             Log.d(DBHelper.TAG, url);
             RestConnector restConnector;
             try {
-                if (Funciones
-                        .hasActiveInternetConnection(getApplicationContext())) {
+                if (Funciones.hasActiveInternetConnection(getApplicationContext())) {
                     restConnector = RestUtil.obtainGetConnection(url);
                     requestObject = restConnector.doRequest(url);
                 }
@@ -277,75 +295,39 @@ public class ConsultarReservasActivity extends Activity
             if (result instanceof String) {
                 String stringObject = (String) result;
                 Gson gson = new Gson();
+                ClienteEE clienteEE = new ClienteEE();
                 JsonArray jsonArray = gson.fromJson(stringObject, JsonArray.class);
                 if (jsonArray != null && jsonArray.size() > 0) {
                     JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
-                    ClienteEE clienteEE = new ClienteEE();
-                    clienteEE.setNroDocumento(jsonObject.get("nroID").getAsString());
-                    clienteEE.setRazonSocial(jsonObject.get("razonSocial").getAsString());
-                    JsonArray jsonReservas = jsonObject.getAsJsonArray("detalle");
 
-                    mRazonSocialBusqTextView.setText(clienteEE.getRazonSocial());
-                    mIDClieBusqTextView.setText(clienteEE.getNroDocumento());
+                    clienteEE.setNroDocumento(jsonObject.get("NROID").getAsString());
+                    clienteEE.setRazonSocial(jsonObject.get("RAZONSOCIAL").getAsString());
+                    JsonArray jsonMesasReservadas = jsonObject.getAsJsonArray("detalle");
 
-                    String idReserva = (mCodigoReservaEditText.getText().toString().trim().equals("") ? null : mCodigoReservaEditText.getText().toString().trim());
-                    String nroID = (mIdClienteEditText.getText().toString().trim().equals("") ? null : mIdClienteEditText.getText().toString().trim());
+                    mMesaPisoLista = parseJsonToMesaPiso(jsonMesasReservadas, clienteEE.getNroDocumento());
 
-
-                    Object[] params = {jsonReservas, clienteEE.getNroDocumento(), idReserva, nroID};
-                    new InsertarActualizarReservadas().execute(params);
-
-                } else {
-                    mMesaPisoLista = new ArrayList<>();
-                    mMesasGridView.setAdapter(new MesaItemAdapter(ConsultarReservasActivity.this, mMesaPisoLista, "RES"));
-                    showProgressIndicator(false);
                 }
-
-            } else if (result instanceof Exception) {
-                showProgressIndicator(false);
-                String response;
-                response = ((Exception) result).getMessage();
-                Log.d(DBHelper.TAG, "Se produjó la excepción: " + response);
-                Toast.makeText(ConsultarReservasActivity.this, response, Toast.LENGTH_LONG)
-                        .show();
-            }
-        }
-
-    }
-
-    private class InsertarActualizarReservadas extends AsyncTask<Object, Void, Object> {
-        @Override
-        protected Object doInBackground(Object... params) {
-            Object requestObject;
-            JsonArray jsonReserva = (JsonArray) params[0];
-            String idCliente = (String) params[1];
-            String idReservaLocal = (String) params[2];
-            String idClienteLocal = (String) params[3];
-            try {
-                ReservaDAO reservaDAO = new ReservaDAO(getApplicationContext());
-                MesaPisoDAO mesaPisoDAO = new MesaPisoDAO(getApplicationContext());
-                reservaDAO.insertOrUpdateReservadas(jsonReserva, idCliente);
-                requestObject = mesaPisoDAO.getListaMesasReservadas(idReservaLocal, idClienteLocal);
-            } catch (Exception e) {
-                requestObject = e;
-            }
-            return requestObject;
-        }
-
-        @Override
-        protected void onPostExecute(Object result) {
-            showProgressIndicator(false);
-            if (result instanceof List<?>) {
-                mMesaPisoLista = (ArrayList<MesaPisoEE>) result;
+                mRazonSocialBusqTextView.setText(clienteEE.getRazonSocial());
+                mIDClieBusqTextView.setText(clienteEE.getNroDocumento());
                 mMesasGridView.setAdapter(new MesaItemAdapter(ConsultarReservasActivity.this, mMesaPisoLista, "RES"));
+
+
             } else if (result instanceof Exception) {
                 String response;
                 response = ((Exception) result).getMessage();
                 Log.d(DBHelper.TAG, "Se produjó la excepción: " + response);
-                Toast.makeText(ConsultarReservasActivity.this, response, Toast.LENGTH_LONG)
-                        .show();
+                Toast.makeText(ConsultarReservasActivity.this, response, Toast.LENGTH_LONG).show();
             }
+            showProgressIndicator(false);
         }
 
     }
+
+
+//                //TODO  <---- 15/02/2016 12:13 am
+////                1) Eliminar tabla reserva
+////                2) Con la data que llega desde el webservice http://qa.siempresoft.com/pruebamovilalex/api/restaurante/ObtenerClienteReserva/?idReserva=0&nroID=20486245027&codCia=001&cadenaConexion=Initial+Catalog%3Dpruebamoviljhav
+////                   Actualizar registros de la tabla Mesa :codeReserva, idClieente
+////                3) Leer solo de Tabla Mesas y mostrar pero que solo se haga click en mesas reservadas
+
 }
