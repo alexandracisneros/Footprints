@@ -4,17 +4,26 @@ package com.neversoft.smartwaiter.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.neversoft.smartwaiter.R;
+import com.neversoft.smartwaiter.database.DBHelper;
+import com.neversoft.smartwaiter.io.RestConnector;
+import com.neversoft.smartwaiter.io.RestUtil;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
 import com.neversoft.smartwaiter.util.Funciones;
+
+import java.net.URLEncoder;
 
 
 public class ConfigurarConexionDialogFragment extends DialogFragment {
@@ -23,6 +32,7 @@ public class ConfigurarConexionDialogFragment extends DialogFragment {
     private EditText mServidorEditText;
     private EditText mAplicacionEditText;
     private EditText mAmbienteEditText;
+    private ProgressDialog mProgress;
     private View mForm = null;
 
     @Override
@@ -69,7 +79,7 @@ public class ConfigurarConexionDialogFragment extends DialogFragment {
         super.onStart();
         AlertDialog d = (AlertDialog) getDialog();
         if (d != null) {
-            Button positiveButton = (Button) d.getButton(Dialog.BUTTON_POSITIVE);
+            Button positiveButton = d.getButton(Dialog.BUTTON_POSITIVE);
             positiveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -79,12 +89,14 @@ public class ConfigurarConexionDialogFragment extends DialogFragment {
                     if (!Funciones.isEditTextEmpty(mServidorEditText)) {
                         if (!Funciones.isEditTextEmpty(mAplicacionEditText)) {
                             if (!Funciones.isEditTextEmpty(mAmbienteEditText)) {
-                                ConexionSharedPref.save(mPrefConexion, mServidorEditText
-                                                .getText().toString().trim(),
+                                ConexionSharedPref.save(mPrefConexion, mServidorEditText.getText().toString().trim(),
                                         mAplicacionEditText.getText().toString().trim(),
                                         mAmbienteEditText.getText().toString().trim(),
                                         true);
-                                msg = "Configuración de conexión guardada correctamente.";
+                                probarConexion(mServidorEditText.getText().toString().trim(),
+                                        mAplicacionEditText.getText().toString().trim(),
+                                        mAmbienteEditText.getText().toString().trim()
+                                );
                                 wantToCloseDialog = true;
                             } else {
                                 msg = "Debe ingresar un ambiente.";
@@ -96,19 +108,84 @@ public class ConfigurarConexionDialogFragment extends DialogFragment {
                         msg = "Debe ingresar la URL del servidor.";
 
                     }
-
-                    Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
-                    if (wantToCloseDialog)
-                        dismiss();
+                    if (!wantToCloseDialog) {
+                        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                    }
                     //else dialog stays open. Make sure you have an obvious way to close the dialog especially if you set cancellable to false.
                 }
             });
         }
     }
 
+    public void conexionProbada(String msg) {
+        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+        getDialog().dismiss();
+    }
+
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
+    }
+
+    private void probarConexion(String server, String app, String ambiente) {
+        //http://siempresoftqa.cloudapp.net/PruebaMovilAlex/api/restaurante/VerificarParamsConexion/?cadenaConexion=Initial%20Catalog=PRUEBAMOVILJHAV
+        String url = "http://%s/%s/api/restaurante/VerificarParamsConexion/?cadenaConexion=%s";
+        try {
+            String encondedAmbiente = URLEncoder.encode("Initial Catalog=" + ambiente, "utf-8");
+            String urlWithParams = String.format(url, server, app, encondedAmbiente);
+            new ProbarConfigConexion().execute(urlWithParams);
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    class ProbarConfigConexion extends AsyncTask<String, Void, Object> {
+        Context ctxt = ConfigurarConexionDialogFragment.this.getActivity();
+
+        @Override
+        protected void onPreExecute() {
+            mProgress = new ProgressDialog(ctxt);
+            mProgress.setTitle("Procesando");
+            mProgress.setMessage("Espere por favor...");
+            mProgress.setCancelable(false);
+            mProgress.show();
+        }
+
+        @Override
+        protected Object doInBackground(String... params) {
+            Object requestObject = null;
+            String url = params[0];
+            Log.d(DBHelper.TAG, url);
+            RestConnector restConnector;
+            try {
+                if (Funciones.hasActiveInternetConnection(ctxt.getApplicationContext())) {
+                    restConnector = RestUtil.obtainGetConnection(url);
+                    requestObject = restConnector.doRequest(url);
+                }
+
+            } catch (Exception e) {
+                requestObject = e;
+            }
+            return requestObject;
+        }
+
+        @Override
+        protected void onPostExecute(Object result) {
+            // Clear progress indicator
+            String response;
+            if (mProgress != null) {
+                mProgress.dismiss();
+            }
+            if (result instanceof String) {
+                ConfigurarConexionDialogFragment.this.conexionProbada("Configuración de conexión probada y guardada correctamente.");
+
+            } else if (result instanceof Exception) {
+                response = ((Exception) result).getMessage();
+                Log.d(DBHelper.TAG, "Error al configurar la conexión: " + response);
+                Toast.makeText(ctxt, response, Toast.LENGTH_LONG).show();
+            }
+        }
+
     }
 
 }

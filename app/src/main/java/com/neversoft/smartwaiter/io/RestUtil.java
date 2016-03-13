@@ -16,7 +16,6 @@ import java.util.List;
  * Created by Usuario on 03/09/2015.
  */
 public class RestUtil {
-    public static final String URLServer = "http:///qa.siempresoft.com/PruebaMovilAlex/api/restaurante/";
 
     //http://siempresoftqa.cloudapp.net/PruebaMovilAlex/api/restaurante/ObtenerDatosIniciales/?codCia=001&cadenaConexion=Initial%20Catalog=ABR
     public static final String obtainURLServer(Context ctxt) {

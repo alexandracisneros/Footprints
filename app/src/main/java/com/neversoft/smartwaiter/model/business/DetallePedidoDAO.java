@@ -137,7 +137,7 @@ public class DetallePedidoDAO {
                 item.setPrecio(cursor.getFloat(cursor.getColumnIndex(DetallePedido.PRECIO)));
                 item.setTipoArticulo(cursor.getInt(cursor.getColumnIndex(DetallePedido.TIPO_ART)));
                 item.setEstadoArticulo(cursor.getInt(cursor.getColumnIndex(DetallePedido.ESTADO_ART)));
-                item.setDescEstadoArticulo(cursor.getString(cursor.getColumnIndex(Concepto.DESC_ITEM)));
+                item.setDescEstadoArticulo(cursor.getString(cursor.getColumnIndex(DetallePedido.DESC_ART   )));
                 item.setDescArticulo(cursor.getString(cursor.getColumnIndex(DetallePedido.DESC_ART)));
                 lista.add(item);
             }

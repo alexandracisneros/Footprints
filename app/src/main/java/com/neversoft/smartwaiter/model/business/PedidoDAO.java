@@ -75,6 +75,7 @@ public class PedidoDAO {
                 int count = 1;
                 for (DetallePedidoEE det : pedido.getDetalle()) {
                     cvItem = new ContentValues();
+                    det.setEstadoArticulo(estadoArticulo);
                     cvItem.put(DetallePedido.PEDIDO_ID, idPedido);
                     cvItem.put(DetallePedido.ITEM, count);
                     cvItem.put(DetallePedido.COD_ART, det.getCodArticulo());
@@ -84,10 +85,9 @@ public class PedidoDAO {
                     cvItem.put(DetallePedido.TIPO_ART, det.getTipoArticulo());
                     cvItem.put(DetallePedido.COD_ART_PRINCIPAL, det.getCodArticuloPrincipal());
                     cvItem.put(DetallePedido.COMENTARIO, det.getComentario());
-                    cvItem.put(DetallePedido.ESTADO_ART, estadoArticulo);
+                    cvItem.put(DetallePedido.ESTADO_ART, det.getEstadoArticulo());
                     cvItem.put(DetallePedido.DESC_ART, det.getDescArticulo());
-                    idItemPedido = db.insertOrThrow(Tables.DETALLE_PEDIDO, null,
-                            cvItem);
+                    idItemPedido = db.insertOrThrow(Tables.DETALLE_PEDIDO, null,cvItem);
                     count++;
                 }
                 if (idItemPedido > 0) {

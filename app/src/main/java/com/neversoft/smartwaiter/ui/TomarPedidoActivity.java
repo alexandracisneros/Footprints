@@ -216,10 +216,6 @@ public class TomarPedidoActivity extends Activity
             case R.id.action_cancelar:
                 //Toast.makeText(this, "Cancel", Toast.LENGTH_SHORT).show();
                 confirmarCancelarPedido();
-                //TODO:
-                //1 Confirmación. "Cancelar Pedido Si o No??"
-                //2 Eliminar Pedido de Preferencia y Actualizar el estado de la mesa (tanto del webService como de la bd local
-                //3 Volver a la actividad de origen automaticamente (Mesas o BusacarReservas)
                 break;
         }
         return true;

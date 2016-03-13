@@ -82,14 +82,13 @@ public class EnviarPedidoService extends IntentService {
                 //wouldn't it be better if they all already had the same names as the WebApi Project?
                 String stringPedido = intent.getStringExtra(EXTRA_PEDIDO_JSON);
                 Gson gson = new Gson();
-                PedidoEE pedido = gson.fromJson(stringPedido,
-                        PedidoEE.class);
-                listaPedidosRegistrados.add(pedido);
+                PedidoEE pedido = gson.fromJson(stringPedido,PedidoEE.class);
                 try {
                     idPedido = pedidoDAO.savePedido(pedido, 1); // 1=ENVIADO A COCINA
                 } catch (Exception e) {
                     throw new Exception("No se pudo guardar el pedido. Excepcion: " + e.getMessage());
                 }
+                listaPedidosRegistrados.add(pedido);
                 //TODO : VERIFICAR ANTES DE INSERTAR SI EL PEDIDO NO HA SIDO YA INSERTADO, SI YA ESTA INSERTADO SOLO ENVIAR
                 if (idPedido > 0) {
                     String dataToSend = getEnvio(listaPedidosRegistrados, idPedido);//TODO  //PASA ARRAY
@@ -98,7 +97,6 @@ public class EnviarPedidoService extends IntentService {
                     idOrderFromServer = sendDataToServer(dataToSend);
                     if (idOrderFromServer > 0) {
                         exito = true;
-
                     } else {
                         throw new Exception("Pedido enviado pero no guardado");
                     }
