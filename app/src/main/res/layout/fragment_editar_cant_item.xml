@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/articuloDescLabel"
+        style="@style/Label"
+        android:text="Descripción"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/articuloDescTextView"
+        style="@style/TextViewContracted"
+        android:layout_below="@+id/articuloDescLabel"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/articuloCantidadLabel"
+        android:layout_below="@+id/articuloDescTextView"
+        style="@style/Label"
+        android:text="Cantidad"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/articuloCantidadEditText"
+        style="@style/CajaTexto"
+        android:layout_below="@+id/articuloCantidadLabel"
+        android:ems="10"
+        android:inputType="numberDecimal" />
+
+</RelativeLayout>

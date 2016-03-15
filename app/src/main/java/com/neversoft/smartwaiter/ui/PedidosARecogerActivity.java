@@ -1,8 +1,10 @@
 package com.neversoft.smartwaiter.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
@@ -33,6 +35,7 @@ import com.neversoft.smartwaiter.model.business.PedidoDAO;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 import com.neversoft.smartwaiter.model.entity.PedidoEE;
 import com.neversoft.smartwaiter.receiver.ConsultarPedidosRecogerReceiver;
+import com.neversoft.smartwaiter.service.ActualizarEstadoMesaService;
 import com.neversoft.smartwaiter.service.ConsultarPedidosRecogerService;
 import com.neversoft.smartwaiter.service.NotificarPedidosRecogidosService;
 import com.neversoft.smartwaiter.util.Funciones;
@@ -83,6 +86,7 @@ public class PedidosARecogerActivity extends Activity implements
                 new ConsultarPedidosDespachados().execute();
             }
             new ConsultarItemsPedidoDespachado().execute(idPedidoRefrescar);
+            showProgressIndicator(false);
             //TODO : Verificar si los AsyncTask "ConsultarPedidoDespachados" y "ConsultarItemsPedidoDespachado" no se pueden fucionar en uno solo
             //Para hacer lo anterior factible crea una inner class que tenga dos retornos,uno para cada AsyncTask,
 
@@ -123,7 +127,7 @@ public class PedidosARecogerActivity extends Activity implements
         ConsultarPedidosRecogerReceiver.scheduleAlarms(this);
 
         Toast.makeText(this, R.string.alarms_scheduled, Toast.LENGTH_LONG).show();
-        ConsultarPedidosRecogerReceiver.scheduleAlarms(this);
+        ConsultarPedidosRecogerReceiver.scheduleAlarms(this); //TODO : Poner una preferencia para que si ya se configuró la alarma. No se haga cada vez que se inicia la actividad
         new ConsultarPedidosDespachados().execute();
     }
 
@@ -160,7 +164,7 @@ public class PedidosARecogerActivity extends Activity implements
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings) { //TODO Esta accion si es que se deja deberia ser para configurar el intervalo de notificacion entre alarma y alarma
             return true;
         }
 
@@ -187,8 +191,7 @@ public class PedidosARecogerActivity extends Activity implements
     }
 
     private void mostrarCabeceraPedido(List<PedidoEE> lista) {
-        ArrayList<HashMap<String, String>> data =
-                new ArrayList<HashMap<String, String>>();
+        ArrayList<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
         for (PedidoEE item : lista) {
             HashMap<String, String> map = new HashMap<String, String>();
             map.put("pedidoNro", String.valueOf(item.getId()));
@@ -262,8 +265,7 @@ public class PedidosARecogerActivity extends Activity implements
 
         switch (item.getItemId()) {
             case R.id.action_send_recogidos:
-                enviarItemsPedidoRecogidos(items);
-                actionMode.finish();
+                confirmarRecojoItemsPedido(items,actionMode);
                 return true;
         }
         return true;
@@ -275,6 +277,30 @@ public class PedidosARecogerActivity extends Activity implements
     }
 
     //Action Mode -End
+    private void confirmarRecojoItemsPedido(final SparseBooleanArray items, final ActionMode actionMode) {
+        new AlertDialog.Builder(this)
+                .setTitle("Confirmación")
+                .setMessage("¿Realmente desea confirmar el recojo de los items seleccionados?")
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        dialog.cancel();
+
+                        enviarItemsPedidoRecogidos(items);
+                        actionMode.finish();
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        actionMode.finish();
+
+                    }
+                }).setIcon(android.R.drawable.ic_dialog_alert).show();
+    }
     private void enviarItemsPedidoRecogidos(SparseBooleanArray items) {
         ArrayList<String> selectedItems = new ArrayList<>();
         for (int i = 0; i < items.size(); i++) {
@@ -290,6 +316,7 @@ public class PedidosARecogerActivity extends Activity implements
         i.putExtra(EXTRA_ID_PEDIDO, mIdPedido);
         i.putExtra(EXTRA_ID_PEDIDO_SERV, mIdPedidoServidor);
         i.putExtra(EXTRA_TOTAL_ITEMS_RECOGER, mItems.size());
+        showProgressIndicator(true);
         startService(i);
     }
 
@@ -304,10 +331,6 @@ public class PedidosARecogerActivity extends Activity implements
     }
 
     private class ConsultarPedidosDespachados extends AsyncTask<Void, Void, Object> {
-        @Override
-        protected void onPreExecute() {
-            showProgressIndicator(true);
-        }
 
         @Override
         protected Object doInBackground(Void... voids) {
@@ -332,16 +355,13 @@ public class PedidosARecogerActivity extends Activity implements
                 String response;
                 response = ((Exception) result).getMessage();
                 Log.d(DBHelper.TAG, "Se produjó la excepción: " + response);
-                Toast.makeText(PedidosARecogerActivity.this, response, Toast.LENGTH_LONG)
-                        .show();
+                Toast.makeText(PedidosARecogerActivity.this, response, Toast.LENGTH_LONG).show();
             }
-            showProgressIndicator(false);
         }
 
     }
 
     private class ConsultarItemsPedidoDespachado extends AsyncTask<String, Void, Object> {
-
         @Override
         protected Object doInBackground(String... params) {
             Object requestObject;

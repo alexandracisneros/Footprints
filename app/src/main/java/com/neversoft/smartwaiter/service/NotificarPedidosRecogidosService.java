@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -54,15 +55,13 @@ public class NotificarPedidosRecogidosService extends IntentService {
         boolean procesoOK = false;
         boolean exito = false;
         // get SharedPreferences
-        mPrefConfig = getApplicationContext().getSharedPreferences(
-                LoginActivity.PREF_CONFIG, Context.MODE_PRIVATE);
-        mPrefConexion = getApplicationContext().getSharedPreferences(
-                ConexionSharedPref.NAME, Context.MODE_PRIVATE);
+        mPrefConfig = getApplicationContext().getSharedPreferences(LoginActivity.PREF_CONFIG, Context.MODE_PRIVATE);
+        mPrefConexion = getApplicationContext().getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
         mAmbiente = mPrefConexion.getString(ConexionSharedPref.AMBIENTE, "");
 
         mCodCia = mPrefConfig.getString("CodCia", "");
-        mUsuario = mPrefConfig.getString("Usuario", "").toUpperCase(
-                Locale.getDefault());
+        mUsuario = mPrefConfig.getString("Usuario", "").toUpperCase(Locale.getDefault());
+
         String idPedido = intent.getStringExtra(PedidosARecogerActivity.EXTRA_ID_PEDIDO);
         String idPedidoServidor = intent.getStringExtra(PedidosARecogerActivity.EXTRA_ID_PEDIDO_SERV);
         ArrayList<String> selectedItems = intent.getExtras().getStringArrayList(PedidosARecogerActivity.EXTRA_SELECTED_ITEMS_ARRAY);
@@ -87,6 +86,7 @@ public class NotificarPedidosRecogidosService extends IntentService {
                     }
                     Intent event = new Intent(NotificarPedidosRecogidosService.ACTION_NOTIFICAR_RECOJO_PEDIDO);
                     event.putExtra(PedidosARecogerActivity.EXTRA_ID_PEDIDO_REFRESCAR, idPedidoRefrescar);
+                    SystemClock.sleep(1500);
                     if (!LocalBroadcastManager.getInstance(this).sendBroadcast(event)) {
                         Log.d(getClass().getSimpleName(), "I only run when I have to show a notification!");
                         NotificationCompat.Builder b = new NotificationCompat.Builder(this);

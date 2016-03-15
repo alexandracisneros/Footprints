@@ -12,9 +12,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
@@ -46,7 +49,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class TomarPedidoActivity extends Activity
-        implements OnItemClickListener {
+        implements OnItemClickListener, EditarCantidadItemFragment.Contract {
 
     private ListView mCategoriasListView;
     private ListView mArticulosListView;
@@ -56,6 +59,9 @@ public class TomarPedidoActivity extends Activity
     private CategoriaDAO mCategoriaDAO;
     private ArticuloDAO mArticuloDAO;
     private ArrayList<DetallePedidoEE> mItems;
+    private ActionMode mActionMode;
+    private int mSelectedItemsCount;
+    private boolean mIsInActionMode = false;
     private MesaPisoEE mMesaPisoEE;
 
     private TextView mSubTotalPedidoTextView;
@@ -89,8 +95,7 @@ public class TomarPedidoActivity extends Activity
                 finish(); // finaliza actividad para que al volver necesariamente se tenga que volver a cargar la actividad
             } else {
                 Log.d(DBHelper.TAG, "Se produjó la excepción: " + mensajeOperacion);
-                Toast.makeText(TomarPedidoActivity.this, mensajeOperacion, Toast.LENGTH_LONG)
-                        .show();
+                Toast.makeText(TomarPedidoActivity.this, mensajeOperacion, Toast.LENGTH_LONG).show();
                 showProgressIndicator(false);
             }
 
@@ -125,8 +130,7 @@ public class TomarPedidoActivity extends Activity
                 finish();
             } else {
                 showProgressIndicator(false);
-                Log.d(DBHelper.TAG, "Exception from BroadcastReceiver within EnviarDatosActivity :"
-                        + mensaje);
+                Log.d(DBHelper.TAG, "Exception from BroadcastReceiver within EnviarDatosActivity :" + mensaje);
             }
             Toast.makeText(TomarPedidoActivity.this, mensaje, Toast.LENGTH_LONG).show();
         }
@@ -159,6 +163,8 @@ public class TomarPedidoActivity extends Activity
         mIGVPedidoTextView = (TextView) findViewById(R.id.igvPedidoTextView);
         mTotalPedidoTextView = (TextView) findViewById(R.id.totalPedidoTextView);
         mPedidoListView = (ListView) findViewById(R.id.detallePedidoListView);
+        mPedidoListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        mPedidoListView.setMultiChoiceModeListener(new ActionModeCallbacks());
 
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
         mMainRelativeLayout = (RelativeLayout) findViewById(R.id.mainRelativeLayout);
@@ -405,4 +411,120 @@ public class TomarPedidoActivity extends Activity
         pedido.setDetalle(mItems);
         return pedido;
     }
+
+    @Override
+    public void OnEditarCantidadItemClick(DetallePedidoEE item, int which) {
+        if (which == DialogInterface.BUTTON_POSITIVE) {
+            PedidoSharedPref.updateItem(TomarPedidoActivity.this, item);
+            mItems = PedidoSharedPref.getItems(TomarPedidoActivity.this);
+            showItems();
+        }
+        mActionMode.finish();
+    }
+
+
+    public class ActionModeCallbacks implements AbsListView.MultiChoiceModeListener {
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            TomarPedidoActivity.this.getMenuInflater().inflate(R.menu.menu_tomar_pedido_contextual, menu);
+            mActionMode = mode;
+            mIsInActionMode = true;
+            mode.setTitle(String.format("%d Selected", mSelectedItemsCount));
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            if (mSelectedItemsCount == 1) {
+                showOptionsOnSingleSelectedItem(true, menu);
+                return true;
+            } else {
+                showOptionsOnSingleSelectedItem(false, menu);
+                return true;
+            }
+        }
+
+        private void showOptionsOnSingleSelectedItem(boolean showOnSingle, Menu menu) {
+            MenuItem item = menu.findItem(R.id.menu_plus);
+            item.setVisible(showOnSingle);
+            item = menu.findItem(R.id.menu_minus);
+            item.setVisible(showOnSingle);
+            item = menu.findItem(R.id.menu_edit);
+            item.setVisible(showOnSingle);
+        }
+
+        //"Don't you fucking play the hero again OK! Because I'll die if something happens to you". If only Fer would have remembered what David said to him :'(
+        private void modifyProductQuantiy(int accion, SparseBooleanArray checkedItemPositions) {
+            if (checkedItemPositions.valueAt(0)) {
+                int position = checkedItemPositions.keyAt(0);
+                DetallePedidoEE itemDetalle = mItems.get(position);
+                if (accion == 0) {
+                    itemDetalle.setCantidad(itemDetalle.getCantidad() + 1);
+                } else {
+                    if (itemDetalle.getCantidad() > 1) {
+                        itemDetalle.setCantidad(itemDetalle.getCantidad() - 1);
+                    } else {
+                        mItems.remove(itemDetalle); //If quantity equals 1 then remove it!
+                    }
+                }
+                PedidoSharedPref.saveItems(TomarPedidoActivity.this, mItems);
+                showItems();
+            }
+        }
+
+        private void removeSelectedItems(SparseBooleanArray checkedItemPositions) {
+            for (int i = (checkedItemPositions.size() - 1); i >= 0; i--) {
+                if (checkedItemPositions.valueAt(i)) {
+                    int position = checkedItemPositions.keyAt(i);
+                    DetallePedidoEE itemDetalle = mItems.get(position);
+                    mItems.remove(itemDetalle);
+                }
+            }
+            PedidoSharedPref.saveItems(TomarPedidoActivity.this, mItems);
+            showItems();
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            //ArrayAdapter<String> adapter = (ArrayAdapter<String>) mItemsPedidoListView.getAdapter();
+            SparseBooleanArray checkedItemPositions = mPedidoListView.getCheckedItemPositions();
+            switch (item.getItemId()) {
+                case R.id.menu_delete:
+                    removeSelectedItems(checkedItemPositions);
+                    mode.finish();
+                    return true;
+                case R.id.menu_edit:
+                    int position = checkedItemPositions.keyAt(0);
+                    DetallePedidoEE itemDetalle = mItems.get(position);
+                    EditarCantidadItemFragment.newInstance(itemDetalle).show(TomarPedidoActivity.this.getFragmentManager(), "EditarCantidadFragment");
+                    return true;
+                case R.id.menu_plus:
+                    modifyProductQuantiy(0, checkedItemPositions);
+                    mode.finish();
+                    return true;
+                case R.id.menu_minus:
+                    modifyProductQuantiy(1, checkedItemPositions);
+                    mode.finish();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mIsInActionMode = false;
+        }
+
+        @Override
+        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+            mSelectedItemsCount = mPedidoListView.getCheckedItemCount();
+            mode.setTitle(String.format("%d Seleccionados", mSelectedItemsCount));
+            mode.invalidate();
+        }
+    }
+
+    //TODO Falta verificar que si cerre la app y vuelvo abrir habiendo un pedido en curso, deberia llevarme a la pantalla en la que se toma
+    //el pedido con el detalle ya cargado. <---15/03/2016 12:45 am
 }

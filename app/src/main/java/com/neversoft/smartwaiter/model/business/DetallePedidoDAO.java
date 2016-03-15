@@ -106,7 +106,6 @@ public class DetallePedidoDAO {
 
     public List<DetallePedidoEE> getDetallePorEstado(String idPedido, int estado) throws Exception {
 
-        //TODO: MODIFICAR PARA QUE ACEPTE CUALQUIER ESTADO o NINGUNO
         List<DetallePedidoEE> lista = new ArrayList<>();
         DBHelper dbHelper;
         SQLiteDatabase db = null;

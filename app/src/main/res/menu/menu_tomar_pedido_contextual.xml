@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_plus"
+        android:icon="@drawable/ic_plus"
+        android:title="Más" />
+    <item
+        android:id="@+id/menu_minus"
+        android:icon="@drawable/ic_minus"
+        android:title="Menos" />
+
+    <item
+        android:id="@+id/menu_edit"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="Editar" />
+    <item
+        android:id="@+id/menu_delete"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Quitar" />
+</menu>
