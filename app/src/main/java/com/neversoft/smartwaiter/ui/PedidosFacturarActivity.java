@@ -1,9 +1,11 @@
 package com.neversoft.smartwaiter.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
@@ -16,7 +18,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
@@ -63,12 +67,16 @@ public class PedidosFacturarActivity extends Activity
     private EditText mRucEditText;
     private ImageButton mBuscarClieButton;
     private Button mAceptarButton;
+    private Button mCancelarButton;
     private EditText mMontoRecibidoEditText;
     private TextView mMontoRestanteTextView;
     private TableRow mClienteRow;
     private TableRow mRucRow;
     private TableRow mRecibidoRow;
     private TableRow mRestanteRow;
+    private FrameLayout mIndicatorFrameLayout;
+    private LinearLayout mMainLinearLayout;
+
 
     private BroadcastReceiver onEvent = new BroadcastReceiver() {
         @Override
@@ -78,6 +86,8 @@ public class PedidosFacturarActivity extends Activity
                 new ConsultarPedidosPorFacturar().execute();
                 //TODO : NO SOLO ES RECARGAR LA LISTA DE PEDIDOS, tambien limpiar el formulario y actualizar los otros campos del pedido (recibido y restante)
             }
+            resetCampos();
+            showProgressIndicator(false);
         }
     };
 
@@ -105,11 +115,28 @@ public class PedidosFacturarActivity extends Activity
         mClienteTextView = (TextView) findViewById(R.id.clienteTextView);
         mRucEditText = (EditText) findViewById(R.id.rucEditText);
         mMontoRecibidoEditText = (EditText) findViewById(R.id.montoRecibidoEditText);
+        mMontoRecibidoEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    // code to execute when EditText loses focus
+                    String total = mTotalTextView.getText().toString();
+                    String recibido = mMontoRecibidoEditText.getText().toString();
+
+                    Float t = Float.parseFloat(total);
+                    Float rec = Float.parseFloat(recibido);
+                    Float rest = rec - t;
+                    mMontoRestanteTextView.setText(rest.toString());
+
+                }
+            }
+        });
         mMontoRestanteTextView = (TextView) findViewById(R.id.restanteTextView);
         mBuscarClieButton = (ImageButton) findViewById(R.id.buscarClieImageButton);
         mBuscarClieButton.setOnClickListener(this);
         mAceptarButton = (Button) findViewById(R.id.aceptarButton);
         mAceptarButton.setOnClickListener(this);
+        mCancelarButton = (Button) findViewById(R.id.cancelarButton);
+        mCancelarButton.setOnClickListener(this);
         mClienteRow = (TableRow) findViewById(R.id.clienteRow);
         mRucRow = (TableRow) findViewById(R.id.rucRow);
         mRecibidoRow = (TableRow) findViewById(R.id.recibidoRow);
@@ -120,6 +147,10 @@ public class PedidosFacturarActivity extends Activity
         mCabPedidosFacturarListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mCabPedidosFacturarListView.setOnItemClickListener(this);
         mCabPedidosFacturarListView.setOnItemLongClickListener(this);
+
+        mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
+        mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
+
         new ConsultarPedidosPorFacturar().execute();
 
         initListaTipoVenta();
@@ -130,14 +161,12 @@ public class PedidosFacturarActivity extends Activity
     protected void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter(EnviarPedidoFacturadoService.ACTION_SEND_ORDERS_TO_INVOICE);
-        LocalBroadcastManager.getInstance(this)
-                .registerReceiver(onEvent, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(onEvent, filter);
     }
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this)
-                .unregisterReceiver(onEvent);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onEvent);
         super.onPause();
     }
 
@@ -228,20 +257,87 @@ public class PedidosFacturarActivity extends Activity
         if (view.getId() == R.id.buscarClieImageButton) {
             new ConsultarClientePorRUC().execute(mRucEditText.getText().toString().trim());
         } else if (view.getId() == R.id.aceptarButton) {
-            int position = mCabPedidosFacturarListView.getCheckedItemPosition();
-            View childView = mCabPedidosFacturarListView.getChildAt(position);
-            String idPedido = ((TextView) childView.findViewById(R.id.nroPedidoTextView)).getText().toString();
-            String idPedidoServ = ((TextView) childView.findViewById(R.id.nroPedidoServTextView)).getText().toString();
-            String tipoVenta = mListaTipoVenta.get(mTipoVentaSpinner.getSelectedItemPosition()).getCodigo();
-            String tipoPago = mListaTipoPago.get(mTipoPagoSpinner.getSelectedItemPosition()).getCodigo();
-            String ruc = (tipoVenta.equals("01") ? mRucEditText.getText().toString().trim() : "");
-            Intent i = new Intent(PedidosFacturarActivity.this, EnviarPedidoFacturadoService.class);
-            i.putExtra(EXTRA_ID_PEDIDO, idPedido);
-            i.putExtra(EXTRA_ID_PEDIDO_SERV, idPedidoServ);
-            i.putExtra(EXTRA_TIPO_VENTA, tipoVenta);
-            i.putExtra(EXTRA_TIPO_PAGO, tipoPago);
-            i.putExtra(EXTRA_RUC, ruc);
-            startService(i);
+            StringBuilder mensaje = new StringBuilder();
+            if (isFormValid(mensaje)) {
+                confirmarEnvioPedidoAFacturar();
+            } else {
+                Toast.makeText(PedidosFacturarActivity.this, mensaje.toString(), Toast.LENGTH_LONG).show();
+            }
+        } else if (view.getId() == R.id.cancelarButton) {
+            resetCampos();
+        }
+    }
+
+    private void enviarPedidoAFacturar() {
+        int position = mCabPedidosFacturarListView.getCheckedItemPosition();
+        View childView = mCabPedidosFacturarListView.getChildAt(position);
+        String idPedido = ((TextView) childView.findViewById(R.id.nroPedidoTextView)).getText().toString();
+        String idPedidoServ = ((TextView) childView.findViewById(R.id.nroPedidoServTextView)).getText().toString();
+        String tipoVenta = mListaTipoVenta.get(mTipoVentaSpinner.getSelectedItemPosition()).getCodigo();
+        String tipoPago = mListaTipoPago.get(mTipoPagoSpinner.getSelectedItemPosition()).getCodigo();
+        String ruc = (tipoVenta.equals("01") ? mRucEditText.getText().toString().trim() : "");
+        Intent i = new Intent(PedidosFacturarActivity.this, EnviarPedidoFacturadoService.class);
+        i.putExtra(EXTRA_ID_PEDIDO, idPedido);
+        i.putExtra(EXTRA_ID_PEDIDO_SERV, idPedidoServ);
+        i.putExtra(EXTRA_TIPO_VENTA, tipoVenta);
+        i.putExtra(EXTRA_TIPO_PAGO, tipoPago);
+        i.putExtra(EXTRA_RUC, ruc);
+        showProgressIndicator(true);
+        startService(i);
+    }
+
+    private boolean isFormValid(StringBuilder mensaje) {
+        boolean valid = true;
+        SpinnerEE tipoVenta = (SpinnerEE) mTipoVentaSpinner.getSelectedItem();
+        SpinnerEE tipoPago = (SpinnerEE) mTipoPagoSpinner.getSelectedItem();
+        Float recibido = Float.parseFloat(mMontoRecibidoEditText.getText().toString());
+        if (mTotalTextView.getText().toString().equals("0.00")) {
+            valid = false;
+            mensaje.append("Debe seleccionar un pedido.");
+        } else {
+            if (tipoVenta.getCodigo().equals("01") && mRucEditText.getText().toString().trim().equals("")) { //Factura
+                valid = false;
+                mensaje.append("Debe indicar el número de RUC del cliente.");
+            }
+            if (valid) {
+                if (tipoPago.getCodigo().equals("CEF") && recibido <= 0) { //Efectivo
+                    valid = false;
+                    mensaje.append("Debe indicar el monto recibido.");
+                }
+            }
+        }
+        return valid;
+    }
+
+    private void confirmarEnvioPedidoAFacturar() {
+        new AlertDialog.Builder(this)
+                .setTitle("Confirmación")
+                .setMessage("¿Realmente desea enviar el pedido para su facturación?")
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        dialog.cancel();
+                        enviarPedidoAFacturar();
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+
+                    }
+                }).setIcon(android.R.drawable.ic_dialog_alert).show();
+    }
+
+    private void showProgressIndicator(boolean showValue) {
+        if (showValue) {
+            mMainLinearLayout.setVisibility(View.GONE);
+            mIndicatorFrameLayout.setVisibility(View.VISIBLE);
+        } else {
+            mMainLinearLayout.setVisibility(View.VISIBLE);
+            mIndicatorFrameLayout.setVisibility(View.GONE);
         }
     }
 
@@ -271,6 +367,15 @@ public class PedidosFacturarActivity extends Activity
         mCabPedidosFacturarListView.setAdapter(adapter);
     }
 
+    private void resetCampos() {
+        mTipoPagoSpinner.setSelection(0);
+        mTipoVentaSpinner.setSelection(0);
+        mClienteTextView.setText("");
+        mRucEditText.setText("");
+        mTotalTextView.setText("0.00");
+        mMontoRecibidoEditText.setText("0.00");
+        mMontoRestanteTextView.setText("0.00");
+    }
 
     private class ConsultarPedidosPorFacturar extends AsyncTask<Void, Void, Object> {
         @Override
@@ -304,6 +409,7 @@ public class PedidosFacturarActivity extends Activity
     }
 
     private class ConsultarClientePorRUC extends AsyncTask<String, Void, Object> {
+
         @Override
         protected Object doInBackground(String... params) {
             Object requestObject;

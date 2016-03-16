@@ -15,10 +15,9 @@ public class LoginSharedPref {
     public static final String CONTRASENA="contrasena";
     public static final String COMPANIA="compania";
     public static final String INGRESO_APLICACION="ingresoAplicacion";
-    public static final String SALIO_APLICACION="salioAplicacion";
 
     public static void save(SharedPreferences prefLogin,String usuario,String contrasena,
-                            String compania,Boolean ingresoApp,Boolean salioApp,boolean limpiarValoresAnteriores ){
+                            String compania,Boolean ingresoApp,boolean limpiarValoresAnteriores ){
         Editor editor = prefLogin.edit();
         if(limpiarValoresAnteriores) editor.clear();
         //if(usuario!=null)editor.putString(AMBIENTE, ambiente);
@@ -26,7 +25,6 @@ public class LoginSharedPref {
         if(contrasena!=null)editor.putString(CONTRASENA, contrasena.trim());
         if(compania!=null)editor.putString(COMPANIA, compania.trim());
         if(ingresoApp!=null) editor.putBoolean(INGRESO_APLICACION, ingresoApp);
-        if(salioApp!=null) editor.putBoolean(SALIO_APLICACION, salioApp);
         editor.commit();
         Log.d(DBHelper.TAG, "Guarde SharedPreferece 'PREF_Login'");
     }

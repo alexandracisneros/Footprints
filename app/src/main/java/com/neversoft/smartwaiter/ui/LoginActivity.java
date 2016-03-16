@@ -62,7 +62,6 @@ public class LoginActivity extends Activity
     private String mContrasena = "";
     private SpinnerEE mSelectedItem;
 
-    //private QuickOrderDB mDB;
     private String mURLServer;
 
 
@@ -232,8 +231,7 @@ public class LoginActivity extends Activity
         // save login data to SharedPreferences , clearing values first,
         // that's why we pass TRUE as the last parameter
 
-        LoginSharedPref.save(mPrefLoginValues, mUsuario, mContrasena,
-                null, null, null, true);
+        LoginSharedPref.save(mPrefLoginValues, mUsuario, mContrasena,null, null, true);
     }
 
     private ArrayList<SpinnerEE> parseCompañias(JsonArray jsonCompanyArray)
@@ -293,8 +291,8 @@ public class LoginActivity extends Activity
 
             // save company to Login Preferences
             // pass false so the previous values are not cleared out.
-            LoginSharedPref.save(mPrefLoginValues, null, null, mSelectedItem.getDescripcion().trim(), true, false, false);
-            Log.d("QuickOrder", "Configuraciones Insertadas");
+            LoginSharedPref.save(mPrefLoginValues, null, null, mSelectedItem.getDescripcion().trim(), true, false);
+            Log.d(DBHelper.TAG, "Configuraciones Insertadas");
             goToMainActivity();
         } catch (Exception e) {
             Toast.makeText(this, "Se produjó la excepción: " + e.getMessage(),

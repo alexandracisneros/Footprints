@@ -144,7 +144,7 @@ public class CerrarDiaActivity extends Activity implements View.OnClickListener,
         String usuario = mPrefConfig.getString("Usuario", "").toUpperCase(
                 Locale.getDefault());
         String ambiente = mPrefConexion.getString(ConexionSharedPref.AMBIENTE, "");
-        Log.d("QuickOrder", ambiente);
+        Log.d(DBHelper.TAG, ambiente);
         try {
             String encondedAmbiente = URLEncoder.encode(ambiente, "utf-8");
             String urlWithParams = String.format(url, fecha, codMozo, codCia,
@@ -308,7 +308,7 @@ public class CerrarDiaActivity extends Activity implements View.OnClickListener,
 
             } else if (result instanceof Exception) {
                 mensaje = ((Exception) result).getMessage();
-                Log.d("QuickOrder", "Error en Cerrar dia: " + mensaje);
+                Log.d(DBHelper.TAG, "Error en Cerrar dia: " + mensaje);
             }
             Toast.makeText(CerrarDiaActivity.this, mensaje,
                     Toast.LENGTH_LONG).show();

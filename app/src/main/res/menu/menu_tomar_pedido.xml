@@ -1,5 +1,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.idealsolution.smartwaiter.ui.CategoryActivity">
     <item
@@ -7,11 +6,11 @@
         android:icon="@android:drawable/ic_menu_send"
         android:orderInCategory="10"
         android:title="@string/action_save_send"
-        app:showAsAction="ifRoom|withText"/>
+        android:showAsAction="ifRoom|withText"/>
     <item
         android:id="@+id/action_cancelar"
-        android:icon="@android:drawable/ic_menu_delete"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
         android:orderInCategory="30"
         android:title="@string/action_cancelar_pedido"
-        app:showAsAction="ifRoom|withText"/>
+        android:showAsAction="ifRoom|withText"/>
 </menu>

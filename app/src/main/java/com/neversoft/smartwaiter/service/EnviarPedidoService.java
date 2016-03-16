@@ -92,7 +92,7 @@ public class EnviarPedidoService extends IntentService {
                 //TODO : VERIFICAR ANTES DE INSERTAR SI EL PEDIDO NO HA SIDO YA INSERTADO, SI YA ESTA INSERTADO SOLO ENVIAR
                 if (idPedido > 0) {
                     String dataToSend = getEnvio(listaPedidosRegistrados, idPedido);//TODO  //PASA ARRAY
-                    // Log.d("QuickOrder", dataToSend);
+//                     Log.d(DBHelper.TAG, dataToSend);
                     //TODO : BEFORE YOU SEND THE ORDER REGISTER IT IN THE DATABASE SO YOU HAVE  AN ORDER ID
                     idOrderFromServer = sendDataToServer(dataToSend);
                     if (idOrderFromServer > 0) {

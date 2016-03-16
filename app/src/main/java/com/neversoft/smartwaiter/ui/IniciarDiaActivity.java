@@ -245,10 +245,9 @@ public class IniciarDiaActivity extends Activity
 
             } else if (result instanceof Exception) {
                 response = ((Exception) result).getMessage();
-                Log.d("QuickOrder", response);
+                Log.d(DBHelper.TAG, response);
             }
-            Toast.makeText(IniciarDiaActivity.this, response,
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(IniciarDiaActivity.this, response,Toast.LENGTH_LONG).show();
         }
 
     }

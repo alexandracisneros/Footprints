@@ -170,19 +170,13 @@ public class TomarPedidoActivity extends Activity
         mMainRelativeLayout = (RelativeLayout) findViewById(R.id.mainRelativeLayout);
 
         loadCategorias();
+        mItems = PedidoSharedPref.getItems(TomarPedidoActivity.this);
+        showItems();
     }
 
     @Override
     public void onBackPressed() {
-        try {
-            Class<?> prevActivityClass = Class.forName(mPrevClassName);
-            Intent intent = new Intent(this, prevActivityClass);
-            startActivity(intent);
-            Log.d(DBHelper.TAG, mPrevClassName);
-            finish();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        confirmarCancelarPedido();
     }
 
     private void showProgressIndicator(boolean showValue) {
@@ -278,10 +272,12 @@ public class TomarPedidoActivity extends Activity
 
     private void showItems() {
         float subTotal = 0;
-        float igv = 0;
+        float igv;
         //create a List of Map<String,?> objects
-        ArrayList<HashMap<String, String>> data =
-                new ArrayList<HashMap<String, String>>();
+        ArrayList<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
+        if(mItems==null){
+            mItems=new ArrayList<>();
+        }
         for (DetallePedidoEE item : mItems) {
             HashMap<String, String> map = new HashMap<String, String>();
             map.put("articuloDescripcion", item.getDescArticulo());
@@ -525,6 +521,4 @@ public class TomarPedidoActivity extends Activity
         }
     }
 
-    //TODO Falta verificar que si cerre la app y vuelvo abrir habiendo un pedido en curso, deberia llevarme a la pantalla en la que se toma
-    //el pedido con el detalle ya cargado. <---15/03/2016 12:45 am
 }

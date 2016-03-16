@@ -75,7 +75,7 @@ public class EnviarPedidoFacturadoService extends IntentService {
                 if (procesoOK) {
                     PedidoDAO pedidoDAO = new PedidoDAO(getApplicationContext());
 
-                    int resultadoPedido = pedidoDAO.updateEstadoPedidoDetalle(Integer.parseInt(idPedido), "040", 2, 3);
+                    int resultadoPedido = pedidoDAO.updateEstadoPedidoDetalle(Integer.parseInt(idPedido), "040", 2, 3); //TODO : Comprobar si esto debe ser de 2 a 3 o de 3 a 4 (es decir Recogido a Prefacturado)
                     if (resultadoPedido > 0) {
                         actualizarListView = true;
                     }

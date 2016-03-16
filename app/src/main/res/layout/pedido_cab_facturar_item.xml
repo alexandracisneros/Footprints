@@ -32,7 +32,7 @@
         android:id="@+id/importePedidoTextView"
         style="@style/TextViewContracted"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:text="Importe"
         android:textColor="@android:color/black"/>
     <TextView

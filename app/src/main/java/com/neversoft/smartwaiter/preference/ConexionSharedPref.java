@@ -39,6 +39,6 @@ public class ConexionSharedPref {
         Editor editor = prefControl.edit();
         editor.clear();
         editor.commit();
-        Log.d("QuickOrder", "Elimine SharedPreferece 'PREF_CONEXION'");
+        Log.d(DBHelper.TAG, "Elimine SharedPreferece 'PREF_CONEXION'");
     }
 }

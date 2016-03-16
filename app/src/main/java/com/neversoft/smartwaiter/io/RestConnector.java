@@ -1,5 +1,7 @@
 package com.neversoft.smartwaiter.io;
 
+import com.neversoft.smartwaiter.database.DBHelper;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpResponseException;
 
@@ -37,7 +39,7 @@ public class RestConnector {
             sb.append(item.getValue());
         }
         mFormBody = sb.toString();
-        //Log.d("QuickOrder", sb.toString());
+//        Log.d(DBHelper.TAG, sb.toString());
     }
 
     private void writeFormData(String charset, OutputStream output)
@@ -95,9 +97,7 @@ public class RestConnector {
             String line = null;
             //int count=1;
             while ((line = reader.readLine()) != null) {
-//				  Log.d("QuickOrder " + count , line);
                 sb.append(line);
-                //count++;
             }
 
             return sb.toString().trim();
