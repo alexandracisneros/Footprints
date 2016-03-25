@@ -3,7 +3,11 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
     </style>
+
     <style name="TituloActivity">
         <item name="android:textSize">25sp</item>
         <item name="android:layout_width">match_parent</item>
@@ -12,12 +16,14 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:padding">7dp</item>
     </style>
+
     <style name="BarraTitulo">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@color/background_default</item>
         <item name="android:padding">5dp</item>
     </style>
+
     <style name="TituloActivity.Medium">
         <item name="android:textSize">20sp</item>
     </style>
@@ -28,7 +34,7 @@
         <item name="android:background">?android:attr/listDivider</item>
     </style>
 
-    <style name="HoloSeparador" >
+    <style name="HoloSeparador">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">3dp</item>
         <item name="android:background">?android:attr/actionModeSplitBackground</item>
@@ -86,6 +92,7 @@
     <style name="TextViewSmall" parent="@style/TextView">
         <item name="android:textSize">13sp</item>
     </style>
+
     <style name="TextViewSmallContracted" parent="@style/TextViewContracted">
         <item name="android:textSize">13sp</item>
     </style>
@@ -148,12 +155,13 @@
         <item name="android:indeterminate">true</item>
     </style>
 
-    <style name="MiddleLine" >
+    <style name="MiddleLine">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">5dp</item>
         <item name="android:layerType">software</item>
         <item name="android:background">@drawable/dotted</item>
     </style>
+
     <style name="activated" parent="@android:color/holo_blue_dark">
         <item name="android:background">@android:color/holo_green_light</item>
     </style>
