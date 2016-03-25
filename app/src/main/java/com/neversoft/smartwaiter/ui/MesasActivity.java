@@ -82,8 +82,7 @@ public class MesasActivity extends Activity
                 finish(); // finaliza actividad para que al volver necesariamente se tenga que volver a cargar la actividad
             } else {
                 Log.d(DBHelper.TAG, "Se produjó la excepción: " + mensajeOperacion);
-                Toast.makeText(MesasActivity.this, mensajeOperacion, Toast.LENGTH_LONG)
-                        .show();
+                Toast.makeText(MesasActivity.this, mensajeOperacion, Toast.LENGTH_LONG).show();
                 showProgressIndicator(false);
             }
 
@@ -136,10 +135,8 @@ public class MesasActivity extends Activity
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this)
-                .unregisterReceiver(onEventRefrescarListadoMesas);
-        LocalBroadcastManager.getInstance(this)
-                .unregisterReceiver(onEventActualizarEstadoMesa);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onEventRefrescarListadoMesas);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onEventActualizarEstadoMesa);
         super.onPause();
     }
 
@@ -260,7 +257,8 @@ public class MesasActivity extends Activity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_update) {
+            startActualizarEstadoMesas();
             return true;
         }
 

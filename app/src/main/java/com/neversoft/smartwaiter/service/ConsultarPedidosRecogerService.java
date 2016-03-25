@@ -114,8 +114,12 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
         Object requestObject;
         String result;
 
-        String GET_URI = mUrlServer + "restaurante/ObtenerPedidosDespachados/?codMozo=%s&codCia=%s&cadenaConexion=%s";
-        String url = String.format(GET_URI, mCodMozo, mCodCia, mAmbiente);
+        String fechaHora = Funciones.getCurrentDate("yyyy/MM/dd hh:mm:ss");
+        fechaHora = URLEncoder.encode(fechaHora, "utf-8");
+        Log.d(DBHelper.TAG, "Fecha y hora:" + fechaHora);
+
+        String GET_URI = mUrlServer + "restaurante/ObtenerPedidosDespachados/?codMozo=%s&codCia=%s&fecha=%s&cadenaConexion=%s";
+        String url = String.format(GET_URI, mCodMozo, mCodCia, fechaHora, mAmbiente);
 
         Log.d(DBHelper.TAG, url);
         if (Funciones.hasActiveInternetConnection(getApplicationContext())) {

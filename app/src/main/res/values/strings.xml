@@ -90,4 +90,6 @@
 
     <string name="dialog_detalle_pedido_title">Detalle Pedido</string>
     <string name="title_activity_consultar_reservas">ConsultarReservasActivity</string>
+    <string name="menu_mesas_update">Actualizar</string>
+    <string name="menu_pedidos_arecoger_update">Actualizar</string>
 </resources>

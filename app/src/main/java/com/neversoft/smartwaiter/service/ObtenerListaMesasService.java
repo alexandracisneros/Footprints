@@ -61,7 +61,6 @@ public class ObtenerListaMesasService extends IntentService {
         mUrlServer = RestUtil.obtainURLServer(getApplicationContext());
 
         try {
-
             cantidadActualizados = getEstadosMesas();
         } catch (Exception e) {
 

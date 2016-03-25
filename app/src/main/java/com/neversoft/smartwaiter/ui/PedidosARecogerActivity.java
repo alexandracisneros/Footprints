@@ -35,7 +35,6 @@ import com.neversoft.smartwaiter.model.business.PedidoDAO;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 import com.neversoft.smartwaiter.model.entity.PedidoEE;
 import com.neversoft.smartwaiter.receiver.ConsultarPedidosRecogerReceiver;
-import com.neversoft.smartwaiter.service.ActualizarEstadoMesaService;
 import com.neversoft.smartwaiter.service.ConsultarPedidosRecogerService;
 import com.neversoft.smartwaiter.service.NotificarPedidosRecogidosService;
 import com.neversoft.smartwaiter.util.Funciones;
@@ -75,6 +74,7 @@ public class PedidosARecogerActivity extends Activity implements
             if (cantidadActualizar > 0) {
                 new ConsultarPedidosDespachados().execute();
             }
+            showProgressIndicator(false);
         }
     };
     private BroadcastReceiver onEventNotificarPedidosRecojidos = new BroadcastReceiver() {
@@ -125,10 +125,7 @@ public class PedidosARecogerActivity extends Activity implements
         mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
 
         ConsultarPedidosRecogerReceiver.scheduleAlarms(this);
-
-        Toast.makeText(this, R.string.alarms_scheduled, Toast.LENGTH_LONG).show();
-        ConsultarPedidosRecogerReceiver.scheduleAlarms(this); //TODO : Poner una preferencia para que si ya se configuró la alarma. No se haga cada vez que se inicia la actividad
-        new ConsultarPedidosDespachados().execute();
+        consultarPedidosARecoger();
     }
 
     @Override
@@ -164,11 +161,20 @@ public class PedidosARecogerActivity extends Activity implements
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) { //TODO Esta accion si es que se deja deberia ser para configurar el intervalo de notificacion entre alarma y alarma
+        if (id == R.id.action_actualizar) { //TODO Esta accion si es que se deja deberia ser para configurar el intervalo de notificacion entre alarma y alarma
+            consultarPedidosARecoger();
             return true;
+
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void consultarPedidosARecoger() {
+        showProgressIndicator(true);
+        Toast.makeText(this, R.string.alarms_scheduled, Toast.LENGTH_LONG).show();
+        ConsultarPedidosRecogerReceiver.scheduleAlarms(this); //TODO : Poner una preferencia para que si ya se configuró la alarma. No se haga cada vez que se inicia la actividad
+        //new ConsultarPedidosDespachados().execute();
     }
 
     @Override
@@ -250,7 +256,7 @@ public class PedidosARecogerActivity extends Activity implements
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
         mActionMode = actionMode;
         MenuInflater inflater = actionMode.getMenuInflater();
-        inflater.inflate(R.menu.menu_pedidos_arecoger, menu);
+        inflater.inflate(R.menu.menu_pedidos_arecoger_contextual, menu);
         return true;
     }
 
@@ -265,7 +271,7 @@ public class PedidosARecogerActivity extends Activity implements
 
         switch (item.getItemId()) {
             case R.id.action_send_recogidos:
-                confirmarRecojoItemsPedido(items,actionMode);
+                confirmarRecojoItemsPedido(items, actionMode);
                 return true;
         }
         return true;
@@ -301,6 +307,7 @@ public class PedidosARecogerActivity extends Activity implements
                     }
                 }).setIcon(android.R.drawable.ic_dialog_alert).show();
     }
+
     private void enviarItemsPedidoRecogidos(SparseBooleanArray items) {
         ArrayList<String> selectedItems = new ArrayList<>();
         for (int i = 0; i < items.size(); i++) {

@@ -15,7 +15,7 @@ import com.neversoft.smartwaiter.service.ConsultarPedidosRecogerService;
  */
 public class ConsultarPedidosRecogerReceiver extends BroadcastReceiver {
     private static final int PERIOD = 120000; // 4 minute
-    private static final int INITIAL_DELAY = 5000; // 5 seconds
+    private static final int INITIAL_DELAY = 1000; // 5 seconds
 
     public static void scheduleAlarms(Context ctxt) {
         AlarmManager mgr = (AlarmManager) ctxt.getSystemService(Context.ALARM_SERVICE);
