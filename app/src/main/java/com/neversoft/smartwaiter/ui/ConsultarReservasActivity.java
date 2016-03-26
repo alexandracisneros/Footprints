@@ -8,20 +8,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,15 +45,17 @@ import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-public class ConsultarReservasActivity extends Activity
-        implements AdapterView.OnItemClickListener, View.OnClickListener {
+public class ConsultarReservasActivity extends AppCompatActivity
+        implements AdapterView.OnItemClickListener,
+        View.OnClickListener,
+        NavigationView.OnNavigationItemSelectedListener {
     private EditText mIdClienteEditText;
     private EditText mCodigoReservaEditText;
     private TextView mRazonSocialBusqTextView;
     private TextView mIDClieBusqTextView;
     private ImageButton mBuscarReservaImageButton;
     private GridView mMesasGridView;
-    private ListView mMenuListView;
+    private NavigationView mNavigationView;
     private ArrayList<MesaPisoEE> mMesaPisoLista;
     private String mColorReserva;
     private MesaPisoEE mMesaPisoSeleccionado;
@@ -89,18 +92,15 @@ public class ConsultarReservasActivity extends Activity
         setContentView(R.layout.activity_consultar_reservas);
 
         overridePendingTransition(0, 0);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         // get reference to the ListView and set its listener
-        mMenuListView = (ListView) findViewById(R.id.menu_listview);
-        mMenuListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        mMenuListView.setOnItemClickListener(this);
-
-
-        Resources res = getResources();
-        String[] options = res.getStringArray(R.array.menu_items_array);
-        ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
-        mMenuListView.setAdapter(itemsAdapter);
-        mMenuListView.setItemChecked(SmartWaiter.OPCION_RESERVAS, true);
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.getMenu().getItem(SmartWaiter.OPCION_RESERVAS).setChecked(true);
 
         mRazonSocialBusqTextView = (TextView) findViewById(R.id.razonSocialBusqTextView);
         mIDClieBusqTextView = (TextView) findViewById(R.id.IDClieBusqTextView);
@@ -146,13 +146,6 @@ public class ConsultarReservasActivity extends Activity
         if (parent.getId() == R.id.mesasGridView) {
             mMesaPisoSeleccionado = mMesaPisoLista.get(position);
             confirmarActualizarEstadoMesa();
-
-
-        } else if (parent.getId() == R.id.menu_listview) {
-            if (position != SmartWaiter.OPCION_RESERVAS) {
-                WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
-                Funciones.selectMenuOption(weakActivity, position);
-            }
         }
     }
 
@@ -264,6 +257,16 @@ public class ConsultarReservasActivity extends Activity
             mesaPisoLista.add(mesaPiso);
         }
         return mesaPisoLista;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        if (menuItem.getOrder() != SmartWaiter.OPCION_RESERVAS) {
+            WeakReference<Activity> weakActivity = new WeakReference<Activity>(ConsultarReservasActivity.this);
+            Funciones.selectMenuOption(weakActivity, menuItem.getOrder());
+            return true;
+        }
+        return true;
     }
 
     private class BuscarMesaRerservada extends AsyncTask<String, Void, Object> {

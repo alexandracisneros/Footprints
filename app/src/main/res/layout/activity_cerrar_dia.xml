@@ -2,39 +2,40 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="horizontal"
+              android:orientation="vertical"
               tools:context="com.neversoft.smartwaiter.ui.CerrarDiaActivity">
 
-    <ListView
-        android:id="@+id/menu_listview"
-        style="@style/activated"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"/>
+    <include layout="@layout/toolbar"/>
 
-    <include
-        layout="@layout/screen_overlay"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="4"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:id="@+id/mainRelativeLayout"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="4"
-        android:baselineAligned="false">
+        <include layout="@layout/navigation_view"/>
 
-        <Button
-            android:id="@+id/cerrarDiaButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical"
-            android:text="@string/cerrarDia"/>
-    </RelativeLayout>
+        <include
+            layout="@layout/screen_overlay"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"/>
+
+        <RelativeLayout
+            android:id="@+id/mainRelativeLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:baselineAligned="false">
+
+            <Button
+                android:id="@+id/cerrarDiaButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:text="@string/cerrarDia"/>
+        </RelativeLayout>
+    </LinearLayout>
+
 
 </LinearLayout>

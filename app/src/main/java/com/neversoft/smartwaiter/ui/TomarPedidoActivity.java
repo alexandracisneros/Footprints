@@ -11,6 +11,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -48,7 +50,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class TomarPedidoActivity extends Activity
+public class TomarPedidoActivity extends AppCompatActivity
         implements OnItemClickListener, EditarCantidadItemFragment.Contract {
 
     private ListView mCategoriasListView;
@@ -142,6 +144,11 @@ public class TomarPedidoActivity extends Activity
         super.onCreate(savedInstanceState);
         overridePendingTransition(0, 0);
         setContentView(R.layout.activity_tomar_pedido);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         //Retrieve Preferences
         mPrefPedidoExtras = getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
         mPrevClassName = mPrefPedidoExtras.getString(PedidoExtraSharedPref.STARTING_ACTIVITY, MesasActivity.class.getClass().getName());
@@ -264,8 +271,6 @@ public class TomarPedidoActivity extends Activity
             PedidoSharedPref.addItem(this, itemDetalle);
             mItems = PedidoSharedPref.getItems(this);
             showItems();
-        } else if (adapterView.getId() == R.id.menu_listview) {
-            Toast.makeText(this, "Opcion de Menu : " + ((TextView) view).getText().toString(), Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -275,8 +280,8 @@ public class TomarPedidoActivity extends Activity
         float igv;
         //create a List of Map<String,?> objects
         ArrayList<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
-        if(mItems==null){
-            mItems=new ArrayList<>();
+        if (mItems == null) {
+            mItems = new ArrayList<>();
         }
         for (DetallePedidoEE item : mItems) {
             HashMap<String, String> map = new HashMap<String, String>();

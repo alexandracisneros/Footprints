@@ -2,22 +2,20 @@ package com.neversoft.smartwaiter.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.design.widget.NavigationView;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -33,9 +31,10 @@ import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.Locale;
 
-public class IniciarDiaActivity extends Activity
-        implements View.OnClickListener, AdapterView.OnItemClickListener {
-    private ListView mMenuListView;
+public class IniciarDiaActivity extends AppCompatActivity
+        implements View.OnClickListener,
+        NavigationView.OnNavigationItemSelectedListener {
+    private NavigationView mNavigationView;
     private Button mIniciarDiaButton;
     private String mUrlServer;
     private SharedPreferences mPrefControl;
@@ -51,6 +50,11 @@ public class IniciarDiaActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_iniciar_dia);
         overridePendingTransition(0, 0);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         // get SharedPreferences
         mPrefConfig = getSharedPreferences(LoginActivity.PREF_CONFIG, MODE_PRIVATE);
         mPrefControl = getSharedPreferences(ControlSharedPref.NAME, MODE_PRIVATE);
@@ -58,18 +62,13 @@ public class IniciarDiaActivity extends Activity
 
         mIniciarDiaButton = (Button) findViewById(R.id.iniciarDiaButton);
         mIniciarDiaButton.setOnClickListener(this);
-        mMenuListView = (ListView) findViewById(R.id.menu_listview);
-        mMenuListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        mMenuListView.setOnItemClickListener(this);
+
 
         mUrlServer = RestUtil.obtainURLServer(getApplicationContext());
 
-        Resources res = getResources();
-        String[] options = res.getStringArray(R.array.menu_items_array);
-        ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
-        mMenuListView.setAdapter(itemsAdapter);
-        mMenuListView.setItemChecked(SmartWaiter.OPCION_INICIAR_DIA, true);
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.getMenu().getItem(SmartWaiter.OPCION_INICIAR_DIA).setChecked(true);
 
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
         mMainRelativeLayout = (RelativeLayout) findViewById(R.id.mainRelativeLayout);
@@ -149,17 +148,6 @@ public class IniciarDiaActivity extends Activity
 
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View v,
-                            int position, long id) {
-        if (parent.getId() == R.id.menu_listview) {
-            if (position != SmartWaiter.OPCION_INICIAR_DIA) {
-                WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
-                Funciones.selectMenuOption(weakActivity, position);
-            }
-        }
-    }
-
     public void iniciarDia() {
         String url = mUrlServer
                 + "ventas/IniciarDiaVendedorMV/?fecha=%s&codVen=%s&codCia=%s&usuario=%s&cadenaConexion=%s";
@@ -197,6 +185,16 @@ public class IniciarDiaActivity extends Activity
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        if (menuItem.getOrder() != SmartWaiter.OPCION_INICIAR_DIA) {
+            WeakReference<Activity> weakActivity = new WeakReference<Activity>(IniciarDiaActivity.this);
+            Funciones.selectMenuOption(weakActivity, menuItem.getOrder());
+            return true;
+        }
+        return true;
     }
 
     class DoIniciarDia extends AsyncTask<String, Void, Object> {
@@ -247,7 +245,7 @@ public class IniciarDiaActivity extends Activity
                 response = ((Exception) result).getMessage();
                 Log.d(DBHelper.TAG, response);
             }
-            Toast.makeText(IniciarDiaActivity.this, response,Toast.LENGTH_LONG).show();
+            Toast.makeText(IniciarDiaActivity.this, response, Toast.LENGTH_LONG).show();
         }
 
     }

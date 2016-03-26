@@ -5,16 +5,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -25,8 +24,9 @@ import com.neversoft.smartwaiter.util.Funciones;
 
 import java.lang.ref.WeakReference;
 
-public class SincronizarActivity extends Activity implements AdapterView.OnItemClickListener {
-    private ListView mMenuListView;
+public class SincronizarActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
+    private NavigationView mNavigationView;
     private FrameLayout mIndicatorFrameLayout;
     private RelativeLayout mMainRelativeLayout;
 
@@ -60,17 +60,15 @@ public class SincronizarActivity extends Activity implements AdapterView.OnItemC
         setContentView(R.layout.activity_sincronizar);
         overridePendingTransition(0, 0);
 
-        // get reference to the ListView and set its listener
-        mMenuListView = (ListView) findViewById(R.id.menu_listview);
-        mMenuListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        mMenuListView.setOnItemClickListener(this);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Resources res = getResources();
-        String[] options = res.getStringArray(R.array.menu_items_array);
-        ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
-        mMenuListView.setAdapter(itemsAdapter);
-        mMenuListView.setItemChecked(SmartWaiter.OPCION_SINCRONIZAR, true);
+        // get reference to the ListView and set its listener
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.getMenu().getItem(SmartWaiter.OPCION_SINCRONIZAR).setChecked(true);
 
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
         mMainRelativeLayout = (RelativeLayout) findViewById(R.id.mainRelativeLayout);
@@ -161,13 +159,12 @@ public class SincronizarActivity extends Activity implements AdapterView.OnItemC
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View v,
-                            int position, long id) {
-        if (parent.getId() == R.id.menu_listview) {
-            if (position != SmartWaiter.OPCION_SINCRONIZAR) {
-                WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
-                Funciones.selectMenuOption(weakActivity, position);
-            }
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        if (menuItem.getOrder() != SmartWaiter.OPCION_SINCRONIZAR) {
+            WeakReference<Activity> weakActivity = new WeakReference<Activity>(SincronizarActivity.this);
+            Funciones.selectMenuOption(weakActivity, menuItem.getOrder());
+            return true;
         }
+        return true;
     }
 }

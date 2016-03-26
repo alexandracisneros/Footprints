@@ -1,16 +1,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
       tools:context="com.idealsolution.smartwaiter.ui.CategoryActivity">
     <item
         android:id="@+id/action_save_send"
         android:icon="@android:drawable/ic_menu_send"
         android:orderInCategory="10"
         android:title="@string/action_save_send"
-        android:showAsAction="ifRoom|withText"/>
+        app:showAsAction="ifRoom|withText"/>
     <item
         android:id="@+id/action_cancelar"
         android:icon="@android:drawable/ic_menu_close_clear_cancel"
         android:orderInCategory="30"
         android:title="@string/action_cancelar_pedido"
-        android:showAsAction="ifRoom|withText"/>
+        app:showAsAction="ifRoom|withText"/>
 </menu>

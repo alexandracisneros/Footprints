@@ -4,19 +4,18 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.design.widget.NavigationView;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -34,9 +33,11 @@ import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.Locale;
 
-public class CerrarDiaActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class CerrarDiaActivity extends AppCompatActivity
+        implements View.OnClickListener,
+        NavigationView.OnNavigationItemSelectedListener {
     private String mUrlServer;
-    private ListView mMenuListView;
+    private NavigationView mNavigationView;
     private Button mCerrarDiaButton;
     // define SharedPreferences object
     private SharedPreferences mPrefConfig;
@@ -50,6 +51,12 @@ public class CerrarDiaActivity extends Activity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cerrar_dia);
         overridePendingTransition(0, 0);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         // get SharedPreferences
         mPrefConfig = getSharedPreferences(LoginActivity.PREF_CONFIG, MODE_PRIVATE);
         mPrefControl = getSharedPreferences(ControlSharedPref.NAME, MODE_PRIVATE);
@@ -57,18 +64,12 @@ public class CerrarDiaActivity extends Activity implements View.OnClickListener,
 
         mCerrarDiaButton = (Button) findViewById(R.id.cerrarDiaButton);
         mCerrarDiaButton.setOnClickListener(this);
-        mMenuListView = (ListView) findViewById(R.id.menu_listview);
-        mMenuListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        mMenuListView.setOnItemClickListener(this);
+
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.getMenu().getItem(SmartWaiter.OPCION_CERRAR_DIA).setChecked(true);
 
         mUrlServer = RestUtil.obtainURLServer(getApplicationContext());
-
-        Resources res = getResources();
-        String[] options = res.getStringArray(R.array.menu_items_array);
-        ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
-        mMenuListView.setAdapter(itemsAdapter);
-        mMenuListView.setItemChecked(SmartWaiter.OPCION_CERRAR_DIA, true);
 
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
         mMainRelativeLayout = (RelativeLayout) findViewById(R.id.mainRelativeLayout);
@@ -232,16 +233,15 @@ public class CerrarDiaActivity extends Activity implements View.OnClickListener,
 
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View v,
-                            int position, long id) {
-        if (parent.getId() == R.id.menu_listview) {
-            if (position != SmartWaiter.OPCION_CERRAR_DIA) {
-                WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
-                Funciones.selectMenuOption(weakActivity, position);
-            }
-        }
 
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        if (menuItem.getOrder() != SmartWaiter.OPCION_CERRAR_DIA) {
+            WeakReference<Activity> weakActivity = new WeakReference<Activity>(CerrarDiaActivity.this);
+            Funciones.selectMenuOption(weakActivity, menuItem.getOrder());
+            return true;
+        }
+        return true;
     }
 
     class DoCerrarDia extends AsyncTask<String, Void, Object> {

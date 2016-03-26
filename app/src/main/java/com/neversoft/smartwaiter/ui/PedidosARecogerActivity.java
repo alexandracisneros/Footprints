@@ -7,10 +7,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -20,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -44,9 +45,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PedidosARecogerActivity extends Activity implements
-        AdapterView.OnItemClickListener,
-        AbsListView.MultiChoiceModeListener {
+public class PedidosARecogerActivity extends AppCompatActivity
+        implements AdapterView.OnItemClickListener,
+        AbsListView.MultiChoiceModeListener, NavigationView.OnNavigationItemSelectedListener {
 
     public static final String EXTRA_CANTIDAD_ACTUALIZAR = "cantidad_actualizar";
     public static final String EXTRA_SELECTED_ITEMS_ARRAY = "selected_items_array";
@@ -55,7 +56,7 @@ public class PedidosARecogerActivity extends Activity implements
     public static final String EXTRA_TOTAL_ITEMS_RECOGER = "total_items_recoger";
     public static final String EXTRA_ID_PEDIDO_REFRESCAR = "id_pedido_refrescar";
 
-    private ListView mMenuListView;
+    private NavigationView mNavigationView;
     private ListView mCabecerPedidoListView;
     private ListView mDetallePedidoListView;
     private ArrayList<DetallePedidoEE> mItems;
@@ -99,10 +100,15 @@ public class PedidosARecogerActivity extends Activity implements
         setContentView(R.layout.activity_pedidos_arecoger);
         overridePendingTransition(0, 0);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         // get reference to the ListView and set its listener
-        mMenuListView = (ListView) findViewById(R.id.menu_listview);
-        mMenuListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        mMenuListView.setOnItemClickListener(this);
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.getMenu().getItem(SmartWaiter.OPCION_PEDIDOS_RECOGER).setChecked(true);
 
         // get reference header ListView
         mCabecerPedidoListView = (ListView) findViewById(R.id.cabeceraPedidoRecogerListView);
@@ -112,14 +118,6 @@ public class PedidosARecogerActivity extends Activity implements
         mDetallePedidoListView = (ListView) findViewById(R.id.detallePedidoRecogerListView);
         mDetallePedidoListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         mDetallePedidoListView.setMultiChoiceModeListener(this);
-
-
-        Resources res = getResources();
-        String[] options = res.getStringArray(R.array.menu_items_array);
-        ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
-        mMenuListView.setAdapter(itemsAdapter);
-        mMenuListView.setItemChecked(SmartWaiter.OPCION_PEDIDOS_RECOGER, true);
 
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
         mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
@@ -179,12 +177,7 @@ public class PedidosARecogerActivity extends Activity implements
 
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-        if (parent.getId() == R.id.menu_listview) {
-            if (position != SmartWaiter.OPCION_PEDIDOS_RECOGER) {
-                WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
-                Funciones.selectMenuOption(weakActivity, position);
-            }
-        } else if (parent.getId() == R.id.cabeceraPedidoRecogerListView) {
+        if (parent.getId() == R.id.cabeceraPedidoRecogerListView) {
             if (mActionMode != null) {
                 mActionMode.finish();
             }
@@ -337,6 +330,16 @@ public class PedidosARecogerActivity extends Activity implements
         }
     }
 
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        if (menuItem.getOrder() != SmartWaiter.OPCION_PEDIDOS_RECOGER) {
+            WeakReference<Activity> weakActivity = new WeakReference<Activity>(PedidosARecogerActivity.this);
+            Funciones.selectMenuOption(weakActivity, menuItem.getOrder());
+            return true;
+        }
+        return true;
+    }
+
     private class ConsultarPedidosDespachados extends AsyncTask<Void, Void, Object> {
 
         @Override
@@ -395,4 +398,5 @@ public class PedidosARecogerActivity extends Activity implements
             }
         }
     }
+
 }

@@ -8,11 +8,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -43,11 +46,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PedidosFacturarActivity extends Activity
+public class PedidosFacturarActivity extends AppCompatActivity
         implements AdapterView.OnItemSelectedListener,
         AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener,
-        View.OnClickListener {
+        View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
     public static final String EXTRA_ID_PEDIDO = "id_pedido";
     public static final String EXTRA_ID_PEDIDO_SERV = "id_pedido_servidor";
@@ -56,7 +59,7 @@ public class PedidosFacturarActivity extends Activity
     public static final String EXTRA_RUC = "pedido_ruc";
     public static final String EXTRA_REFRESCAR_LIST_VIEW = "refrescar_list_view";
 
-    private ListView mMenuListView;
+    private NavigationView mNavigationView;
     private ListView mCabPedidosFacturarListView;
     private ArrayList<SpinnerEE> mListaTipoVenta;
     private Spinner mTipoVentaSpinner;
@@ -97,17 +100,15 @@ public class PedidosFacturarActivity extends Activity
         setContentView(R.layout.activity_pedidos_facturar);
         overridePendingTransition(0, 0);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         // get reference to the ListView and set its listener
-        mMenuListView = (ListView) findViewById(R.id.menu_listview);
-        mMenuListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        mMenuListView.setOnItemClickListener(this);
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.getMenu().getItem(SmartWaiter.OPCION_PEDIDOS_FACTURAR).setChecked(true);
 
-        Resources res = getResources();
-        String[] options = res.getStringArray(R.array.menu_items_array);
-        ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, options);
-        mMenuListView.setAdapter(itemsAdapter);
-        mMenuListView.setItemChecked(SmartWaiter.OPCION_PEDIDOS_FACTURAR, true);
 
         mTipoVentaSpinner = (Spinner) findViewById(R.id.tipoVentaSpinner);
         mTipoPagoSpinner = (Spinner) findViewById(R.id.tipoPagoSpinner);
@@ -225,12 +226,7 @@ public class PedidosFacturarActivity extends Activity
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (parent.getId() == R.id.menu_listview) {
-            if (position != SmartWaiter.OPCION_PEDIDOS_FACTURAR) {
-                WeakReference<Activity> weakActivity = new WeakReference<Activity>(this);
-                Funciones.selectMenuOption(weakActivity, position);
-            }
-        } else if (parent.getId() == R.id.cabeceraPedidoFacturarListView) {
+        if (parent.getId() == R.id.cabeceraPedidoFacturarListView) {
             String montoTotal = ((TextView) view.findViewById(R.id.importePedidoTextView)).getText().toString();
             mTotalTextView.setText(montoTotal);
         }
@@ -375,6 +371,16 @@ public class PedidosFacturarActivity extends Activity
         mTotalTextView.setText("0.00");
         mMontoRecibidoEditText.setText("0.00");
         mMontoRestanteTextView.setText("0.00");
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        if (menuItem.getOrder() != SmartWaiter.OPCION_PEDIDOS_FACTURAR) {
+            WeakReference<Activity> weakActivity = new WeakReference<Activity>(PedidosFacturarActivity.this);
+            Funciones.selectMenuOption(weakActivity, menuItem.getOrder());
+            return true;
+        }
+        return true;
     }
 
     private class ConsultarPedidosPorFacturar extends AsyncTask<Void, Void, Object> {

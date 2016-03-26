@@ -2,39 +2,46 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="horizontal"
+              android:orientation="vertical"
               tools:context="com.neversoft.smartwaiter.ui.TomarPedidoActivity">
 
+    <include layout="@layout/toolbar"/>
+
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <ListView
-            android:id="@+id/categorias_listview"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@android:color/holo_blue_light"
-            android:choiceMode="singleChoice"/>
+            android:orientation="vertical">
 
-        <ListView
-            android:id="@+id/articulos_listview"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@android:color/holo_green_dark"
-            android:choiceMode="singleChoice"/>
+            <ListView
+                android:id="@+id/categorias_listview"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@android:color/holo_blue_light"
+                android:choiceMode="singleChoice"/>
+
+            <ListView
+                android:id="@+id/articulos_listview"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@android:color/holo_green_dark"
+                android:choiceMode="singleChoice"/>
+        </LinearLayout>
+
+        <include
+            layout="@layout/screen_overlay"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"/>
+
+        <include layout="@layout/pedido_cliente"/>
     </LinearLayout>
-
-    <include
-        layout="@layout/screen_overlay"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"/>
-
-    <include layout="@layout/pedido_cliente"/>
 
 
 </LinearLayout>
