@@ -3,4 +3,15 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="icon">72dp</dimen>
+
+    <!-- Needed if we aren't including the Material Design Library -->
+    <dimen name="appbar_elevation">4dp</dimen>
+
+    <!-- The amount we want the details view to overlap the app bar -->
+    <dimen name="form_app_bar_overlap_large">32dp</dimen>
+
+    <dimen name="form_horizontal_padding_large">32dp</dimen>
+    <dimen name="form_horizontal_margin_large">200dp</dimen>
+    <dimen name="waiter_detail_horizontal_padding">32dp</dimen>
+    <dimen name="form_card_elevation">6dp</dimen>
 </resources>

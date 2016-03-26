@@ -1,6 +1,5 @@
 package com.neversoft.smartwaiter.ui;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +7,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.Menu;
@@ -40,7 +41,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class LoginActivity extends Activity
+public class LoginActivity extends AppCompatActivity
         implements OnClickListener {
 
     public static final String PREF_CONFIG = "prefConfig";
@@ -69,6 +70,11 @@ public class LoginActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
 
         // get references to widgets
         mUsuarioEditText = (EditText) findViewById(R.id.usuarioEditText);
@@ -78,8 +84,7 @@ public class LoginActivity extends Activity
         mAceptarButton = (Button) findViewById(R.id.aceptarButton);
 
         // set allCaps
-        mUsuarioEditText
-                .setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+        mUsuarioEditText.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
         // hide 'Aceptar' button so it doesn't cover the 'Conectar' button
         mAceptarButton.setVisibility(View.GONE);
@@ -231,7 +236,7 @@ public class LoginActivity extends Activity
         // save login data to SharedPreferences , clearing values first,
         // that's why we pass TRUE as the last parameter
 
-        LoginSharedPref.save(mPrefLoginValues, mUsuario, mContrasena,null, null, true);
+        LoginSharedPref.save(mPrefLoginValues, mUsuario, mContrasena, null, null, true);
     }
 
     private ArrayList<SpinnerEE> parseCompañias(JsonArray jsonCompanyArray)

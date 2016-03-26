@@ -50,7 +50,7 @@ public class ConfigurarConexionDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.dialog_conf_conexion_title);
-        builder.setIcon(R.drawable.ic_settings).setView(mForm);
+        builder.setIcon(R.drawable.ic_action_settings).setView(mForm);
         builder.setPositiveButton(R.string.aceptar,
                 new DialogInterface.OnClickListener() {
 

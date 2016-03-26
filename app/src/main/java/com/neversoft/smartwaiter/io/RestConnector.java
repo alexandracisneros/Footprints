@@ -1,7 +1,5 @@
 package com.neversoft.smartwaiter.io;
 
-import com.neversoft.smartwaiter.database.DBHelper;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpResponseException;
 

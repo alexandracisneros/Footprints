@@ -86,10 +86,6 @@
             <!-- </intent-filter> -->
         </activity>
         <activity
-            android:name=".ui.LoginRapidoActivity"
-            android:label="@string/title_activity_login_rapido">
-        </activity>
-        <activity
             android:name=".ui.IniciarDiaActivity"
             android:label="@string/title_activity_iniciar_dia">
         </activity>

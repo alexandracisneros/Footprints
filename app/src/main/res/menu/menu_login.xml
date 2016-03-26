@@ -4,8 +4,8 @@
       tools:context="com.neversoft.smartwaiter.ui.LoginActivity">
     <item
         android:id="@+id/menuConfigurarConexion"
-        android:icon="@drawable/ic_settings"
+        android:icon="@drawable/ic_action_settings"
         android:orderInCategory="1"
         android:title="@string/menu_configurar_conex"
-        app:showAsAction="always"/>
+        app:showAsAction="never"/>
 </menu>
