@@ -22,6 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -51,7 +52,7 @@ public class MesasActivity extends AppCompatActivity
     private ArrayList<SpinnerEE> mListaPisos;
     private ArrayList<MesaPisoEE> mListaMesas;
     private FrameLayout mIndicatorFrameLayout;
-    private LinearLayout mMainLinearLayout;
+    private TableLayout mMainLinearLayout;
     private NavigationView mNavigationView;
 
     private MesaPisoDAO mDataHelper;
@@ -115,7 +116,7 @@ public class MesasActivity extends AppCompatActivity
         mMesasGridView.setOnItemClickListener(this);
 
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
-        mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
+        mMainLinearLayout = (TableLayout) findViewById(R.id.mainLinearLayout);
 
         mPrefPedidoExtras = getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
         loadPisosSpinner();

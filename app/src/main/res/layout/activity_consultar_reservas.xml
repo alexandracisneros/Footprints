@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +12,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="7">
 
         <include layout="@layout/navigation_view"/>
 
@@ -23,141 +25,152 @@
 
         <LinearLayout
             android:id="@+id/mainLinearLayout"
-            android:background="@color/primary_light"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
-            android:orientation="vertical">
+            android:background="@color/primary_light"
+            android:orientation="vertical"
+            android:padding="@dimen/abc_list_item_padding_horizontal_material">
 
-            <TableLayout
+            <android.support.v7.widget.GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="3"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp">
+                android:layout_weight="4"
+                app:columnCount="3">
 
-                <TableRow android:gravity="bottom">
+                <TextView
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:text="Código Reserva"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    app:layout_columnWeight="2"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1"/>
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_column="0"
-                        android:layout_weight="2"
-                        android:text="Código Reserva"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
+                <EditText
+                    android:id="@+id/codReservaEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:inputType="number"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/secondary_text"
+                    app:layout_columnWeight="5"
+                    app:layout_gravity="fill"/>
 
-                    <EditText
-                        android:id="@+id/codReservaEditText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:layout_weight="5"
-                        android:inputType="number"/>
+                <TextView
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:visibility="invisible"
+                    app:layout_columnWeight="1"
+                    app:layout_gravity="fill"/>
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_column="2"
-                        android:layout_weight="1"
-                        android:visibility="invisible"/>
 
-                </TableRow>
+                <TextView
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:text="ID Cliente"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    app:layout_columnWeight="2"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1"/>
 
-                <TableRow android:gravity="bottom">
+                <EditText
+                    android:id="@+id/idClienteEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:inputType="number"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/secondary_text"
+                    app:layout_columnWeight="5"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1"/>
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_column="0"
-                        android:layout_weight="2"
-                        android:text="ID Cliente"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
+                <ImageButton
+                    android:id="@+id/buscarClieImageButton"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:src="@android:drawable/ic_menu_search"
+                    app:layout_columnWeight="1"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1"/>
 
-                    <EditText
-                        android:id="@+id/idClienteEditText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:layout_weight="5"
-                        android:inputType="number"/>
 
-                    <ImageButton
-                        android:id="@+id/buscarClieImageButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_column="2"
-                        android:layout_weight="1"
-                        android:src="@android:drawable/ic_menu_search"/>
+                <TextView
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:text="Razón Social"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    app:layout_columnWeight="2"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1"/>
 
-                </TableRow>
+                <TextView
+                    android:id="@+id/razonSocialBusqTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/secondary_text"
+                    app:layout_columnWeight="5"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1"/>
 
-                <TableRow android:gravity="bottom">
+                <TextView
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:visibility="invisible"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"/>
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_column="0"
-                        android:layout_weight="2"
-                        android:text="Razón Social"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-                    <TextView
-                        android:id="@+id/razonSocialBusqTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:layout_weight="5"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:text="DNI/RUC"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    app:layout_columnWeight="2"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1"/>
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_column="2"
-                        android:layout_weight="1"
-                        android:visibility="invisible"/>
-                </TableRow>
+                <TextView
+                    android:id="@+id/IDClieBusqTextView"
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/secondary_text"
+                    app:layout_columnWeight="5"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1"/>
 
-                <TableRow android:gravity="bottom">
+                <TextView
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:visibility="invisible"
+                    app:layout_columnWeight="1"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1"/>
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_column="0"
-                        android:layout_weight="2"
-                        android:text="DNI/RUC"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-                    <TextView
-                        android:id="@+id/IDClieBusqTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:layout_weight="5"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_column="2"
-                        android:layout_weight="1"
-                        android:visibility="invisible"/>
-                </TableRow>
-
-            </TableLayout>
+            </android.support.v7.widget.GridLayout>
 
             <GridView
                 android:id="@+id/mesasGridView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="7"
+                android:layout_weight="5"
                 android:columnWidth="200dp"
-                android:gravity="center"
                 android:horizontalSpacing="4dp"
                 android:numColumns="auto_fit"
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="4dp"
                 tools:listitem="@layout/mesa_item"/>
         </LinearLayout>
+
+
     </LinearLayout>
 
 

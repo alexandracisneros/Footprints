@@ -1,7 +1,6 @@
 package com.neversoft.smartwaiter.ui;
 
 import android.app.Activity;
-import android.support.v7.app.AlertDialog;;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -44,6 +44,8 @@ import com.neversoft.smartwaiter.util.Funciones;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+
+;
 
 public class ConsultarReservasActivity extends AppCompatActivity
         implements AdapterView.OnItemClickListener,
