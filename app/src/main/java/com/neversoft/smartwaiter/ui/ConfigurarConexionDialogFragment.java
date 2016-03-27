@@ -1,21 +1,21 @@
 package com.neversoft.smartwaiter.ui;
 
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.io.RestConnector;
@@ -25,14 +25,16 @@ import com.neversoft.smartwaiter.util.Funciones;
 
 import java.net.URLEncoder;
 
+;
 
-public class ConfigurarConexionDialogFragment extends DialogFragment {
+
+public class ConfigurarConexionDialogFragment extends AppCompatDialogFragment {
     // define SharedPreferences object
     private SharedPreferences mPrefConexion;
     private EditText mServidorEditText;
     private EditText mAplicacionEditText;
     private EditText mAmbienteEditText;
-    private ProgressDialog mProgress;
+    private MaterialDialog mProgress;
     private View mForm = null;
 
     @Override
@@ -50,7 +52,7 @@ public class ConfigurarConexionDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.dialog_conf_conexion_title);
-        builder.setIcon(R.drawable.ic_action_settings).setView(mForm);
+        builder.setView(mForm);
         builder.setPositiveButton(R.string.aceptar,
                 new DialogInterface.OnClickListener() {
 
@@ -144,11 +146,12 @@ public class ConfigurarConexionDialogFragment extends DialogFragment {
 
         @Override
         protected void onPreExecute() {
-            mProgress = new ProgressDialog(ctxt);
-            mProgress.setTitle("Procesando");
-            mProgress.setMessage("Espere por favor...");
-            mProgress.setCancelable(false);
-            mProgress.show();
+            mProgress = new MaterialDialog.Builder(ctxt)
+                    .title("Procesando")
+                    .content("Espere por favor...")
+                    .cancelable(false)
+                    .progress(true, 0)
+                    .show();
         }
 
         @Override

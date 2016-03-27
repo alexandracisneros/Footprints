@@ -24,16 +24,20 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
+            android:background="@color/primary_light"
             android:baselineAligned="false">
 
             <Button
                 android:id="@+id/cerrarDiaButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="?attr/listPreferredItemHeight"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
-                android:text="@string/cerrarDia"/>
+                android:drawablePadding="@dimen/form_horizontal_padding_small"
+                android:text="@string/cerrarDia"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:theme="@style/BrandButtonStyle"/>
         </RelativeLayout>
     </LinearLayout>
 

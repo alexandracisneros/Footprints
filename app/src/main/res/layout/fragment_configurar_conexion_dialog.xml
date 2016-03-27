@@ -2,48 +2,74 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/abc_list_item_padding_horizontal_material"
+              android:paddingEnd="@dimen/waiter_detail_horizontal_padding"
+              android:paddingLeft="@dimen/waiter_detail_horizontal_padding"
+              android:paddingRight="@dimen/waiter_detail_horizontal_padding"
+              android:paddingStart="@dimen/waiter_detail_horizontal_padding"
+              android:paddingTop="@dimen/abc_list_item_padding_horizontal_material">
 
     <TextView
         android:id="@+id/servidorLabel"
-        style="@style/Label"
-        android:text="@string/dialog_servidor_label"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_servidor_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
     <EditText
         android:id="@+id/servidorEditText"
-        style="@style/CajaTexto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/form_horizontal_padding_small"
         android:ems="8"
+        android:textColor="@color/secondary_text"
         android:hint="@string/servidor_hint"
         android:imeOptions="actionNext"
-        android:inputType="textUri">
+        android:inputType="textUri"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead">
     </EditText>
 
     <TextView
         android:id="@+id/aplicacionLabel"
-        style="@style/Label"
-        android:text="@string/dialog_aplicacion_label"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/form_horizontal_padding_small"
+        android:text="@string/dialog_aplicacion_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
     <EditText
         android:id="@+id/aplicacionEditText"
-        style="@style/CajaTexto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/form_horizontal_padding_small"
+        android:textColor="@color/secondary_text"
         android:ems="8"
         android:hint="@string/aplicacion_hint"
         android:imeOptions="actionNext"
-        android:inputType="textNoSuggestions">
+        android:inputType="textNoSuggestions"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead">
     </EditText>
 
     <TextView
         android:id="@+id/ambienteLabel"
-        style="@style/Label"
-        android:text="@string/dialog_ambiente_label"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/form_horizontal_padding_small"
+        android:text="@string/dialog_ambiente_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
     <EditText
         android:id="@+id/ambienteEditText"
-        style="@style/CajaTexto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/secondary_text"
+        android:layout_marginTop="@dimen/form_horizontal_padding_small"
         android:ems="8"
         android:hint="@string/ambiente_hint"
         android:imeOptions="actionDone"
-        android:inputType="textNoSuggestions">
+        android:inputType="textNoSuggestions"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead">
     </EditText>
 
 </LinearLayout>

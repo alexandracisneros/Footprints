@@ -1,12 +1,12 @@
 package com.neversoft.smartwaiter.ui;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -50,7 +51,7 @@ public class LoginActivity extends AppCompatActivity
     private Spinner mCompaniaSpinner;
     private Button mIniciarSessionButton;
     private Button mAceptarButton;
-    private ProgressDialog mProgress;
+    private MaterialDialog mProgress;
     // define SharedPreferences object
     private SharedPreferences mPrefLoginValues;
     private SharedPreferences mPrefControl;
@@ -127,7 +128,7 @@ public class LoginActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.menuConfigurarConexion:
-                new ConfigurarConexionDialogFragment().show(getFragmentManager(), "dlgConfigurarConex");
+                new ConfigurarConexionDialogFragment().show(getSupportFragmentManager(), "dlgConfigurarConex");
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -325,11 +326,13 @@ public class LoginActivity extends AppCompatActivity
 
         @Override
         protected void onPreExecute() {
-            mProgress = new ProgressDialog(LoginActivity.this);
-            mProgress.setTitle("Procesando");
-            mProgress.setMessage("Espere por favor...");
-            mProgress.setCancelable(false);
-            mProgress.show();
+
+            mProgress = new MaterialDialog.Builder(LoginActivity.this)
+                    .title("Procesando")
+                    .content("Espere por favor...")
+                    .cancelable(false)
+                    .progress(true, 0)
+                    .show();
         }
 
         @Override
@@ -377,11 +380,12 @@ public class LoginActivity extends AppCompatActivity
     class DoAceptar extends AsyncTask<String, Void, Object> {
         @Override
         protected void onPreExecute() {
-            mProgress = new ProgressDialog(LoginActivity.this);
-            mProgress.setTitle("Procesando");
-            mProgress.setMessage("Espere por favor...");
-            mProgress.setCancelable(false);
-            mProgress.show();
+            mProgress = new MaterialDialog.Builder(LoginActivity.this)
+                    .title("Procesando")
+                    .content("Espere por favor...")
+                    .cancelable(false)
+                    .progress(true, 0)
+                    .show();
         }
 
         @Override
@@ -398,6 +402,7 @@ public class LoginActivity extends AppCompatActivity
             } catch (Exception e) {
                 requestObject = e;
             }
+            SystemClock.sleep(2000);
             return requestObject;
         }
 
