@@ -12,6 +12,7 @@
 
     <dimen name="form_horizontal_padding_large">32dp</dimen>
     <dimen name="form_horizontal_padding_small">8dp</dimen>
+    <dimen name="form_horizontal_padding_normal">10dp</dimen>
     <dimen name="form_horizontal_margin_large">200dp</dimen>
     <dimen name="waiter_detail_horizontal_padding">32dp</dimen>
     <dimen name="form_card_elevation">6dp</dimen>

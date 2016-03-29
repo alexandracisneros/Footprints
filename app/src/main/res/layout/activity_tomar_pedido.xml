@@ -23,7 +23,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="@android:color/holo_blue_light"
                 android:choiceMode="singleChoice"/>
 
             <ListView
@@ -31,7 +30,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="@android:color/holo_green_dark"
                 android:choiceMode="singleChoice"/>
         </LinearLayout>
 

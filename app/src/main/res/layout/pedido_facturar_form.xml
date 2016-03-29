@@ -1,179 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--5-->
-<!--3-->
-<!--2-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="@dimen/activity_vertical_margin">
 
-<android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                      xmlns:app="http://schemas.android.com/apk/res-auto"
-                                      android:layout_width="match_parent"
-                                      android:layout_height="match_parent"
-                                      android:padding="@dimen/abc_list_item_padding_horizontal_material"
-                                      app:columnCount="3">
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:weightSum="4.5">
 
+        <TableRow
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:weightSum="7">
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="2"
-        android:text="Tipo Venta"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="Tipo Venta"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
-    <Spinner
-        android:id="@+id/tipoVentaSpinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="2dp"
-        app:layout_columnWeight="4"/>
+            <Spinner
+                android:id="@+id/tipoVentaSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/secondary_text"/>
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="1"
-        android:visibility="invisible"/>
+        </TableRow>
 
+        <TableRow
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:weightSum="7">
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="2"
-        android:text="Tipo Pago"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="Tipo Pago"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                />
 
-    <Spinner
-        android:id="@+id/tipoPagoSpinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="4"
-        android:touchscreenBlocksFocus="true"/>
+            <Spinner
+                android:id="@+id/tipoPagoSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/secondary_text"
+                android:touchscreenBlocksFocus="true"/>
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="1"
-        android:visibility="invisible"/>
+        </TableRow>
 
+        <TableRow
+            android:id="@+id/clienteRow"
+            android:layout_weight="1.5"
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:weightSum="7">
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="2"
-        android:text="Cliente"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="Cliente"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
-    <TextView
-        android:id="@+id/clienteTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="4"
-        android:paddingLeft="10dp"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="1"
-        android:visibility="invisible"/>
-
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="2"
-        android:text="RUC"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-    <EditText
-        android:id="@+id/rucEditText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="4"
-        android:inputType="number"/>
-
-    <ImageButton
-        android:id="@+id/buscarClieImageButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="1"
-        android:src="@android:drawable/ic_menu_search"/>
-
-    <ProgressBar
-        android:id="@+id/bucarClieProgressBar"
-        style="@android:style/Widget.ProgressBar.Small.Inverse"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="1"
-        android:visibility="gone"/>
+            <TextView
+                android:id="@+id/clienteTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/form_horizontal_padding_normal"
+                android:layout_weight="4"
+                android:text=""
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/secondary_text"/>
 
 
-    <!--TOTALES-->
+        </TableRow>
 
+        <TableRow
+            android:id="@+id/rucRow"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:weightSum="7">
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="1"
-        android:text="Total"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="RUC"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
-    <TextView
-        android:id="@+id/totalTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="2"
-        android:text="0.00"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+            <EditText
+                android:id="@+id/rucEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/form_horizontal_padding_normal"
+                android:layout_weight="4"
+                android:inputType="number"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/secondary_text"
+                />
 
+            <ImageButton
+                android:id="@+id/buscarClieImageButton"
+                android:gravity="center_vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:layout_weight="1"
+                android:src="@android:drawable/ic_menu_search"/>
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="1"
-        android:text="Recibido"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        </TableRow>
 
-    <EditText
-        android:id="@+id/montoRecibidoEditText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="2"
-        android:ems="10"
-        android:inputType="number"
-        android:text="0.00"/>
+    </TableLayout>
 
+    <android.support.v7.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="1"
-        android:text="Restante"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3">
 
-    <TextView
-        android:id="@+id/restanteTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="2"
-        android:text="0.00"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        <TableRow
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:weightSum="7">
 
-    <!--BOTONES-->
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Total"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
+            <TextView
+                android:id="@+id/totalTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/form_horizontal_padding_normal"
+                android:layout_weight="4"
+                android:text="0.00"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/secondary_text"/>
+        </TableRow>
 
-    <Button
-        android:id="@+id/aceptarButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:text="Aceptar"/>
+        <TableRow
+            android:id="@+id/recibidoRow"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:weightSum="7">
 
-    <Button
-        android:id="@+id/cancelarButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/aceptarButton"
-        android:layout_toEndOf="@+id/aceptarButton"
-        android:layout_toRightOf="@+id/aceptarButton"
-        android:text="Cancelar"/>
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Recibido"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
-</android.support.v7.widget.GridLayout>
+            <EditText
+                android:id="@+id/montoRecibidoEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:padding="@dimen/form_horizontal_padding_normal"
+                android:inputType="number"
+                android:text="0.00"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/secondary_text"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/restanteRow"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:weightSum="7">
+
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Restante"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+
+            <TextView
+                android:id="@+id/restanteTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/form_horizontal_padding_normal"
+                android:layout_weight="4"
+                android:text="0.00"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/secondary_text"/>
+        </TableRow>
+    </TableLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:id="@+id/aceptarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Aceptar"/>
+
+        <Button
+            android:id="@+id/cancelarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/aceptarButton"
+            android:layout_toEndOf="@+id/aceptarButton"
+            android:layout_toRightOf="@+id/aceptarButton"
+            android:text="Cancelar"/>
+    </RelativeLayout>
+</LinearLayout>

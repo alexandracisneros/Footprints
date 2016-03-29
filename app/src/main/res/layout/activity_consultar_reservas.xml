@@ -91,10 +91,10 @@
                     android:id="@+id/buscarClieImageButton"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
                     android:src="@android:drawable/ic_menu_search"
                     app:layout_columnWeight="1"
-                    app:layout_gravity="fill"
                     app:layout_rowWeight="1"/>
 
 
