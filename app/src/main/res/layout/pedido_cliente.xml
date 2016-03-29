@@ -1,116 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/mainRelativeLayout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/primary_light"
-    android:padding="@dimen/abc_list_item_padding_horizontal_material"
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_weight="2">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
-        android:id="@+id/cabeceraPedido"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true">
+    <android.support.v7.widget.CardView
+        android:id="@+id/mainRelativeLayout"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/abc_list_item_padding_horizontal_material"
+        android:layout_weight="2"
+        app:cardElevation="@dimen/form_card_elevation"
+        app:cardPreventCornerOverlap="false">
 
-        <TextView
-            android:id="@+id/productoPedidoLabel"
-            style="@style/LabelContracted"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:text="@string/producto_pedido_label"/>
-
-        <TextView
-            android:id="@+id/cantidadPedidoLabel"
-            style="@style/LabelContracted"
-            android:layout_alignBaseline="@+id/productoPedidoLabel"
-            android:layout_centerHorizontal="true"
-            android:text="@string/cantidad_pedido_label"/>
-
-        <TextView
-            android:id="@+id/precioPedidoLabel"
-            style="@style/LabelContracted"
-            android:layout_alignBaseline="@+id/productoPedidoLabel"
-            android:layout_alignParentRight="true"
-            android:text="@string/precio_pedido_label"/>
-
-
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/footerPedido"
-        android:layout_below="@+id/cabeceraPedido"
-        android:orientation="vertical">
-
-        <ListView
-            android:id="@+id/detallePedidoListView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:divider="@android:color/black"
-            android:dividerHeight="1dp"
-            tools:listitem="@layout/order_item">
-        </ListView>
-    </LinearLayout>
+            android:orientation="vertical"
+            android:padding="@dimen/abc_list_item_padding_horizontal_material"
+            android:weightSum="12">
 
-    <RelativeLayout
-        android:id="@+id/footerPedido"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true">
-        <!--Primera Fila-->
-        <TextView
-            android:id="@+id/subTotalPedidoLabel"
-            style="@style/LabelContracted"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:text="@string/sub_total_pedido_label"/>
+            <LinearLayout
+                android:id="@+id/cabeceraPedido"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/subTotalPedidoTextView"
-            style="@style/TextViewSmallContracted"
-            android:layout_alignBaseline="@+id/subTotalPedidoLabel"
-            android:layout_toRightOf="@+id/subTotalPedidoLabel"
-            />
+                <TextView
+                    android:id="@+id/productoPedidoLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:text="@string/producto_pedido_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/primary_text"/>
 
-        <TextView
-            android:id="@+id/TotalPedidoLabel"
-            style="@style/LabelContracted"
-            android:layout_alignBaseline="@+id/subTotalPedidoLabel"
-            android:layout_alignParentRight="true"
-            android:text="@string/total_pedido_label"/>
-        <!--Primera Fila-->
-        <!--Segunda Fila-->
-        <TextView
-            android:id="@+id/igvPedidoLabel"
-            style="@style/LabelContracted"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/subTotalPedidoLabel"
-            android:text="@string/igv_pedido_label"/>
+                <TextView
+                    android:id="@+id/cantidadPedidoLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cantidad_pedido_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/primary_text"/>
 
-        <TextView
-            android:id="@+id/igvPedidoTextView"
-            style="@style/TextViewSmallContracted"
-            android:layout_alignBaseline="@+id/igvPedidoLabel"
-            android:layout_alignLeft="@+id/subTotalPedidoTextView"
-            android:layout_below="@+id/subTotalPedidoTextView"
-            android:layout_marginLeft="0dp"
-            android:paddingLeft="0dp"
-            />
+                <TextView
+                    android:id="@+id/precioPedidoLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:text="@string/precio_pedido_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/primary_text"/>
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/totalPedidoTextView"
-            style="@style/TextViewSmallContracted"
-            android:layout_alignBaseline="@+id/igvPedidoLabel"
-            android:layout_alignParentRight="true"
-            />
-        <!--Segunda Fila-->
-    </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="9"
+                android:orientation="vertical">
 
-</RelativeLayout>
+                <ListView
+                    android:id="@+id/detallePedidoListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:divider="@android:color/black"
+                    android:dividerHeight="1dp"
+                    tools:listitem="@layout/order_item">
+                </ListView>
+            </LinearLayout>
+
+            <android.support.v7.widget.GridLayout
+                android:id="@+id/footerPedido"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                app:columnCount="3">
+
+                <TextView
+                    android:id="@+id/subTotalPedidoLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sub_total_pedido_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/primary_text"
+                    app:layout_columnWeight="2"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1"/>
+
+                <TextView
+                    android:id="@+id/subTotalPedidoTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/secondary_text"
+                    app:layout_columnWeight="2"
+                    app:layout_gravity="fill"/>
+
+                <TextView
+                    android:id="@+id/TotalPedidoLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="@string/total_pedido_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/primary_text"
+                    app:layout_columnWeight="2"
+                    app:layout_gravity="fill"/>
+
+
+                <TextView
+                    android:id="@+id/igvPedidoLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/igv_pedido_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/primary_text"
+                    app:layout_columnWeight="2"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1"/>
+
+                <TextView
+                    android:id="@+id/igvPedidoTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/secondary_text"
+                    app:layout_columnWeight="2"
+                    app:layout_gravity="fill"/>
+
+                <TextView
+                    android:id="@+id/totalPedidoTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/secondary_text"
+                    app:layout_columnWeight="2"
+                    app:layout_gravity="fill"/>
+
+            </android.support.v7.widget.GridLayout>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</merge>

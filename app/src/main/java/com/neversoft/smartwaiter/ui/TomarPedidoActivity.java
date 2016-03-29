@@ -2,7 +2,6 @@ package com.neversoft.smartwaiter.ui;
 
 
 import android.app.Activity;
-import android.support.v7.app.AlertDialog;;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,7 +10,9 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -24,7 +25,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +50,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
+;
+
 public class TomarPedidoActivity extends AppCompatActivity
         implements OnItemClickListener, EditarCantidadItemFragment.Contract {
 
@@ -71,7 +73,7 @@ public class TomarPedidoActivity extends AppCompatActivity
     private TextView mTotalPedidoTextView;
 
     private FrameLayout mIndicatorFrameLayout;
-    private RelativeLayout mMainRelativeLayout;
+    private CardView mMainRelativeLayout;
     private float mTotal = 0;
     private String mPrevClassName;
     private SharedPreferences mPrefPedidoExtras;
@@ -174,7 +176,7 @@ public class TomarPedidoActivity extends AppCompatActivity
         mPedidoListView.setMultiChoiceModeListener(new ActionModeCallbacks());
 
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
-        mMainRelativeLayout = (RelativeLayout) findViewById(R.id.mainRelativeLayout);
+        mMainRelativeLayout = (CardView) findViewById(R.id.mainRelativeLayout);
 
         loadCategorias();
         mItems = PedidoSharedPref.getItems(TomarPedidoActivity.this);

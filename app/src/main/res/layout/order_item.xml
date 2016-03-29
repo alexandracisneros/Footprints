@@ -1,31 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?android:attr/activatedBackgroundIndicator">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_vertical"
+              android:background="?android:attr/activatedBackgroundIndicator"
+              android:minHeight="?android:attr/listPreferredItemHeight">
 
     <TextView
         android:id="@+id/productoPedidoDescTextView"
-        style="@style/TextViewContracted"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
         android:maxLines="3"
-        android:textColor="@android:color/black"
-        android:text="@string/producto_pedido_label" />
+        android:text="@string/producto_pedido_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/secondary_text"/>
 
     <TextView
         android:id="@+id/cantidadPedidoTextView"
-        style="@style/TextViewContracted"
-        android:layout_alignBaseline="@+id/productoPedidoDescTextView"
-        android:layout_centerHorizontal="true"
-        android:textColor="@android:color/black"
-        android:text="@string/cantidad_pedido_label" />
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/cantidad_pedido_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/secondary_text"/>
 
     <TextView
         android:id="@+id/precioPedidoTextView"
-        style="@style/TextViewContracted"
-        android:layout_alignBaseline="@+id/productoPedidoDescTextView"
-        android:layout_alignParentRight="true"
-        android:textColor="@android:color/black"
-        android:text="@string/precio_pedido_label" />
-</RelativeLayout>
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:layout_weight="1"
+        android:text="@string/precio_pedido_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/secondary_text"/>
+</LinearLayout>
