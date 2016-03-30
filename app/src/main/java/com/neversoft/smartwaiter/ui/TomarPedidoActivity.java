@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -24,6 +23,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -73,7 +73,7 @@ public class TomarPedidoActivity extends AppCompatActivity
     private TextView mTotalPedidoTextView;
 
     private FrameLayout mIndicatorFrameLayout;
-    private CardView mMainRelativeLayout;
+    private LinearLayout mLinearLayout;
     private float mTotal = 0;
     private String mPrevClassName;
     private SharedPreferences mPrefPedidoExtras;
@@ -176,7 +176,7 @@ public class TomarPedidoActivity extends AppCompatActivity
         mPedidoListView.setMultiChoiceModeListener(new ActionModeCallbacks());
 
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
-        mMainRelativeLayout = (CardView) findViewById(R.id.mainRelativeLayout);
+        mLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
 
         loadCategorias();
         mItems = PedidoSharedPref.getItems(TomarPedidoActivity.this);
@@ -190,10 +190,10 @@ public class TomarPedidoActivity extends AppCompatActivity
 
     private void showProgressIndicator(boolean showValue) {
         if (showValue) {
-            mMainRelativeLayout.setVisibility(View.GONE);
+            mLinearLayout.setVisibility(View.GONE);
             mIndicatorFrameLayout.setVisibility(View.VISIBLE);
         } else {
-            mMainRelativeLayout.setVisibility(View.VISIBLE);
+            mLinearLayout.setVisibility(View.VISIBLE);
             mIndicatorFrameLayout.setVisibility(View.GONE);
         }
         mCategoriasListView.setEnabled(!showValue);

@@ -4,14 +4,14 @@
       tools:context="com.idealsolution.smartwaiter.ui.CategoryActivity">
     <item
         android:id="@+id/action_save_send"
-        android:icon="@android:drawable/ic_menu_send"
+        android:icon="@drawable/ic_action_send"
         android:orderInCategory="10"
         android:title="@string/action_save_send"
-        app:showAsAction="ifRoom|withText"/>
+        app:showAsAction="never"/>
     <item
         android:id="@+id/action_cancelar"
-        android:icon="@android:drawable/ic_menu_close_clear_cancel"
-        android:orderInCategory="30"
+        android:icon="@drawable/ic_action_cancel"
+        android:orderInCategory="20"
         android:title="@string/action_cancelar_pedido"
-        app:showAsAction="ifRoom|withText"/>
+        app:showAsAction="never"/>
 </menu>

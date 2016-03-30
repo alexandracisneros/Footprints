@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/touch_selector"
+              android:minHeight="?android:attr/listPreferredItemHeight"
               android:orientation="horizontal">
 
     <ImageView
@@ -10,15 +12,19 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:adjustViewBounds="true"
+        android:maxHeight="@dimen/main_list_icon"
+        android:maxWidth="@dimen/main_list_icon"
         android:padding="4dp"
         android:scaleType="fitCenter"/>
 
     <TextView
         android:id="@+id/desc_textview"
         android:layout_width="0dp"
-        android:gravity="center_vertical"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_weight="1"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/primary_text"
+        android:layout_weight="1"
+        android:gravity="center_vertical"/>
 
 </LinearLayout>
