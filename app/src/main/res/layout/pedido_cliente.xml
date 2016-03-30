@@ -16,42 +16,48 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="@dimen/abc_list_item_padding_horizontal_material"
             android:weightSum="12">
 
             <LinearLayout
                 android:id="@+id/cabeceraPedido"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:background="@color/detail_accent_pane_background"
+                android:paddingLeft="@dimen/abc_list_item_padding_horizontal_material"
+                android:paddingRight="@dimen/abc_list_item_padding_horizontal_material">
 
                 <TextView
                     android:id="@+id/productoPedidoLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
                     android:text="@string/producto_pedido_label"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/primary_text"/>
+                    android:textColor="@android:color/white"/>
 
                 <TextView
                     android:id="@+id/cantidadPedidoLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:layout_weight="1.5"
                     android:text="@string/cantidad_pedido_label"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/primary_text"/>
+                    android:textColor="@android:color/white"
+                    android:gravity="center_horizontal"/>
 
                 <TextView
                     android:id="@+id/precioPedidoLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1.5"
+                    android:gravity="right|center_vertical"
                     android:text="@string/precio_pedido_label"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/primary_text"/>
+                    android:textColor="@android:color/white"/>
             </LinearLayout>
 
             <LinearLayout
@@ -75,15 +81,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
+                android:background="@color/detail_accent_pane_background"
+                android:paddingLeft="@dimen/abc_list_item_padding_horizontal_material"
+                android:paddingRight="@dimen/abc_list_item_padding_horizontal_material"
                 app:columnCount="3">
 
                 <TextView
                     android:id="@+id/subTotalPedidoLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:text="@string/sub_total_pedido_label"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/primary_text"
+                    android:textColor="@android:color/white"
                     app:layout_columnWeight="2"
                     app:layout_gravity="fill"
                     app:layout_rowWeight="1"/>
@@ -92,9 +102,9 @@
                     android:id="@+id/subTotalPedidoTextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
+                    android:gravity="left|center_vertical"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/secondary_text"
+                    android:textColor="@android:color/white"
                     app:layout_columnWeight="2"
                     app:layout_gravity="fill"/>
 
@@ -102,10 +112,10 @@
                     android:id="@+id/TotalPedidoLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="right|center_vertical"
                     android:text="@string/total_pedido_label"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/primary_text"
+                    android:textColor="@android:color/white"
                     app:layout_columnWeight="2"
                     app:layout_gravity="fill"/>
 
@@ -114,9 +124,10 @@
                     android:id="@+id/igvPedidoLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:text="@string/igv_pedido_label"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/primary_text"
+                    android:textColor="@android:color/white"
                     app:layout_columnWeight="2"
                     app:layout_gravity="fill"
                     app:layout_rowWeight="1"/>
@@ -125,9 +136,9 @@
                     android:id="@+id/igvPedidoTextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
+                    android:gravity="left|center_vertical"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/secondary_text"
+                    android:textColor="@android:color/white"
                     app:layout_columnWeight="2"
                     app:layout_gravity="fill"/>
 
@@ -135,9 +146,9 @@
                     android:id="@+id/totalPedidoTextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="right|center_vertical"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/secondary_text"
+                    android:textColor="@android:color/white"
                     app:layout_columnWeight="2"
                     app:layout_gravity="fill"/>
 

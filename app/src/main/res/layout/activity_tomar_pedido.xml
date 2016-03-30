@@ -16,20 +16,30 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/abc_list_item_padding_horizontal_material"
+            android:layout_marginLeft="@dimen/waiter_detail_horizontal_padding"
+            android:layout_marginRight="@dimen/waiter_detail_horizontal_padding">
 
             <ListView
                 android:id="@+id/categorias_listview"
                 android:layout_width="match_parent"
+                android:background="@color/detail_accent_pane_background"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="7"
                 android:choiceMode="singleChoice"/>
+
+            <android.support.v7.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
 
             <ListView
                 android:id="@+id/articulos_listview"
                 android:layout_width="match_parent"
+                android:background="@color/detail_accent_pane_background"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="7"
                 android:choiceMode="singleChoice"/>
         </LinearLayout>
 

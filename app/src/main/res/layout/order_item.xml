@@ -2,16 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:gravity="center_vertical"
               android:background="?android:attr/activatedBackgroundIndicator"
-              android:minHeight="?android:attr/listPreferredItemHeight">
+              android:gravity="center_vertical"
+              android:minHeight="?android:attr/listPreferredItemHeightSmall">
 
     <TextView
         android:id="@+id/productoPedidoDescTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="4"
+        android:layout_weight="3"
         android:maxLines="3"
+        android:paddingLeft="@dimen/abc_list_item_padding_horizontal_material"
         android:text="@string/producto_pedido_label"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/secondary_text"/>
@@ -20,7 +21,8 @@
         android:id="@+id/cantidadPedidoTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_weight="1.5"
         android:text="@string/cantidad_pedido_label"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/secondary_text"/>
@@ -29,8 +31,9 @@
         android:id="@+id/precioPedidoTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1.5"
         android:gravity="right"
-        android:layout_weight="1"
+        android:paddingRight="@dimen/abc_list_item_padding_horizontal_material"
         android:text="@string/precio_pedido_label"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/secondary_text"/>
