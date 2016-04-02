@@ -18,6 +18,7 @@ import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.io.RestConnector;
 import com.neversoft.smartwaiter.io.RestUtil;
 import com.neversoft.smartwaiter.model.business.DetallePedidoDAO;
+import com.neversoft.smartwaiter.preference.AlarmPedidoDespaSharedPref;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
 import com.neversoft.smartwaiter.preference.LoginSharedPref;
 import com.neversoft.smartwaiter.ui.LoginActivity;
@@ -31,6 +32,7 @@ import java.net.URLEncoder;
  */
 public class ConsultarPedidosRecogerService extends WakefulIntentService {
     public static final String ACTION_CHECK_READY_ORDERS = "com.neversoft.smartwaiter.service.CHECK_READY_ORDERS";
+    public static final String EXTRA_REFRESH_GUI = "refresh_gui";
     private static final String NAME = "ConsultarPedidosRecoger";
     private static int NOTIFY_ID = 1337;
     private boolean exito = false;
@@ -46,6 +48,7 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
     private SharedPreferences mPrefConfig;
     private SharedPreferences mPrefLogin;
     private SharedPreferences mPrefConexion;
+    private SharedPreferences mPrefAlarmDespachos;
 
 
     public ConsultarPedidosRecogerService() {
@@ -56,10 +59,12 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
     protected void doWakefulWork(Intent intent) {
 
         // get SharedPreferences
-
+        boolean refresh_gui = intent.getBooleanExtra(EXTRA_REFRESH_GUI, false);
         mPrefConfig = getApplicationContext().getSharedPreferences(LoginActivity.PREF_CONFIG, Context.MODE_PRIVATE);
-        mPrefLogin = getApplication().getSharedPreferences(LoginSharedPref.NAME, Context.MODE_PRIVATE);
-        mPrefConexion = getApplication().getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
+        mPrefLogin = getApplicationContext().getSharedPreferences(LoginSharedPref.NAME, Context.MODE_PRIVATE);
+        mPrefConexion = getApplicationContext().getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
+        mPrefAlarmDespachos = getApplicationContext().getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
+
         mAmbiente = mPrefConexion.getString(ConexionSharedPref.AMBIENTE, "");
         mCodCia = mPrefConfig.getString("CodCia", "");
         mCodMozo = mPrefConfig.getString("CodMozo", "");
@@ -73,21 +78,21 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
             mensaje = e.getMessage();
             exito = false;
         }
-        if (cantidadActualizar > 0) {
 
-            Intent event = new Intent(ConsultarPedidosRecogerService.ACTION_CHECK_READY_ORDERS);
+        Intent event = new Intent(ConsultarPedidosRecogerService.ACTION_CHECK_READY_ORDERS);
 
 //        --update local data with data retrieved from cocina
-            //TODO: Considerar una fecha 'fecha listo' para que esa fecha se establezca la unica vez que debo actualizar
-            //el estado a despachado de cocina para luego mostrar en la lista los que llegaron primero osea ordernarlos x
-            //fecha y hora DESC
-            //sera necesario agregar fecha para esto y creo que tb para confirmarRecivido
+        //TODO: Considerar una fecha 'fecha listo' para que esa fecha se establezca la unica vez que debo actualizar
+        //el estado a despachado de cocina para luego mostrar en la lista los que llegaron primero osea ordernarlos x
+        //fecha y hora DESC
+        //sera necesario agregar fecha para esto y creo que tb para confirmarRecivido
 
 
-            event.putExtra(PedidosARecogerActivity.EXTRA_CANTIDAD_ACTUALIZAR, cantidadActualizar);
+        event.putExtra(PedidosARecogerActivity.EXTRA_CANTIDAD_ACTUALIZAR, cantidadActualizar);
+        event.putExtra(EXTRA_REFRESH_GUI, refresh_gui);
 
-            //Log.d(getClass().getSimpleName(), "I ran!");
-            if (!LocalBroadcastManager.getInstance(this).sendBroadcast(event)) {
+        if (!LocalBroadcastManager.getInstance(this).sendBroadcast(event)) {
+            if (cantidadActualizar > 0) {
                 Log.d(getClass().getSimpleName(), "I only run when I have to show a notification!");
                 NotificationCompat.Builder b = new NotificationCompat.Builder(this);
                 Intent ui = new Intent(this, PedidosARecogerActivity.class);
@@ -106,6 +111,7 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
                 mgr.notify(NOTIFY_ID, b.build());
             }
         }
+
     }
 
     private int actualizarItemsPedidoDespachados() throws Exception {
@@ -113,12 +119,14 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
         DetallePedidoDAO detallePedidoDAO = new DetallePedidoDAO(getApplicationContext());
         Object requestObject;
         String result;
+//        AlarmPedidoDespaSharedPref.save(mPrefAlarmDespachos, Funciones.getCurrentTimeStamp());
+        long timeStamp = mPrefAlarmDespachos.getLong(AlarmPedidoDespaSharedPref.FECHA_ULTIMA_SINCRONIZACION,
+                Funciones.getCurrentTimeStamp());
+        String fechaHora = String.valueOf(timeStamp);
+        //fechaHora = URLEncoder.encode(fechaHora, "utf-8");
+        Log.d(DBHelper.TAG, "LAST TIMESTAMP SAVED:" + fechaHora);
 
-        String fechaHora = Funciones.getCurrentDate("yyyy/MM/dd hh:mm:ss");
-        fechaHora = URLEncoder.encode(fechaHora, "utf-8");
-        Log.d(DBHelper.TAG, "Fecha y hora:" + fechaHora);
-
-        String GET_URI = mUrlServer + "restaurante/ObtenerPedidosDespachados/?codMozo=%s&codCia=%s&fecha=%s&cadenaConexion=%s";
+        String GET_URI = mUrlServer + "restaurante/ObtenerPedidosDespachados/?codMozo=%s&codCia=%s&fechaAux=%s&cadenaConexion=%s";
         String url = String.format(GET_URI, mCodMozo, mCodCia, fechaHora, mAmbiente);
 
         Log.d(DBHelper.TAG, url);
@@ -135,6 +143,8 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
                 cantidadAActualizar = jsonArrayResponse.size();
                 if (cantidadAActualizar > 0) {
                     detallePedidoDAO.updateEstadoItemsPedido(jsonArrayResponse, 1, 2);
+                    Log.d(DBHelper.TAG, "NEW TIMESTAMP SAVED: " + Funciones.getCurrentTimeStamp());
+                    AlarmPedidoDespaSharedPref.save(mPrefAlarmDespachos, Funciones.getCurrentTimeStamp());
                 }
 
             } else if (requestObject instanceof Exception) {

@@ -13,28 +13,27 @@
         android:orientation="horizontal">
 
         <TextView
-
-            style="@style/LabelContracted"
+            android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:text="@string/item_label"/>
 
         <TextView
 
-            style="@style/LabelContracted"
+            android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="2"
             android:text="@string/articulo_label"/>
 
         <TextView
 
-            style="@style/LabelContracted"
+            android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:text="@string/estado_label"/>
 
         <TextView
-            style="@style/LabelContracted"
+            android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:text="@string/cantidad_label"/>
@@ -48,7 +47,6 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/headerDetallePedido"
         android:layout_margin="5dp"
-        android:background="@android:color/holo_blue_dark"
         android:divider="@android:color/black"
         android:dividerHeight="1dp"
         tools:listitem="@layout/pedido_det_facturar_item">

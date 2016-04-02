@@ -1,33 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?android:attr/activatedBackgroundIndicator">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="?android:attr/activatedBackgroundIndicator"
+              android:minHeight="?android:attr/listPreferredItemHeightSmall">
+
     <TextView
         android:id="@+id/itemDetalleTextView"
-        style="@style/TextViewContracted"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:textColor="@android:color/black"
-        android:text="Item" />
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingLeft="@dimen/abc_list_item_padding_horizontal_material"
+        android:text="Item"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/primary_text"/>
 
     <TextView
         android:id="@+id/articuloDetalleTextView"
-        style="@style/TextViewContracted"
-        android:layout_centerHorizontal="true"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
         android:maxLines="3"
-        android:textColor="@android:color/black"
-        android:text="Articulo" />
+        android:text="Articulo"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/primary_text"/>
 
     <TextView
         android:id="@+id/cantidadDetalleTextView"
-        style="@style/TextViewContracted"
-        android:layout_alignParentRight="true"
-        android:textColor="@android:color/black"
-        android:text="Cantidad" />
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:paddingRight="@dimen/abc_list_item_padding_horizontal_material"
+        android:text="Cantidad"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/primary_text"/>
 
     <TextView
         android:id="@+id/itemIdDetalleTextView"
-        style="@style/TextViewContracted"
-        android:visibility="gone" />
-</RelativeLayout>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+</LinearLayout>

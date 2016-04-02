@@ -12,15 +12,15 @@
         android:id="@+id/mainLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="12">
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/cabeceraPedido"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:background="@color/detail_accent_pane_background"
+            android:minHeight="?android:attr/listPreferredItemHeightSmall"
             android:paddingLeft="@dimen/abc_list_item_padding_horizontal_material"
             android:paddingRight="@dimen/abc_list_item_padding_horizontal_material">
 
@@ -57,21 +57,17 @@
                 android:textColor="@android:color/white"/>
         </LinearLayout>
 
-        <LinearLayout
+
+        <ListView
+            android:id="@+id/detallePedidoListView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="9"
-            android:orientation="vertical">
+            android:divider="@android:color/black"
+            android:dividerHeight="1dp"
+            tools:listitem="@layout/order_item">
+        </ListView>
 
-            <ListView
-                android:id="@+id/detallePedidoListView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@android:color/black"
-                android:dividerHeight="1dp"
-                tools:listitem="@layout/order_item">
-            </ListView>
-        </LinearLayout>
 
         <android.support.v7.widget.GridLayout
             android:id="@+id/footerPedido"

@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/itemDetalleTextView"
-        style="@style/TextViewContracted"
+        android:layout_height="wrap_content"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:text="Item"
@@ -14,7 +14,7 @@
 
     <TextView
         android:id="@+id/articuloDetalleTextView"
-        style="@style/TextViewContracted"
+        android:layout_height="wrap_content"
         android:layout_width="0dp"
         android:layout_weight="2"
         android:maxLines="3"
@@ -23,7 +23,7 @@
 
     <TextView
         android:id="@+id/estadoDetalleTextView"
-        style="@style/TextViewContracted"
+        android:layout_height="wrap_content"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:text="Estado"
@@ -31,7 +31,7 @@
 
     <TextView
         android:id="@+id/cantidadDetalleTextView"
-        style="@style/TextViewContracted"
+        android:layout_height="wrap_content"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:text="Cantidad"

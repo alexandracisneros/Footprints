@@ -41,6 +41,11 @@ public class Funciones {
 
     }
 
+    public static long getCurrentTimeStamp() {
+        Date date = new Date();
+        return date.getTime();
+    }
+
     @SuppressLint("SimpleDateFormat")
     public static String changeStringDateFormat(String date, String oldFormat,
                                                 String newFormat) throws ParseException {

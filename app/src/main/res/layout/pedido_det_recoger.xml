@@ -1,48 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                xmlns:tools="http://schemas.android.com/tools">
-    <RelativeLayout
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
         android:id="@+id/headerDetallePedido"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:paddingLeft="@dimen/abc_list_item_padding_horizontal_material"
+        android:paddingRight="@dimen/abc_list_item_padding_horizontal_material"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:gravity="center_vertical"
+        android:background="@color/detail_accent_pane_background">
 
         <TextView
             android:id="@+id/itemLabel"
-            style="@style/LabelContracted"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:text="@string/item_label"/>
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/item_label"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@android:color/white"/>
 
         <TextView
             android:id="@+id/articuloLabel"
-            style="@style/LabelContracted"
-            android:layout_alignBaseline="@+id/productoPedidoLabel"
-            android:layout_centerHorizontal="true"
-            android:text="@string/articulo_label"/>
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="@string/articulo_label"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@android:color/white"/>
 
         <TextView
             android:id="@+id/cantidadLabel"
-            style="@style/LabelContracted"
-            android:layout_alignBaseline="@+id/productoPedidoLabel"
-            android:layout_alignParentRight="true"
-            android:text="@string/cantidad_label"/>
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_weight="1"
+            android:text="@string/cantidad_label"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@android:color/white"/>
 
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <ListView
         android:id="@+id/detallePedidoRecogerListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/headerDetallePedido"
-        android:layout_margin="5dp"
-        android:background="@android:color/holo_blue_dark"
         android:divider="@android:color/black"
-        tools:listitem="@layout/pedido_det_recoger_item"
-        android:dividerHeight="1dp">
+        android:dividerHeight="1dp"
+        tools:listitem="@layout/pedido_det_recoger_item">
     </ListView>
 </RelativeLayout>
+

@@ -1,7 +1,6 @@
 package com.neversoft.smartwaiter.ui;
 
 import android.app.Activity;
-import android.support.v7.app.AlertDialog;;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -29,6 +29,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.commonsware.cwac.wakeful.WakefulIntentService;
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.model.business.DetallePedidoDAO;
@@ -44,6 +45,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 
 public class PedidosARecogerActivity extends AppCompatActivity
         implements AdapterView.OnItemClickListener,
@@ -69,13 +71,17 @@ public class PedidosARecogerActivity extends AppCompatActivity
     private BroadcastReceiver onEventConsultarPedidosARecoger = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
-            //http://belencruz.com/2015/04/refresh-data-in-a-custom-android-adapter/
-            int cantidadActualizar = intent.getIntExtra(EXTRA_CANTIDAD_ACTUALIZAR, 0);
-            if (cantidadActualizar > 0) {
+//            int cantidadActualizar = intent.getIntExtra(EXTRA_CANTIDAD_ACTUALIZAR, 0);
+            boolean refresh_gui = intent.getBooleanExtra(ConsultarPedidosRecogerService.EXTRA_REFRESH_GUI, false);
+            if (refresh_gui) {
                 new ConsultarPedidosDespachados().execute();
+                new ConsultarItemsPedidoDespachado().execute("0");
+                showProgressIndicator(false);
+                Log.d(DBHelper.TAG, "Desde PedidosARecogerActivity - REFRESCAR =" + refresh_gui);
+            } else {
+                Log.d(DBHelper.TAG, "Desde ConsultarPedidosRecogerReceiver - REFRESCAR =" + refresh_gui);
             }
-            showProgressIndicator(false);
+
         }
     };
     private BroadcastReceiver onEventNotificarPedidosRecojidos = new BroadcastReceiver() {
@@ -122,8 +128,8 @@ public class PedidosARecogerActivity extends AppCompatActivity
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
         mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
 
-        ConsultarPedidosRecogerReceiver.scheduleAlarms(this);
-        consultarPedidosARecoger();
+        consultarPedidosARecoger(true);
+
     }
 
     @Override
@@ -160,7 +166,7 @@ public class PedidosARecogerActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_actualizar) { //TODO Esta accion si es que se deja deberia ser para configurar el intervalo de notificacion entre alarma y alarma
-            consultarPedidosARecoger();
+            consultarPedidosARecoger(false);
             return true;
 
         }
@@ -168,10 +174,14 @@ public class PedidosARecogerActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void consultarPedidosARecoger() {
+    private void consultarPedidosARecoger(boolean scheduleAlarm) {
         showProgressIndicator(true);
-        Toast.makeText(this, R.string.alarms_scheduled, Toast.LENGTH_LONG).show();
-        ConsultarPedidosRecogerReceiver.scheduleAlarms(this); //TODO : Poner una preferencia para que si ya se configuró la alarma. No se haga cada vez que se inicia la actividad
+        Intent i = new Intent(this, ConsultarPedidosRecogerService.class);
+        i.putExtra(ConsultarPedidosRecogerService.EXTRA_REFRESH_GUI, true);
+        WakefulIntentService.sendWakefulWork(this, i);
+        if (scheduleAlarm) {
+            ConsultarPedidosRecogerReceiver.scheduleAlarms(this);
+        }
         //new ConsultarPedidosDespachados().execute();
     }
 

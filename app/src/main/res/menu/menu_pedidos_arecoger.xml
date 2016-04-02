@@ -6,6 +6,12 @@
         android:id="@+id/action_actualizar"
         android:icon="@drawable/ic_update"
         android:orderInCategory="10"
-        app:showAsAction="ifRoom|withText"
+        app:showAsAction="never"
         android:title="@string/menu_pedidos_arecoger_update"/>
+    <!--<item-->
+        <!--android:id="@+id/action_configurar"-->
+        <!--android:icon="@drawable/ic_update"-->
+        <!--android:orderInCategory="10"-->
+        <!--app:showAsAction="never"-->
+        <!--android:title="@string/menu_pedidos_arecoger_settings"/>-->
 </menu>

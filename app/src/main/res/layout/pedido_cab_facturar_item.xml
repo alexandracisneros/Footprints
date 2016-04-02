@@ -2,41 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="?android:attr/activatedBackgroundIndicator">
+              android:background="?android:attr/activatedBackgroundIndicator"
+              android:gravity="center_vertical"
+              android:minHeight="?android:attr/listPreferredItemHeightSmall">
 
     <TextView
         android:id="@+id/nroPedidoTextView"
-        style="@style/TextViewContracted"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Nro"
-        android:textColor="@android:color/black"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/primary_text"/>
 
     <TextView
         android:id="@+id/nroMesaPedidoTextView"
-        style="@style/TextViewContracted"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Mesa"
-        android:textColor="@android:color/black"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/primary_text"/>
 
     <TextView
         android:id="@+id/nroPisoPedidoTextView"
-        style="@style/TextViewContracted"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Piso"
-        android:textColor="@android:color/black"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/primary_text"/>
 
     <TextView
         android:id="@+id/importePedidoTextView"
-        style="@style/TextViewContracted"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="2"
         android:text="Importe"
-        android:textColor="@android:color/black"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/primary_text"/>
+
     <TextView
         android:id="@+id/nroPedidoServTextView"
-        style="@style/TextViewContracted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:visibility="gone"/>
 </LinearLayout>

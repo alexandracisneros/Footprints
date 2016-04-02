@@ -5,28 +5,32 @@
 
     <TextView
         android:id="@+id/articuloDescLabel"
-        style="@style/Label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="Descripción"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
         android:id="@+id/articuloDescTextView"
-        style="@style/TextViewContracted"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/articuloDescLabel"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
         android:id="@+id/articuloCantidadLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/articuloDescTextView"
-        style="@style/Label"
         android:text="Cantidad"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <EditText
         android:id="@+id/articuloCantidadEditText"
-        style="@style/CajaTexto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/articuloCantidadLabel"
         android:ems="10"
-        android:inputType="numberDecimal" />
+        android:inputType="numberDecimal"/>
 
 </RelativeLayout>
