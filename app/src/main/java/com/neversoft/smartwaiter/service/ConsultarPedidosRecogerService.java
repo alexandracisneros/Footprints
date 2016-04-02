@@ -32,7 +32,6 @@ import java.net.URLEncoder;
  */
 public class ConsultarPedidosRecogerService extends WakefulIntentService {
     public static final String ACTION_CHECK_READY_ORDERS = "com.neversoft.smartwaiter.service.CHECK_READY_ORDERS";
-    public static final String EXTRA_REFRESH_GUI = "refresh_gui";
     private static final String NAME = "ConsultarPedidosRecoger";
     private static int NOTIFY_ID = 1337;
     private boolean exito = false;
@@ -59,7 +58,6 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
     protected void doWakefulWork(Intent intent) {
 
         // get SharedPreferences
-        boolean refresh_gui = intent.getBooleanExtra(EXTRA_REFRESH_GUI, false);
         mPrefConfig = getApplicationContext().getSharedPreferences(LoginActivity.PREF_CONFIG, Context.MODE_PRIVATE);
         mPrefLogin = getApplicationContext().getSharedPreferences(LoginSharedPref.NAME, Context.MODE_PRIVATE);
         mPrefConexion = getApplicationContext().getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
@@ -89,8 +87,7 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
 
 
         event.putExtra(PedidosARecogerActivity.EXTRA_CANTIDAD_ACTUALIZAR, cantidadActualizar);
-        event.putExtra(EXTRA_REFRESH_GUI, refresh_gui);
-
+        
         if (!LocalBroadcastManager.getInstance(this).sendBroadcast(event)) {
             if (cantidadActualizar > 0) {
                 Log.d(getClass().getSimpleName(), "I only run when I have to show a notification!");

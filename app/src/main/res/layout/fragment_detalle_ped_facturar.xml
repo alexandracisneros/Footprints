@@ -10,33 +10,47 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/form_horizontal_padding_large"
+        android:layout_marginRight="@dimen/form_horizontal_padding_large"
+        android:background="@color/detail_accent_pane_background"
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:orientation="horizontal">
 
         <TextView
-            android:layout_height="wrap_content"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/item_label"/>
+            android:paddingLeft="@dimen/abc_list_item_padding_horizontal_material"
+            android:text="@string/item_label"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@android:color/white"/>
 
         <TextView
-
-            android:layout_height="wrap_content"
             android:layout_width="0dp"
-            android:layout_weight="2"
-            android:text="@string/articulo_label"/>
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="@string/articulo_label"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@android:color/white"/>
 
         <TextView
-
-            android:layout_height="wrap_content"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/estado_label"/>
+            android:text="@string/estado_label"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@android:color/white"/>
 
         <TextView
-            android:layout_height="wrap_content"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cantidad_label"/>
+            android:gravity="right"
+            android:paddingRight="@dimen/abc_list_item_padding_horizontal_material"
+            android:text="@string/cantidad_label"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@android:color/white"/>
 
 
     </LinearLayout>
@@ -46,7 +60,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/headerDetallePedido"
-        android:layout_margin="5dp"
+        android:layout_marginLeft="@dimen/form_horizontal_padding_large"
+        android:layout_marginRight="@dimen/form_horizontal_padding_large"
         android:divider="@android:color/black"
         android:dividerHeight="1dp"
         tools:listitem="@layout/pedido_det_facturar_item">

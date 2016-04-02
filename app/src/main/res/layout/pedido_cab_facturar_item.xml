@@ -11,6 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:paddingLeft="@dimen/abc_list_item_padding_horizontal_material"
         android:text="Nro"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/primary_text"/>
@@ -21,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Mesa"
+        android:gravity="right"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/primary_text"/>
 
@@ -29,6 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:gravity="right"
         android:text="Piso"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/primary_text"/>
@@ -39,6 +42,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:text="Importe"
+        android:gravity="right"
+        android:paddingRight="@dimen/abc_list_item_padding_horizontal_material"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/primary_text"/>
 

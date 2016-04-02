@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@android:color/white"
               android:orientation="vertical"
               android:padding="@dimen/activity_vertical_margin">
 
@@ -12,8 +13,8 @@
         android:weightSum="4.5">
 
         <TableRow
-            android:layout_weight="1"
             android:layout_width="match_parent"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:weightSum="7">
 
@@ -35,8 +36,8 @@
         </TableRow>
 
         <TableRow
-            android:layout_weight="1"
             android:layout_width="match_parent"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:weightSum="7">
 
@@ -61,8 +62,8 @@
 
         <TableRow
             android:id="@+id/clienteRow"
-            android:layout_weight="1.5"
             android:layout_width="match_parent"
+            android:layout_weight="1.5"
             android:gravity="center_vertical"
             android:weightSum="7">
 
@@ -77,8 +78,8 @@
                 android:id="@+id/clienteTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/form_horizontal_padding_normal"
                 android:layout_weight="4"
+                android:padding="@dimen/form_horizontal_padding_normal"
                 android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/secondary_text"/>
@@ -88,8 +89,8 @@
 
         <TableRow
             android:id="@+id/rucRow"
-            android:layout_weight="1"
             android:layout_width="match_parent"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:weightSum="7">
 
@@ -104,21 +105,21 @@
                 android:id="@+id/rucEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/form_horizontal_padding_normal"
                 android:layout_weight="4"
                 android:inputType="number"
+                android:padding="@dimen/form_horizontal_padding_normal"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/secondary_text"
                 />
 
             <ImageButton
                 android:id="@+id/buscarClieImageButton"
-                android:gravity="center_vertical"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
                 android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:gravity="center_vertical"
+                android:scaleType="fitCenter"
                 android:src="@android:drawable/ic_menu_search"/>
 
         </TableRow>
@@ -141,9 +142,9 @@
             android:weightSum="7">
 
             <TextView
-                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="2"
                 android:text="Total"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
@@ -151,8 +152,8 @@
                 android:id="@+id/totalTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/form_horizontal_padding_normal"
                 android:layout_weight="4"
+                android:padding="@dimen/form_horizontal_padding_normal"
                 android:text="0.00"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/secondary_text"/>
@@ -165,9 +166,9 @@
             android:weightSum="7">
 
             <TextView
-                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="2"
                 android:text="Recibido"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
@@ -176,8 +177,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:padding="@dimen/form_horizontal_padding_normal"
                 android:inputType="number"
+                android:padding="@dimen/form_horizontal_padding_normal"
                 android:text="0.00"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/secondary_text"/>
@@ -190,9 +191,9 @@
             android:weightSum="7">
 
             <TextView
-                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="2"
                 android:text="Restante"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
@@ -200,8 +201,8 @@
                 android:id="@+id/restanteTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/form_horizontal_padding_normal"
                 android:layout_weight="4"
+                android:padding="@dimen/form_horizontal_padding_normal"
                 android:text="0.00"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/secondary_text"/>

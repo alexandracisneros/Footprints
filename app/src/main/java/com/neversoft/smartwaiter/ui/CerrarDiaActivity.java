@@ -1,13 +1,13 @@
 package com.neversoft.smartwaiter.ui;
 
 import android.app.Activity;
-import android.support.v7.app.AlertDialog;;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.NavigationView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.neversoft.smartwaiter.R;
@@ -33,6 +33,8 @@ import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.Locale;
 
+;
+
 public class CerrarDiaActivity extends AppCompatActivity
         implements View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener {
@@ -44,7 +46,7 @@ public class CerrarDiaActivity extends AppCompatActivity
     private SharedPreferences mPrefControl;
     private SharedPreferences mPrefConexion;
     private FrameLayout mIndicatorFrameLayout;
-    private RelativeLayout mMainRelativeLayout;
+    private LinearLayout mMainRelativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +74,7 @@ public class CerrarDiaActivity extends AppCompatActivity
         mUrlServer = RestUtil.obtainURLServer(getApplicationContext());
 
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
-        mMainRelativeLayout = (RelativeLayout) findViewById(R.id.mainRelativeLayout);
+        mMainRelativeLayout = (LinearLayout) findViewById(R.id.mainRelativeLayout);
     }
 
     @Override

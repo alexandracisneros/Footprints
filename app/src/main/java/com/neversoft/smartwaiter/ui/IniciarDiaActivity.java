@@ -1,14 +1,13 @@
 package com.neversoft.smartwaiter.ui;
 
 import android.app.Activity;
-import android.support.v7.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.NavigationView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.neversoft.smartwaiter.R;
@@ -42,7 +41,7 @@ public class IniciarDiaActivity extends AppCompatActivity
     private SharedPreferences mPrefConfig;
     private SharedPreferences mPrefConexion;
     private FrameLayout mIndicatorFrameLayout;
-    private RelativeLayout mMainRelativeLayout;
+    private LinearLayout mMainRelativeLayout;
     private String mFechaInicioDia;
 
 
@@ -72,7 +71,7 @@ public class IniciarDiaActivity extends AppCompatActivity
         mNavigationView.getMenu().getItem(SmartWaiter.OPCION_INICIAR_DIA).setChecked(true);
 
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
-        mMainRelativeLayout = (RelativeLayout) findViewById(R.id.mainRelativeLayout);
+        mMainRelativeLayout = (LinearLayout) findViewById(R.id.mainRelativeLayout);
 
     }
 

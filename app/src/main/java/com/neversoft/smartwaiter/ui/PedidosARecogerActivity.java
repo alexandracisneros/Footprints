@@ -36,7 +36,6 @@ import com.neversoft.smartwaiter.model.business.DetallePedidoDAO;
 import com.neversoft.smartwaiter.model.business.PedidoDAO;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
 import com.neversoft.smartwaiter.model.entity.PedidoEE;
-import com.neversoft.smartwaiter.receiver.ConsultarPedidosRecogerReceiver;
 import com.neversoft.smartwaiter.service.ConsultarPedidosRecogerService;
 import com.neversoft.smartwaiter.service.NotificarPedidosRecogidosService;
 import com.neversoft.smartwaiter.util.Funciones;
@@ -72,15 +71,11 @@ public class PedidosARecogerActivity extends AppCompatActivity
         @Override
         public void onReceive(Context context, Intent intent) {
 //            int cantidadActualizar = intent.getIntExtra(EXTRA_CANTIDAD_ACTUALIZAR, 0);
-            boolean refresh_gui = intent.getBooleanExtra(ConsultarPedidosRecogerService.EXTRA_REFRESH_GUI, false);
-            if (refresh_gui) {
-                new ConsultarPedidosDespachados().execute();
-                new ConsultarItemsPedidoDespachado().execute("0");
-                showProgressIndicator(false);
-                Log.d(DBHelper.TAG, "Desde PedidosARecogerActivity - REFRESCAR =" + refresh_gui);
-            } else {
-                Log.d(DBHelper.TAG, "Desde ConsultarPedidosRecogerReceiver - REFRESCAR =" + refresh_gui);
-            }
+
+            new ConsultarPedidosDespachados().execute();
+            new ConsultarItemsPedidoDespachado().execute("0");
+            showProgressIndicator(false);
+
 
         }
     };
@@ -128,7 +123,7 @@ public class PedidosARecogerActivity extends AppCompatActivity
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
         mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
 
-        consultarPedidosARecoger(true);
+        consultarPedidosARecoger();
 
     }
 
@@ -166,7 +161,7 @@ public class PedidosARecogerActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_actualizar) { //TODO Esta accion si es que se deja deberia ser para configurar el intervalo de notificacion entre alarma y alarma
-            consultarPedidosARecoger(false);
+            consultarPedidosARecoger();
             return true;
 
         }
@@ -174,15 +169,10 @@ public class PedidosARecogerActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void consultarPedidosARecoger(boolean scheduleAlarm) {
+    private void consultarPedidosARecoger() {
         showProgressIndicator(true);
         Intent i = new Intent(this, ConsultarPedidosRecogerService.class);
-        i.putExtra(ConsultarPedidosRecogerService.EXTRA_REFRESH_GUI, true);
         WakefulIntentService.sendWakefulWork(this, i);
-        if (scheduleAlarm) {
-            ConsultarPedidosRecogerReceiver.scheduleAlarms(this);
-        }
-        //new ConsultarPedidosDespachados().execute();
     }
 
     @Override

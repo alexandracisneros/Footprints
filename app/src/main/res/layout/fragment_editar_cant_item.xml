@@ -1,36 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/form_horizontal_padding_large"
+                android:paddingRight="@dimen/form_horizontal_padding_large">
 
     <TextView
         android:id="@+id/articuloDescLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/abc_list_item_padding_horizontal_material"
         android:text="Descripción"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/primary_text"/>
 
     <TextView
         android:id="@+id/articuloDescTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/articuloDescLabel"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        android:layout_marginTop="@dimen/abc_list_item_padding_horizontal_material"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/secondary_text"/>
 
     <TextView
         android:id="@+id/articuloCantidadLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/articuloDescTextView"
+        android:layout_marginTop="@dimen/abc_list_item_padding_horizontal_material"
         android:text="Cantidad"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/primary_text"/>
 
     <EditText
         android:id="@+id/articuloCantidadEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/articuloCantidadLabel"
+        android:layout_marginTop="@dimen/abc_list_item_padding_horizontal_material"
         android:ems="10"
-        android:inputType="numberDecimal"/>
+        android:inputType="numberDecimal"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/secondary_text"/>
 
 </RelativeLayout>

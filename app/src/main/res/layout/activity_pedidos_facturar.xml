@@ -27,7 +27,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
-            android:background="@color/primary_light"
+            android:background="@color/detail_accent_pane_background_sec"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
@@ -36,10 +36,12 @@
                 layout="@layout/pedido_cab_facturar"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/form_horizontal_padding_small"
                 android:layout_weight="1.4"/>
             <!--Mostrar la pantalla de Facturacion-->
             <include
                 layout="@layout/pedido_facturar_form"
+                android:layout_marginLeft="@dimen/form_horizontal_padding_small"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1.6"/>

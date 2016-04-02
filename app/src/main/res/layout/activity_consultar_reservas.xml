@@ -28,14 +28,16 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
-            android:background="@color/primary_light"
+            android:background="@color/detail_accent_pane_background_sec"
             android:orientation="vertical"
-            android:padding="@dimen/abc_list_item_padding_horizontal_material">
+            android:paddingLeft="@dimen/form_horizontal_padding_small">
 
             <android.support.v7.widget.GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
+                android:background="@android:color/white"
+                android:padding="@dimen/abc_list_item_padding_horizontal_material"
                 app:columnCount="3">
 
                 <TextView
@@ -162,9 +164,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="5"
+                android:background="@android:color/white"
                 android:columnWidth="200dp"
                 android:horizontalSpacing="4dp"
                 android:numColumns="auto_fit"
+                android:padding="@dimen/abc_list_item_padding_horizontal_material"
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="4dp"
                 tools:listitem="@layout/mesa_item"/>

@@ -27,12 +27,14 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
-            android:background="@color/primary_light"
-            android:padding="@dimen/abc_list_item_padding_horizontal_material">
+            android:background="@color/detail_accent_pane_background_sec"
+            android:paddingLeft="@dimen/form_horizontal_padding_small">
 
             <TableRow
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:padding="@dimen/abc_list_item_padding_horizontal_material">
 
                 <Spinner
                     android:id="@+id/pisos_spinner"
@@ -54,6 +56,8 @@
             <TableRow
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:padding="@dimen/abc_list_item_padding_horizontal_material"
                 android:paddingTop="@dimen/abc_list_item_padding_horizontal_material">
 
                 <GridView

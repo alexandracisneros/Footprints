@@ -14,7 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.neversoft.smartwaiter.R;
@@ -28,7 +28,7 @@ public class SincronizarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private NavigationView mNavigationView;
     private FrameLayout mIndicatorFrameLayout;
-    private RelativeLayout mMainRelativeLayout;
+    private LinearLayout mMainRelativeLayout;
 
 
     private BroadcastReceiver onEventSincronizarDatosIniciales = new BroadcastReceiver() {
@@ -71,7 +71,7 @@ public class SincronizarActivity extends AppCompatActivity
         mNavigationView.getMenu().getItem(SmartWaiter.OPCION_SINCRONIZAR).setChecked(true);
 
         mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
-        mMainRelativeLayout = (RelativeLayout) findViewById(R.id.mainRelativeLayout);
+        mMainRelativeLayout = (LinearLayout) findViewById(R.id.mainRelativeLayout);
     }
 
     @Override
