@@ -298,7 +298,7 @@ public class PedidosARecogerActivity extends AppCompatActivity
                         actionMode.finish();
 
                     }
-                }).setIcon(android.R.drawable.ic_dialog_alert).show();
+                }).show();
     }
 
     private void enviarItemsPedidoRecogidos(SparseBooleanArray items) {

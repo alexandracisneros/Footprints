@@ -43,8 +43,7 @@
                     android:drawablePadding="@dimen/form_horizontal_padding_small"
                     android:onClick="onClick"
                     android:text="@string/sincronizar_datos"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                    android:theme="@style/BrandButtonStyle"/>
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
             </LinearLayout>
 
         </LinearLayout>

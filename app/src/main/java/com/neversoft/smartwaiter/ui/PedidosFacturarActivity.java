@@ -197,7 +197,7 @@ public class PedidosFacturarActivity extends AppCompatActivity
                                int position, long id) {
         switch (parent.getId()) {
             case R.id.tipoVentaSpinner:
-                Toast.makeText(this, "Tipo Venta:" + mListaTipoVenta.get(position).getDescripcion(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "Tipo Venta:" + mListaTipoVenta.get(position).getDescripcion(), Toast.LENGTH_SHORT).show();
                 if (mListaTipoVenta.get(position).getCodigo().equals("01")) { //FACTURA
                     mRucRow.setVisibility(View.VISIBLE);
                     mClienteRow.setVisibility(View.VISIBLE);
@@ -207,7 +207,7 @@ public class PedidosFacturarActivity extends AppCompatActivity
                 }
                 break;
             case R.id.tipoPagoSpinner:
-                Toast.makeText(this, "Tipo Pago:" + mListaTipoPago.get(position).getDescripcion(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "Tipo Pago:" + mListaTipoPago.get(position).getDescripcion(), Toast.LENGTH_SHORT).show();
                 if (mListaTipoPago.get(position).getCodigo().equals("CEF")) { //EFECTIVO
                     mRecibidoRow.setVisibility(View.VISIBLE);
                     mRestanteRow.setVisibility(View.VISIBLE);
@@ -324,7 +324,7 @@ public class PedidosFacturarActivity extends AppCompatActivity
                         dialog.cancel();
 
                     }
-                }).setIcon(android.R.drawable.ic_dialog_alert).show();
+                }).show();
     }
 
     private void showProgressIndicator(boolean showValue) {

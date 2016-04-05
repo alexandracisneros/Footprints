@@ -42,8 +42,7 @@
                     android:layout_gravity="center_vertical"
                     android:drawablePadding="@dimen/form_horizontal_padding_small"
                     android:text="@string/cerrarDia"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                    android:theme="@style/BrandButtonStyle"/>
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

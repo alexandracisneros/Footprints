@@ -65,7 +65,6 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-
         <ListView
             android:id="@+id/categorias_listview"
             android:layout_width="match_parent"
@@ -77,8 +76,8 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider"/>
+            android:layout_height="2dp"
+            android:background="@color/primary"/>
 
         <ListView
             android:id="@+id/articulos_listview"
@@ -88,8 +87,6 @@
             android:choiceMode="singleChoice"
             android:divider="@android:color/transparent"
             android:dividerHeight="4dp"/>
-
-
     </LinearLayout>
     <!-- This is used to give the card the appropriate margin
          list_item_extra_padding +

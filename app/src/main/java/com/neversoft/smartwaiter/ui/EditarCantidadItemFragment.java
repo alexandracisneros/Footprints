@@ -1,28 +1,25 @@
 package com.neversoft.smartwaiter.ui;
 
-import android.support.v7.app.AlertDialog;;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-
-
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.model.entity.DetallePedidoEE;
+
+;
 
 /**
  * Created by Usuario on 14/03/2016.
  */
 public class EditarCantidadItemFragment extends DialogFragment implements
         DialogInterface.OnClickListener {
-    //http://android-developers.blogspot.com/2009/01/avoiding-memory-leaks.html
-    public interface Contract{
-        void OnEditarCantidadItemClick(DetallePedidoEE item, int which);
-    }
     private View form = null;
     private DetallePedidoEE mItem;
     private String mNuevaCantidad;
@@ -56,9 +53,11 @@ public class EditarCantidadItemFragment extends DialogFragment implements
             cantidadEditText.setText(mNuevaCantidad);
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        return builder.setTitle("Editar Cantidad").setView(form)
+        AlertDialog dialog = builder.setTitle("Editar Cantidad").setView(form)
                 .setPositiveButton("Aceptar", this)
                 .setNegativeButton("Cancelar", this).create();
+
+        return dialog;
 
     }
 
@@ -76,7 +75,7 @@ public class EditarCantidadItemFragment extends DialogFragment implements
             EditText cantidad = (EditText) form.findViewById(R.id.articuloCantidadEditText);
             mItem.setCantidad(Float.valueOf(cantidad.getText().toString()));
         }
-        getContract().OnEditarCantidadItemClick(mItem,which);
+        getContract().OnEditarCantidadItemClick(mItem, which);
 
     }
 
@@ -87,7 +86,13 @@ public class EditarCantidadItemFragment extends DialogFragment implements
         }
         super.onDestroyView();
     }
+
     private Contract getContract() {
-        return((Contract)getActivity());
+        return ((Contract) getActivity());
+    }
+
+    //http://android-developers.blogspot.com/2009/01/avoiding-memory-leaks.html
+    public interface Contract {
+        void OnEditarCantidadItemClick(DetallePedidoEE item, int which);
     }
 }

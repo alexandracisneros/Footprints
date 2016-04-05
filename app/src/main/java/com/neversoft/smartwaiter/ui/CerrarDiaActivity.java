@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -77,28 +76,6 @@ public class CerrarDiaActivity extends AppCompatActivity
         mMainRelativeLayout = (LinearLayout) findViewById(R.id.mainRelativeLayout);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_cerrar_dia, menu);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     private void showProgressIndicator(boolean showValue) {
         if (showValue) {
@@ -114,7 +91,7 @@ public class CerrarDiaActivity extends AppCompatActivity
         new AlertDialog.Builder(this)
                 .setTitle("Confirmación")
                 .setMessage(
-                        "No ha realizado ningún pedido.\n¿Desea cerrar el día de todas maneras?")
+                        "No ha realizado ningún pedido.¿Desea cerrar el día de todas maneras?")
                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -130,7 +107,7 @@ public class CerrarDiaActivity extends AppCompatActivity
                         dialog.cancel();
 
                     }
-                }).setIcon(android.R.drawable.ic_dialog_alert).show();
+                }).show();
 
     }
 
@@ -210,10 +187,10 @@ public class CerrarDiaActivity extends AppCompatActivity
         long nroPedidoNoEnviados = pedidoDAO.getNumeroPedidos(0); // Pendientes de Envio
         String mensaje;
         if (nroPedidoNoEnviados > 0) {
-            mensaje = "Hay pedidos que aún no han sido enviados. De proceder no podrá enviarlos.\n¿Confirma que desea cerrar el día?";
+            mensaje = "Hay pedidos que aún no han sido enviados. De proceder no podrá enviarlos.¿Confirma que desea cerrar el día?";
             ;
         } else {
-            mensaje = "De proceder no podrá agregar nuevos pedidos.\n¿Confirma que desea cerrar el día?";
+            mensaje = "De proceder no podrá agregar nuevos pedidos.¿Confirma que desea cerrar el día?";
         }
         new AlertDialog.Builder(this).setTitle("Confirmación")
                 .setMessage(mensaje)
@@ -231,7 +208,7 @@ public class CerrarDiaActivity extends AppCompatActivity
                         dialog.cancel();
 
                     }
-                }).setIcon(android.R.drawable.ic_dialog_alert).show();
+                }).show();
 
     }
 

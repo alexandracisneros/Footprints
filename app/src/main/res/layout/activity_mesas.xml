@@ -39,18 +39,20 @@
                 <Spinner
                     android:id="@+id/pisos_spinner"
                     android:layout_width="0dp"
+                    android:spinnerMode="dropdown"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
                     android:layout_weight="1"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/secondary_text"/>
+                   />
 
                 <Spinner
                     android:id="@+id/ambientes_spinner"
                     android:layout_width="0dp"
+                    android:spinnerMode="dropdown"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/abc_list_item_padding_horizontal_material"
                     android:layout_weight="1"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/secondary_text"/>
+                   />
             </TableRow>
 
             <TableRow

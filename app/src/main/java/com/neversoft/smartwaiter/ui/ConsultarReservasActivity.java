@@ -183,7 +183,7 @@ public class ConsultarReservasActivity extends AppCompatActivity
                         dialog.cancel();
 
                     }
-                }).setIcon(android.R.drawable.ic_dialog_alert).show();
+                }).show();
 
     }
 

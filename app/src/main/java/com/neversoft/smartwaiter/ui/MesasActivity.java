@@ -1,7 +1,6 @@
 package com.neversoft.smartwaiter.ui;
 
 import android.app.Activity;
-import android.support.v7.app.AlertDialog;;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -20,11 +20,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
@@ -54,6 +54,7 @@ public class MesasActivity extends AppCompatActivity
     private FrameLayout mIndicatorFrameLayout;
     private TableLayout mMainLinearLayout;
     private NavigationView mNavigationView;
+    private MaterialDialog mProgress;
 
     private MesaPisoDAO mDataHelper;
     private SharedPreferences mPrefPedidoExtras;
@@ -238,7 +239,7 @@ public class MesasActivity extends AppCompatActivity
                         dialog.cancel();
 
                     }
-                }).setIcon(android.R.drawable.ic_dialog_alert).show();
+                }).show();
 
     }
 

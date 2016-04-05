@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.model.entity.ArticuloEE;
-import com.neversoft.smartwaiter.model.entity.CategoriaEE;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ public class ArticuloItemAdapter extends BaseAdapter {
     public ArticuloItemAdapter(Context context, ArrayList<ArticuloEE> items) {
         this.mContext = context;
         this.mItems = items;
-        this.mSize=context.getResources().getDimensionPixelSize(R.dimen.icon);
+        this.mSize = context.getResources().getDimensionPixelSize(R.dimen.icon);
         this.mLayoutInflater = (LayoutInflater) this.mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -60,10 +59,10 @@ public class ArticuloItemAdapter extends BaseAdapter {
             wrapper = (ViewHolder) convertView.getTag();
         }
         Picasso.with(mContext).load(TextUtils.isEmpty(mItems.get(position).getUrl()) ? null : mItems.get(position).getUrl())
-                .placeholder(R.drawable.owner_placeholder)
-                .resize(mSize,mSize)
+                .placeholder(R.drawable.ic_empty_plate)
+                .resize(mSize, mSize)
                 .centerCrop()
-                .error(R.drawable.owner_error)
+                .error(R.drawable.ic_empty_error_plate)
                 .into(wrapper.icon);
         wrapper.text.setText(mItems.get(position).getDescripcionNorm());
         return convertView;

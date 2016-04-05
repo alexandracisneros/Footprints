@@ -257,18 +257,18 @@ public class TomarPedidoActivity extends AppCompatActivity
                         dialog.cancel();
 
                     }
-                }).setIcon(android.R.drawable.ic_dialog_alert).show();
+                }).show();
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
         if (adapterView.getId() == R.id.categorias_listview) {
-            Toast.makeText(this, "Item Seleccionado : " + mListaCategorias.get(position).getDescripcion(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Item Seleccionado : " + mListaCategorias.get(position).getDescripcion(), Toast.LENGTH_SHORT).show();
             int familiaId = Integer.parseInt(mListaCategorias.get(position).getCodigo().trim());
             loadArticulos(familiaId);
         } else if (adapterView.getId() == R.id.articulos_listview) {
-            Toast.makeText(this, "Item Seleccionado : " + mListaArticulos.get(position).getDescripcionNorm(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Item Seleccionado : " + mListaArticulos.get(position).getDescripcionNorm(), Toast.LENGTH_SHORT).show();
             DetallePedidoEE itemDetalle = new DetallePedidoEE(mListaArticulos.get(position));
             PedidoSharedPref.addItem(this, itemDetalle);
             mItems = PedidoSharedPref.getItems(this);
@@ -344,7 +344,7 @@ public class TomarPedidoActivity extends AppCompatActivity
                                 dialog.cancel();
 
                             }
-                        }).setIcon(android.R.drawable.ic_dialog_alert).show();
+                        }).show();
     }
 
     @Override

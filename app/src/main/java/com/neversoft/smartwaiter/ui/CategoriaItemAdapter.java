@@ -59,10 +59,10 @@ public class CategoriaItemAdapter extends BaseAdapter {
             wrapper = (ViewHolder) convertView.getTag();
         }
         Picasso.with(mContext).load(TextUtils.isEmpty(mItems.get(position).getUrl()) ? null : mItems.get(position).getUrl())
-                .placeholder(R.drawable.owner_placeholder)
+                .placeholder(R.drawable.ic_empty_plate)
                 .resize(mSize,mSize)
                 .centerCrop()
-                .error(R.drawable.owner_error)
+                .error(R.drawable.ic_empty_error_plate)
                 .into(wrapper.icon);
         wrapper.text.setText(mItems.get(position).getDescripcion());
         return convertView;
