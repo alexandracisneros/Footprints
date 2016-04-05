@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -65,8 +66,7 @@ public class ConsultarReservasActivity extends AppCompatActivity
     private String mUrlServer;
     private SharedPreferences mPrefConfig;
     private SharedPreferences mPrefConexion;
-    private FrameLayout mIndicatorFrameLayout;
-    private LinearLayout mMainLinearLayout;
+    private MaterialDialog mProgress;
     private SharedPreferences mPrefPedidoExtras;
 
     private BroadcastReceiver onEventActualizarEstadoMesa = new BroadcastReceiver() {
@@ -80,6 +80,7 @@ public class ConsultarReservasActivity extends AppCompatActivity
                 Intent intentTo = new Intent(ConsultarReservasActivity.this, TomarPedidoActivity.class);
                 startActivity(intentTo);
                 finish(); // finaliza actividad para que al volver necesariamente se tenga que volver a cargar la actividad
+                showProgressIndicator(false);
             } else {
                 Log.d(DBHelper.TAG, "Se produjó la excepción: " + mensajeOperacion);
                 Toast.makeText(ConsultarReservasActivity.this, mensajeOperacion, Toast.LENGTH_LONG).show();
@@ -119,9 +120,6 @@ public class ConsultarReservasActivity extends AppCompatActivity
         mPrefConfig = getSharedPreferences(LoginActivity.PREF_CONFIG, MODE_PRIVATE);
         mPrefConexion = getSharedPreferences(ConexionSharedPref.NAME, MODE_PRIVATE);
         mColorReserva = "#3333ff";
-
-        mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
-        mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
 
         mPrefPedidoExtras = getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
 
@@ -230,11 +228,15 @@ public class ConsultarReservasActivity extends AppCompatActivity
 
     private void showProgressIndicator(boolean showValue) {
         if (showValue) {
-            mMainLinearLayout.setVisibility(View.GONE);
-            mIndicatorFrameLayout.setVisibility(View.VISIBLE);
+            mProgress = new MaterialDialog.Builder(ConsultarReservasActivity.this)
+                    .content("Espere por favor...")
+                    .cancelable(false)
+                    .progress(true, 0)
+                    .show();
         } else {
-            mMainLinearLayout.setVisibility(View.VISIBLE);
-            mIndicatorFrameLayout.setVisibility(View.GONE);
+            if (mProgress != null) {
+                mProgress.dismiss();
+            }
         }
     }
 

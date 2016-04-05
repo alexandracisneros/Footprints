@@ -29,6 +29,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.commonsware.cwac.wakeful.WakefulIntentService;
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
@@ -64,8 +65,7 @@ public class PedidosARecogerActivity extends AppCompatActivity
     private ActionMode mActionMode;
     private String mIdPedido;
     private String mIdPedidoServidor;
-    private FrameLayout mIndicatorFrameLayout;
-    private LinearLayout mMainLinearLayout;
+    private MaterialDialog mProgress;
 
     private BroadcastReceiver onEventConsultarPedidosARecoger = new BroadcastReceiver() {
         @Override
@@ -119,9 +119,6 @@ public class PedidosARecogerActivity extends AppCompatActivity
         mDetallePedidoListView = (ListView) findViewById(R.id.detallePedidoRecogerListView);
         mDetallePedidoListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         mDetallePedidoListView.setMultiChoiceModeListener(this);
-
-        mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
-        mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
 
         consultarPedidosARecoger();
 
@@ -322,11 +319,15 @@ public class PedidosARecogerActivity extends AppCompatActivity
 
     private void showProgressIndicator(boolean showValue) {
         if (showValue) {
-            mMainLinearLayout.setVisibility(View.GONE);
-            mIndicatorFrameLayout.setVisibility(View.VISIBLE);
+            mProgress = new MaterialDialog.Builder(PedidosARecogerActivity.this)
+                    .content("Espere por favor...")
+                    .cancelable(false)
+                    .progress(true, 0)
+                    .show();
         } else {
-            mMainLinearLayout.setVisibility(View.VISIBLE);
-            mIndicatorFrameLayout.setVisibility(View.GONE);
+            if (mProgress != null) {
+                mProgress.dismiss();
+            }
         }
     }
 

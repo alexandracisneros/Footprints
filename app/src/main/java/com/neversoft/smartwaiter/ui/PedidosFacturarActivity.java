@@ -1,7 +1,6 @@
 package com.neversoft.smartwaiter.ui;
 
 import android.app.Activity;
-import android.support.v7.app.AlertDialog;;
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -31,6 +31,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.model.business.ClienteDAO;
@@ -45,6 +46,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+
 
 public class PedidosFacturarActivity extends AppCompatActivity
         implements AdapterView.OnItemSelectedListener,
@@ -77,8 +80,7 @@ public class PedidosFacturarActivity extends AppCompatActivity
     private TableRow mRucRow;
     private TableRow mRecibidoRow;
     private TableRow mRestanteRow;
-    private FrameLayout mIndicatorFrameLayout;
-    private LinearLayout mMainLinearLayout;
+    private MaterialDialog mProgress;
 
 
     private BroadcastReceiver onEvent = new BroadcastReceiver() {
@@ -148,9 +150,6 @@ public class PedidosFacturarActivity extends AppCompatActivity
         mCabPedidosFacturarListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mCabPedidosFacturarListView.setOnItemClickListener(this);
         mCabPedidosFacturarListView.setOnItemLongClickListener(this);
-
-        mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
-        mMainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
 
         new ConsultarPedidosPorFacturar().execute();
 
@@ -329,11 +328,15 @@ public class PedidosFacturarActivity extends AppCompatActivity
 
     private void showProgressIndicator(boolean showValue) {
         if (showValue) {
-            mMainLinearLayout.setVisibility(View.GONE);
-            mIndicatorFrameLayout.setVisibility(View.VISIBLE);
+            mProgress = new MaterialDialog.Builder(PedidosFacturarActivity.this)
+                    .content("Espere por favor...")
+                    .cancelable(false)
+                    .progress(true, 0)
+                    .show();
         } else {
-            mMainLinearLayout.setVisibility(View.VISIBLE);
-            mIndicatorFrameLayout.setVisibility(View.GONE);
+            if (mProgress != null) {
+                mProgress.dismiss();
+            }
         }
     }
 

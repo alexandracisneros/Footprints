@@ -22,13 +22,12 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
@@ -72,8 +71,7 @@ public class TomarPedidoActivity extends AppCompatActivity
     private TextView mIGVPedidoTextView;
     private TextView mTotalPedidoTextView;
 
-    private FrameLayout mIndicatorFrameLayout;
-    private LinearLayout mLinearLayout;
+    private MaterialDialog mProgress;
     private float mTotal = 0;
     private String mPrevClassName;
     private SharedPreferences mPrefPedidoExtras;
@@ -97,6 +95,7 @@ public class TomarPedidoActivity extends AppCompatActivity
                 Intent intentTo = new Intent(TomarPedidoActivity.this, clase);
                 startActivity(intentTo);
                 finish(); // finaliza actividad para que al volver necesariamente se tenga que volver a cargar la actividad
+                showProgressIndicator(false);
             } else {
                 Log.d(DBHelper.TAG, "Se produjó la excepción: " + mensajeOperacion);
                 Toast.makeText(TomarPedidoActivity.this, mensajeOperacion, Toast.LENGTH_LONG).show();
@@ -132,6 +131,7 @@ public class TomarPedidoActivity extends AppCompatActivity
                 Intent toIntent = new Intent(TomarPedidoActivity.this, clase);
                 startActivity(toIntent);
                 finish();
+                showProgressIndicator(false);
             } else {
                 showProgressIndicator(false);
                 Log.d(DBHelper.TAG, "Exception from BroadcastReceiver within EnviarDatosActivity :" + mensaje);
@@ -175,9 +175,6 @@ public class TomarPedidoActivity extends AppCompatActivity
         mPedidoListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         mPedidoListView.setMultiChoiceModeListener(new ActionModeCallbacks());
 
-        mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
-        mLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
-
         loadCategorias();
         mItems = PedidoSharedPref.getItems(TomarPedidoActivity.this);
         showItems();
@@ -190,14 +187,16 @@ public class TomarPedidoActivity extends AppCompatActivity
 
     private void showProgressIndicator(boolean showValue) {
         if (showValue) {
-            mLinearLayout.setVisibility(View.GONE);
-            mIndicatorFrameLayout.setVisibility(View.VISIBLE);
+            mProgress = new MaterialDialog.Builder(TomarPedidoActivity.this)
+                    .content("Espere por favor...")
+                    .cancelable(false)
+                    .progress(true, 0)
+                    .show();
         } else {
-            mLinearLayout.setVisibility(View.VISIBLE);
-            mIndicatorFrameLayout.setVisibility(View.GONE);
+            if (mProgress != null) {
+                mProgress.dismiss();
+            }
         }
-        mCategoriasListView.setEnabled(!showValue);
-        mArticulosListView.setEnabled(!showValue);
     }
 
     public ListView getCategoriasListView() {

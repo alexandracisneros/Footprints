@@ -18,10 +18,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.Spinner;
-import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -51,8 +49,6 @@ public class MesasActivity extends AppCompatActivity
     private ArrayList<SpinnerEE> mListaAmbientes;
     private ArrayList<SpinnerEE> mListaPisos;
     private ArrayList<MesaPisoEE> mListaMesas;
-    private FrameLayout mIndicatorFrameLayout;
-    private TableLayout mMainLinearLayout;
     private NavigationView mNavigationView;
     private MaterialDialog mProgress;
 
@@ -83,6 +79,7 @@ public class MesasActivity extends AppCompatActivity
                 Intent intentTo = new Intent(MesasActivity.this, TomarPedidoActivity.class);
                 startActivity(intentTo);
                 finish(); // finaliza actividad para que al volver necesariamente se tenga que volver a cargar la actividad
+                showProgressIndicator(false);
             } else {
                 Log.d(DBHelper.TAG, "Se produjó la excepción: " + mensajeOperacion);
                 Toast.makeText(MesasActivity.this, mensajeOperacion, Toast.LENGTH_LONG).show();
@@ -115,9 +112,6 @@ public class MesasActivity extends AppCompatActivity
 
         mMesasGridView = (GridView) findViewById(R.id.mesasGridView);
         mMesasGridView.setOnItemClickListener(this);
-
-        mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
-        mMainLinearLayout = (TableLayout) findViewById(R.id.mainLinearLayout);
 
         mPrefPedidoExtras = getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
         loadPisosSpinner();
@@ -199,11 +193,15 @@ public class MesasActivity extends AppCompatActivity
 
     private void showProgressIndicator(boolean showValue) {
         if (showValue) {
-            mMainLinearLayout.setVisibility(View.GONE);
-            mIndicatorFrameLayout.setVisibility(View.VISIBLE);
+            mProgress = new MaterialDialog.Builder(MesasActivity.this)
+                    .content("Espere por favor...")
+                    .cancelable(false)
+                    .progress(true, 0)
+                    .show();
         } else {
-            mMainLinearLayout.setVisibility(View.VISIBLE);
-            mIndicatorFrameLayout.setVisibility(View.GONE);
+            if (mProgress != null) {
+                mProgress.dismiss();
+            }
         }
     }
 
