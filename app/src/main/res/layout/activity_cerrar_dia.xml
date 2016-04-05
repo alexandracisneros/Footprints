@@ -14,12 +14,6 @@
 
         <include layout="@layout/navigation_view"/>
 
-        <include
-            layout="@layout/screen_overlay"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4"/>
-
         <LinearLayout
             android:id="@+id/mainRelativeLayout"
             android:layout_width="0dp"

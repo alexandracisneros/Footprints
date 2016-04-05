@@ -119,7 +119,7 @@ public class ConsultarReservasActivity extends AppCompatActivity
         mUrlServer = RestUtil.obtainURLServer(getApplicationContext());
         mPrefConfig = getSharedPreferences(LoginActivity.PREF_CONFIG, MODE_PRIVATE);
         mPrefConexion = getSharedPreferences(ConexionSharedPref.NAME, MODE_PRIVATE);
-        mColorReserva = "#3333ff";
+        mColorReserva = "#29B6F6";
 
         mPrefPedidoExtras = getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
 

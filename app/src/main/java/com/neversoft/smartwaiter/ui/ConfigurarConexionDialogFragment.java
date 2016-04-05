@@ -147,7 +147,6 @@ public class ConfigurarConexionDialogFragment extends AppCompatDialogFragment {
         @Override
         protected void onPreExecute() {
             mProgress = new MaterialDialog.Builder(ctxt)
-                    .title("Procesando")
                     .content("Espere por favor...")
                     .cancelable(false)
                     .progress(true, 0)

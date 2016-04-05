@@ -322,17 +322,26 @@ public class LoginActivity extends AppCompatActivity
         }
     }
 
+    private void showProgressIndicator(boolean showValue) {
+        if (showValue) {
+            mProgress = new MaterialDialog.Builder(LoginActivity.this)
+                    .content("Espere por favor...")
+                    .cancelable(false)
+                    .progress(true, 0)
+                    .show();
+        } else {
+            if (mProgress != null) {
+                mProgress.dismiss();
+            }
+        }
+    }
+
     class DoLoginUsuario extends AsyncTask<String, Void, Object> {
 
         @Override
         protected void onPreExecute() {
 
-            mProgress = new MaterialDialog.Builder(LoginActivity.this)
-                    .title("Procesando")
-                    .content("Espere por favor...")
-                    .cancelable(false)
-                    .progress(true, 0)
-                    .show();
+            showProgressIndicator(true);
         }
 
         @Override
@@ -357,9 +366,7 @@ public class LoginActivity extends AppCompatActivity
         protected void onPostExecute(Object result) {
             // Clear progress indicator
             String response;
-            if (mProgress != null) {
-                mProgress.dismiss();
-            }
+            showProgressIndicator(false);
             if (result instanceof String) {
                 response = (String) result;
                 processResponse(response);
@@ -380,12 +387,7 @@ public class LoginActivity extends AppCompatActivity
     class DoAceptar extends AsyncTask<String, Void, Object> {
         @Override
         protected void onPreExecute() {
-            mProgress = new MaterialDialog.Builder(LoginActivity.this)
-                    .title("Procesando")
-                    .content("Espere por favor...")
-                    .cancelable(false)
-                    .progress(true, 0)
-                    .show();
+            showProgressIndicator(true);
         }
 
         @Override
@@ -410,9 +412,7 @@ public class LoginActivity extends AppCompatActivity
         protected void onPostExecute(Object result) {
             // Clear progress indicator
             String response;
-            if (mProgress != null) {
-                mProgress.dismiss();
-            }
+            showProgressIndicator(false);
             if (result instanceof String) {
                 response = (String) result;
                 insertSettings(response);

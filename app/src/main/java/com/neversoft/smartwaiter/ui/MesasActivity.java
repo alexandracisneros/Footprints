@@ -209,7 +209,7 @@ public class MesasActivity extends AppCompatActivity
 
         new AlertDialog.Builder(this)
                 .setTitle("Confirmación")
-                .setMessage("¿Realmente desea proceder a efectuar un pedido sobre la mesa :" + mMesaPisoSeleccionado.getNroMesa() + " ?")
+                .setMessage("¿Realmente desea proceder a efectuar un pedido sobre la mesa número " + mMesaPisoSeleccionado.getNroMesa() + " ?")
                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

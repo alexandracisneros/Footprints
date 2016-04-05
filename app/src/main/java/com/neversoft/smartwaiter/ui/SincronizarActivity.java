@@ -3,19 +3,20 @@ package com.neversoft.smartwaiter.ui;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.service.SincronizarService;
@@ -26,8 +27,7 @@ import java.lang.ref.WeakReference;
 public class SincronizarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private NavigationView mNavigationView;
-    private FrameLayout mIndicatorFrameLayout;
-    private LinearLayout mMainRelativeLayout;
+    private MaterialDialog mProgress;
 
 
     private BroadcastReceiver onEventSincronizarDatosIniciales = new BroadcastReceiver() {
@@ -69,8 +69,6 @@ public class SincronizarActivity extends AppCompatActivity
         mNavigationView.setNavigationItemSelectedListener(this);
         mNavigationView.getMenu().getItem(SmartWaiter.OPCION_SINCRONIZAR).setChecked(true);
 
-        mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
-        mMainRelativeLayout = (LinearLayout) findViewById(R.id.mainRelativeLayout);
     }
 
     @Override
@@ -116,22 +114,49 @@ public class SincronizarActivity extends AppCompatActivity
 
     private void showProgressIndicator(boolean showValue) {
         if (showValue) {
-            mMainRelativeLayout.setVisibility(View.GONE);
-            mIndicatorFrameLayout.setVisibility(View.VISIBLE);
+            mProgress = new MaterialDialog.Builder(SincronizarActivity.this)
+                    .content("Espere por favor...")
+                    .cancelable(false)
+                    .progress(true, 0)
+                    .show();
         } else {
-            mMainRelativeLayout.setVisibility(View.VISIBLE);
-            mIndicatorFrameLayout.setVisibility(View.GONE);
+            if (mProgress != null) {
+                mProgress.dismiss();
+            }
         }
     }
 
     public void onClick(View v) {
         // here get SharedPreferences and send them with the Intent
-        Intent inputIntent = new Intent(SincronizarActivity.this,
-                SincronizarService.class);
-        Log.d(DBHelper.TAG, "Antes de startService");
-        // Display progress to the user
-        showProgressIndicator(true);
-        startService(inputIntent);
+        confirmarSincronizar();
+
+    }
+
+    public void confirmarSincronizar() {
+
+        new AlertDialog.Builder(this)
+                .setTitle("Confirmación")
+                .setMessage("¿Realmente desea iniciar el proceso de sincronización?")
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Start daily operations
+                        dialog.cancel();
+                        Intent inputIntent = new Intent(SincronizarActivity.this, SincronizarService.class);
+                        Log.d(DBHelper.TAG, "Antes de startService");
+                        // Display progress to the user
+                        showProgressIndicator(true);
+                        startService(inputIntent);
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+
+                    }
+                }).show();
 
     }
 

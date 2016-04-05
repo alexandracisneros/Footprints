@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.io.RestConnector;
@@ -39,8 +40,7 @@ public class IniciarDiaActivity extends AppCompatActivity
     private SharedPreferences mPrefControl;
     private SharedPreferences mPrefConfig;
     private SharedPreferences mPrefConexion;
-    private FrameLayout mIndicatorFrameLayout;
-    private LinearLayout mMainRelativeLayout;
+    private MaterialDialog mProgress;
     private String mFechaInicioDia;
 
 
@@ -69,19 +69,20 @@ public class IniciarDiaActivity extends AppCompatActivity
         mNavigationView.setNavigationItemSelectedListener(this);
         mNavigationView.getMenu().getItem(SmartWaiter.OPCION_INICIAR_DIA).setChecked(true);
 
-        mIndicatorFrameLayout = (FrameLayout) findViewById(R.id.loadingIndicatorLayout);
-        mMainRelativeLayout = (LinearLayout) findViewById(R.id.mainRelativeLayout);
-
     }
 
 
     private void showProgressIndicator(boolean showValue) {
         if (showValue) {
-            mMainRelativeLayout.setVisibility(View.GONE);
-            mIndicatorFrameLayout.setVisibility(View.VISIBLE);
+            mProgress = new MaterialDialog.Builder(IniciarDiaActivity.this)
+                    .content("Espere por favor...")
+                    .cancelable(false)
+                    .progress(true, 0)
+                    .show();
         } else {
-            mMainRelativeLayout.setVisibility(View.VISIBLE);
-            mIndicatorFrameLayout.setVisibility(View.GONE);
+            if (mProgress != null) {
+                mProgress.dismiss();
+            }
         }
     }
 

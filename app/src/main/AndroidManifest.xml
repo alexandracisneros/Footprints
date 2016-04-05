@@ -8,6 +8,12 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <!--<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>-->
 
+    <supports-screens
+        android:largeScreens="true"
+        android:normalScreens="false"
+        android:requiresSmallestWidthDp="600"
+        android:smallScreens="false"
+        android:xlargeScreens="true"/>
     <application
         android:name=".ui.SmartWaiter"
         android:allowBackup="true"
@@ -26,7 +32,9 @@
         </activity>
         <activity
             android:name=".ui.SincronizarActivity"
-            android:label="@string/title_activity_main">
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_main"
+            android:screenOrientation="sensorLandscape">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -45,7 +53,9 @@
         </receiver>
         <activity
             android:name=".ui.TomarPedidoActivity"
-            android:label="@string/title_activity_tomar_pedido">
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_tomar_pedido"
+            android:screenOrientation="sensorLandscape">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN"/> -->
@@ -65,7 +75,9 @@
 
         <activity
             android:name=".ui.MesasActivity"
-            android:label="@string/title_activity_mesas">
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_mesas"
+            android:screenOrientation="sensorLandscape">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -76,7 +88,9 @@
         </activity>
         <activity
             android:name=".ui.LoginActivity"
-            android:label="@string/title_activity_login">
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_login"
+            android:screenOrientation="sensorLandscape">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN"/> -->
@@ -87,35 +101,46 @@
         </activity>
         <activity
             android:name=".ui.IniciarDiaActivity"
-            android:label="@string/title_activity_iniciar_dia">
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_iniciar_dia"
+            android:screenOrientation="sensorLandscape">
         </activity>
         <activity
             android:name=".ui.CerrarDiaActivity"
-            android:label="@string/title_activity_cerrar_dia">
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_cerrar_dia"
+            android:screenOrientation="sensorLandscape">
         </activity>
         <activity
             android:name=".ui.PedidosARecogerActivity"
-            android:label="@string/title_activity_pedidos_arecoger">
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_pedidos_arecoger"
+            android:screenOrientation="sensorLandscape">
         </activity>
 
         <service android:name=".service.ConsultarPedidosRecogerService"/>
 
         <!--<receiver android:name=".receiver.ConsultarPedidosRecogerReceiver">-->
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.BOOT_COMPLETED"/>-->
-            <!--</intent-filter>-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.BOOT_COMPLETED"/>-->
+        <!--</intent-filter>-->
         <!--</receiver>-->
 
         <service android:name=".service.NotificarPedidosRecogidosService"/>
 
-        <activity android:name=".ui.PedidosFacturarActivity">
+        <activity
+            android:name=".ui.PedidosFacturarActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensorLandscape">
         </activity>
 
         <service android:name=".service.EnviarPedidoFacturadoService"/>
 
         <activity
             android:name=".ui.ConsultarReservasActivity"
-            android:label="@string/title_activity_consultar_reservas">
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_consultar_reservas"
+            android:screenOrientation="sensorLandscape">
         </activity>
 
         <service android:name=".service.ActualizarEstadoMesaService"/>
