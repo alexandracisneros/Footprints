@@ -86,7 +86,7 @@ public class NotificarPedidosRecogidosService extends IntentService {
                     }
                     Intent event = new Intent(NotificarPedidosRecogidosService.ACTION_NOTIFICAR_RECOJO_PEDIDO);
                     event.putExtra(PedidosARecogerActivity.EXTRA_ID_PEDIDO_REFRESCAR, idPedidoRefrescar);
-                    SystemClock.sleep(1500);
+//                    SystemClock.sleep(1500);
                     if (!LocalBroadcastManager.getInstance(this).sendBroadcast(event)) {
                         Log.d(getClass().getSimpleName(), "I only run when I have to show a notification!");
                         NotificationCompat.Builder b = new NotificationCompat.Builder(this);

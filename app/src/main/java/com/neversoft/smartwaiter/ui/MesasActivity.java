@@ -29,6 +29,7 @@ import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.model.business.MesaPisoDAO;
 import com.neversoft.smartwaiter.model.entity.MesaPisoEE;
 import com.neversoft.smartwaiter.model.entity.SpinnerEE;
+import com.neversoft.smartwaiter.preference.ControlSharedPref;
 import com.neversoft.smartwaiter.preference.PedidoExtraSharedPref;
 import com.neversoft.smartwaiter.service.ActualizarEstadoMesaService;
 import com.neversoft.smartwaiter.service.ObtenerListaMesasService;
@@ -114,6 +115,7 @@ public class MesasActivity extends AppCompatActivity
         mMesasGridView.setOnItemClickListener(this);
 
         mPrefPedidoExtras = getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
+
         loadPisosSpinner();
     }
 

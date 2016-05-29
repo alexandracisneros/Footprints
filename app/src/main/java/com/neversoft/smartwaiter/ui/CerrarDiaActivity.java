@@ -14,8 +14,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -27,6 +25,9 @@ import com.neversoft.smartwaiter.model.business.PedidoDAO;
 import com.neversoft.smartwaiter.model.business.SincroDAO;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
 import com.neversoft.smartwaiter.preference.ControlSharedPref;
+import com.neversoft.smartwaiter.preference.LoginSharedPref;
+import com.neversoft.smartwaiter.preference.PedidoExtraSharedPref;
+import com.neversoft.smartwaiter.preference.PedidoSharedPref;
 import com.neversoft.smartwaiter.util.Funciones;
 
 import java.lang.ref.WeakReference;
@@ -45,6 +46,8 @@ public class CerrarDiaActivity extends AppCompatActivity
     private SharedPreferences mPrefConfig;
     private SharedPreferences mPrefControl;
     private SharedPreferences mPrefConexion;
+    private SharedPreferences mPrefLogin;
+    private SharedPreferences mPedidoExtra;
     private MaterialDialog mProgress;
 
     @Override
@@ -62,6 +65,8 @@ public class CerrarDiaActivity extends AppCompatActivity
         mPrefConfig = getSharedPreferences(LoginActivity.PREF_CONFIG, MODE_PRIVATE);
         mPrefControl = getSharedPreferences(ControlSharedPref.NAME, MODE_PRIVATE);
         mPrefConexion = getSharedPreferences(ConexionSharedPref.NAME, MODE_PRIVATE);
+        mPrefLogin = getSharedPreferences(LoginSharedPref.NAME, MODE_PRIVATE);
+        mPedidoExtra=getSharedPreferences(PedidoExtraSharedPref.NAME,MODE_PRIVATE);
 
         mCerrarDiaButton = (Button) findViewById(R.id.cerrarDiaButton);
         mCerrarDiaButton.setOnClickListener(this);
@@ -114,23 +119,21 @@ public class CerrarDiaActivity extends AppCompatActivity
     }
 
     private void cerrarDia() {
-        String url = mUrlServer + "ventas/CerrarDiaVendedorMV/?"
-                + "fecha=%s&codVen=%s&" + "codCia=%s&usuario=%s&"
+        String url = mUrlServer + "restaurante/CerrarDiaMozo/?fecha=%s&usuario=%s&codCia=%s&"
                 + "cadenaConexion=%s";
 
 //         String fecha = Funciones.getCurrentDate("yyyy/MM/dd");
         String fecha = mPrefControl
                 .getString(ControlSharedPref.FECHA_INICIO_DIA, Funciones.getCurrentDate("yyyy/MM/dd"));
-        String codMozo = mPrefConfig.getString("CodMozo", "");
-        String codCia = mPrefConfig.getString("CodCia", "");
         String usuario = mPrefConfig.getString("Usuario", "").toUpperCase(
                 Locale.getDefault());
+        String codCia = mPrefConfig.getString("CodCia", "");
         String ambiente = mPrefConexion.getString(ConexionSharedPref.AMBIENTE, "");
         Log.d(DBHelper.TAG, ambiente);
         try {
             String encondedAmbiente = URLEncoder.encode(ambiente, "utf-8");
-            String urlWithParams = String.format(url, fecha, codMozo, codCia,
-                    usuario, encondedAmbiente);
+            String urlWithParams = String.format(url, fecha, usuario, codCia,
+                    encondedAmbiente);
             new DoCerrarDia().execute(urlWithParams);
         } catch (Exception ex) {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
@@ -139,61 +142,47 @@ public class CerrarDiaActivity extends AppCompatActivity
 
     @Override
     public void onClick(View view) {
+        boolean isDayClosed;
         boolean isDayStarted;
         boolean isDataSynchronized;
-        isDayStarted = mPrefControl.getBoolean(ControlSharedPref.INICIO_DIA,
-                false);
-//        if (isDayStarted) {
-//            isDataSynchronized = mPrefControl.getBoolean(
-//                    ControlSharedPref.DATA_SINCRONIZADA, false);
-//            if (isDataSynchronized) {
-        confirmarRealizacionDePedidos();
-//            } else {
-//                Toast.makeText(CerrarDiaActivity.this,
-//                        "Aún no ha sincronizado los datos.",
-//                        Toast.LENGTH_SHORT).show();
-//            }
-//        } else {
-//            Toast.makeText(CerrarDiaActivity.this,
-//                    "Debe iniciar el día antes de intentar cerrarlo.",
-//                    Toast.LENGTH_SHORT).show();
-//        }
+        isDayClosed = mPrefControl.getBoolean(ControlSharedPref.CIERRE_DIA, false);
+        if (!isDayClosed) {
+            isDayStarted = mPrefControl.getBoolean(ControlSharedPref.INICIO_DIA, false);
+            if (isDayStarted) {
+                isDataSynchronized = mPrefControl.getBoolean(ControlSharedPref.DATA_SINCRONIZADA, false);
+                if (isDataSynchronized) {
+                    confirmarRealizacionDePedidos();
+                } else {
+                    Toast.makeText(CerrarDiaActivity.this, "Aún no ha sincronizado los datos.", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(CerrarDiaActivity.this, "Debe iniciar el día antes de intentar cerrarlo.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(CerrarDiaActivity.this, "El día ya ha sido cerrado.", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
     public void confirmarRealizacionDePedidos() {
         try {
-            boolean isDayClosed = mPrefControl.getBoolean(ControlSharedPref.CIERRE_DIA,
-                    false);
             PedidoDAO pedidoDAO = new PedidoDAO(getApplicationContext());
-            if (isDayClosed) {
-                Toast.makeText(CerrarDiaActivity.this,
-                        "Día ya ha sido cerrado.", Toast.LENGTH_SHORT).show();
+
+            long nroPedidos = pedidoDAO.getNumeroPedidos(1);
+            if (nroPedidos > 0) {
+                confirmarCerrarDiaConPedidos(pedidoDAO);
             } else {
-                long nroPedidos = pedidoDAO.getNumeroPedidos(-1);
-                if (nroPedidos > 0) {
-                    confirmarCerrarDiaConPedidos(pedidoDAO);
-                } else {
-                    confirmarCerrarDiaSinPedidos();
-                }
+                confirmarCerrarDiaSinPedidos();
             }
+
         } catch (Exception ex) {
-            Toast.makeText(CerrarDiaActivity.this,
-                    "Se produjo el error: " + ex.getMessage(),
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(CerrarDiaActivity.this, "Se produjo el error: " + ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
     }
 
     public void confirmarCerrarDiaConPedidos(PedidoDAO pedidoDAO) throws Exception {
-        long nroPedidoNoEnviados = pedidoDAO.getNumeroPedidos(0); // Pendientes de Envio
-        String mensaje;
-        if (nroPedidoNoEnviados > 0) {
-            mensaje = "Hay pedidos que aún no han sido enviados. De proceder no podrá enviarlos.¿Confirma que desea cerrar el día?";
-            ;
-        } else {
-            mensaje = "De proceder no podrá agregar nuevos pedidos.¿Confirma que desea cerrar el día?";
-        }
+        String mensaje = "De proceder no podrá agregar nuevos pedidos.¿Confirma que desea cerrar el día?";
         new AlertDialog.Builder(this).setTitle("Confirmación")
                 .setMessage(mensaje)
                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
@@ -239,15 +228,13 @@ public class CerrarDiaActivity extends AppCompatActivity
             Log.d(DBHelper.TAG, url);
             RestConnector restConnector;
             try {
-                if (Funciones
-                        .hasActiveInternetConnection(getApplicationContext())) {
+                if (Funciones.hasActiveInternetConnection(getApplicationContext())) {
                     restConnector = RestUtil.obtainGetConnection(url);
                     requestObject = restConnector.doRequest(url);
                 }
             } catch (Exception e) {
                 requestObject = e;
             }
-            SystemClock.sleep(5000);
             return requestObject;
 
         }
@@ -255,45 +242,39 @@ public class CerrarDiaActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Object result) {
             // Clear progress indicator
-            String mensaje = "";
+            String mensaje;
+            boolean resultadoIO;
             showProgressIndicator(false);
-            if (result instanceof String) {
-                mensaje = (String) result;
-                if (mensaje.equals("1")) {
-                    try {
-                        // Since the user is closing the day we need to
-                        // reset all values from PREF_Control,except cerrarDia,
-                        // will do that when we sync data
-                        // PREF_Login, and the Downloaded Data
-                        ControlSharedPref.save(mPrefControl, false, "", true, false,
-                                false, "", false);
-                        // Clear out mPrefLoginValues
-                        // PREF_Login.remove(mPrefLogin); //MANTENER XQ LO NECESITO
-                        // PARA DATOS ADICIONALES SINO SALE EXECPCION XQ NECESITO
-                        // USUARIO
-                        // Clear out mPrefTrasc
-                        //PREF_Transac.remove(mPrefTransac); //TODO : REVISAR PORQUE ES NECESARIO
-                        // Clear out mPrefPoliticas
-                        //PREF_Politicas.remove(mPrefPoliticas); //TODO : REVISAR PORQUE ES NECESARIO
-                        // ACA CORREGIR
-                        //TODO: realizar esto que tiene reversion primero y luego recien lo de las sharedpreferences que no tienen reversion
-                        SincroDAO sincroDAO = new SincroDAO(getApplicationContext());
-                        sincroDAO.dropDataDownloaded(); //TODO : REVISAR PORQUE ES NECESARIO
+            try {
+                resultadoIO = Boolean.parseBoolean(String.valueOf(result));
+                if (resultadoIO) {
 
-                        mensaje = "Día cerrado correctamente.";
-                    } catch (Exception ex) {
-                        Toast.makeText(CerrarDiaActivity.this, "Se produjo el error:" + ex.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    }
+                    SincroDAO sincroDAO = new SincroDAO(getApplicationContext());
+                    sincroDAO.dropDataDownloaded();
+
+                    // Since the user is closing the day we need to
+                    // reset all values from PREF_Control,except cerrarDia,
+                    // will do that when we sync data
+                    // PREF_Login, and the Downloaded Data
+                    ControlSharedPref.save(mPrefControl, false, "", true, false, false, "", false);
+                    PedidoSharedPref.clear(getApplicationContext());
+                    PedidoExtraSharedPref.remove(mPedidoExtra);
+                    // Clear out mPrefLoginValues
+//                    LoginSharedPref.remove(mPrefLogin); //TODO: Aun por ver aunque parece que no se hara a no ser que el usuario decida cambiar de usuario
+
+                    mensaje = "Día cerrado correctamente.";
+
+                } else {
+                    mensaje = "El mozo aún no ha iniciado el día.";
+
                 }
+                Toast.makeText(CerrarDiaActivity.this, mensaje, Toast.LENGTH_LONG).show();
 
-            } else if (result instanceof Exception) {
-                mensaje = ((Exception) result).getMessage();
-                Log.d(DBHelper.TAG, "Error en Cerrar dia: " + mensaje);
+            } catch (Exception ex) {
+                Toast.makeText(CerrarDiaActivity.this, "Se produjo el error:" + ex.getMessage(),
+                        Toast.LENGTH_SHORT).show();
             }
-            Toast.makeText(CerrarDiaActivity.this, mensaje,
-                    Toast.LENGTH_LONG).show();
-        }
 
+        }
     }
 }

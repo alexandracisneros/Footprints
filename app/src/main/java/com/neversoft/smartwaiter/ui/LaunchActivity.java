@@ -15,6 +15,7 @@ import com.neversoft.smartwaiter.preference.PedidoExtraSharedPref;
 public class LaunchActivity extends Activity {
     private SharedPreferences mPrefControl;
     private SharedPreferences mPedidoExtras;
+    private SharedPreferences mPrefLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +23,7 @@ public class LaunchActivity extends Activity {
         // get SharedPreferences object
         mPrefControl = getSharedPreferences(ControlSharedPref.NAME, MODE_PRIVATE);
         mPedidoExtras = getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
+        mPrefLogin = getSharedPreferences(LoginSharedPref.NAME, MODE_PRIVATE);
 
         showCorrespondingActivity();
         finish();
@@ -29,19 +31,31 @@ public class LaunchActivity extends Activity {
 
     private void showCorrespondingActivity() {
 
-        boolean hasDayBeenStarted;
-        hasDayBeenStarted = mPrefControl.getBoolean(ControlSharedPref.INICIO_DIA, false);
+        boolean isUserLoggedIn;
+        boolean isDayStarted;
+        boolean isDataSynchronized;
+        boolean tableHasBeenSelected;
         Intent intent;
-        if (hasDayBeenStarted) {
-            boolean tableHasBeenSelected = mPedidoExtras.contains(PedidoExtraSharedPref.STARTING_ACTIVITY);
-            if (tableHasBeenSelected) {
-                intent = new Intent(LaunchActivity.this, TomarPedidoActivity.class);
-                startActivity(intent);
+
+        isUserLoggedIn = mPrefLogin.contains(LoginSharedPref.USUARIO);
+        if (isUserLoggedIn) {
+            isDayStarted = mPrefControl.getBoolean(ControlSharedPref.INICIO_DIA, false);
+            if (isDayStarted) {
+                isDataSynchronized = mPrefControl.getBoolean(ControlSharedPref.DATA_SINCRONIZADA, false);
+                if (isDataSynchronized) {
+                    tableHasBeenSelected = mPedidoExtras.contains(PedidoExtraSharedPref.STARTING_ACTIVITY);
+                    if (tableHasBeenSelected) {
+                        intent = new Intent(LaunchActivity.this, TomarPedidoActivity.class);
+                    } else {
+                        intent = new Intent(LaunchActivity.this, MesasActivity.class);
+                    }
+                } else {
+                    intent = new Intent(LaunchActivity.this, SincronizarActivity.class);
+                }
             } else {
-                intent = new Intent(LaunchActivity.this, MesasActivity.class);
+                intent = new Intent(LaunchActivity.this, IniciarDiaActivity.class);
             }
-        } else { //This is the first time the user has opened the app
-            //Ask the user to Login in, having to fill in all the required fields
+        } else {
             intent = new Intent(LaunchActivity.this, LoginActivity.class);
         }
         startActivity(intent);

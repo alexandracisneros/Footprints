@@ -17,19 +17,21 @@ public class SincroDAO {
         this.mContext = context;
     }
 
-    //Cambiar a otra clase
+
     public void dropDataDownloaded() throws Exception {
         final DBHelper dbHelper = DBHelper.getInstance(SincroDAO.this.mContext);
         SQLiteDatabase db = null;
         try {
             db = dbHelper.getWritableDatabase();
             db.beginTransaction();
-            dbHelper.deleteTable(Tables.ARTICULO,db);
-            dbHelper.deleteTable(Tables.CLIENTE,db);
-            dbHelper.deleteTable(Tables.CARTA,db);
-            dbHelper.deleteTable(Tables.FAMILIA,db);
-            dbHelper.deleteTable(Tables.MESA_PISO,db);
-            dbHelper.deleteTable(Tables.PRIORIDAD,db);
+            dbHelper.deleteTable(Tables.FAMILIA, db);
+            dbHelper.deleteTable(Tables.PRIORIDAD, db);
+            dbHelper.deleteTable(Tables.CLIENTE, db);
+            dbHelper.deleteTable(Tables.MESA_PISO, db);
+            dbHelper.deleteTable(Tables.CARTA, db);
+            dbHelper.deleteTable(Tables.ARTICULO, db);
+            dbHelper.deleteTable(Tables.CONCEPTO, db);
+            dbHelper.deleteTable(Tables.MESA_INFO, db);
             db.setTransactionSuccessful();
             Log.d(DBHelper.TAG, "dropDataDownloaded");
 
@@ -39,6 +41,24 @@ public class SincroDAO {
                 db.close();
             }
         }
+    }
 
+    public void dropDataUploaded() throws Exception {
+        final DBHelper dbHelper = DBHelper.getInstance(SincroDAO.this.mContext);
+        SQLiteDatabase db = null;
+        try {
+            db = dbHelper.getWritableDatabase();
+            db.beginTransaction();
+            dbHelper.deleteTable(Tables.DETALLE_PEDIDO, db);
+            dbHelper.deleteTable(Tables.PEDIDO, db);
+            db.setTransactionSuccessful();
+            Log.d(DBHelper.TAG, "dropDataUploaded");
+
+        } finally {
+            if (db != null) {
+                db.endTransaction();
+                db.close();
+            }
+        }
     }
 }

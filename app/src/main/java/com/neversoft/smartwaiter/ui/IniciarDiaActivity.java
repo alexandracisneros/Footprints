@@ -14,8 +14,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -189,15 +187,14 @@ public class IniciarDiaActivity extends AppCompatActivity
             Log.d(DBHelper.TAG, url);
             RestConnector restConnector;
             try {
-                if (Funciones
-                        .hasActiveInternetConnection(getApplicationContext())) {
+                if (Funciones.hasActiveInternetConnection(getApplicationContext())) {
                     restConnector = RestUtil.obtainGetConnection(url);
                     requestObject = restConnector.doRequest(url);
                 }
             } catch (Exception e) {
                 requestObject = e;
             }
-            SystemClock.sleep(5000);
+//            SystemClock.sleep(5000);
             return requestObject;
         }
 

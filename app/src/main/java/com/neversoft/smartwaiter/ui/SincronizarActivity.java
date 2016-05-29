@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AlertDialog;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
+import com.neversoft.smartwaiter.preference.ControlSharedPref;
 import com.neversoft.smartwaiter.service.SincronizarService;
 import com.neversoft.smartwaiter.util.Funciones;
 
@@ -28,6 +30,7 @@ public class SincronizarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private NavigationView mNavigationView;
     private MaterialDialog mProgress;
+    private SharedPreferences mPrefControl;
 
 
     private BroadcastReceiver onEventSincronizarDatosIniciales = new BroadcastReceiver() {
@@ -64,6 +67,7 @@ public class SincronizarActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        mPrefControl = getSharedPreferences(ControlSharedPref.NAME, MODE_PRIVATE);
         // get reference to the ListView and set its listener
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
         mNavigationView.setNavigationItemSelectedListener(this);
@@ -128,8 +132,20 @@ public class SincronizarActivity extends AppCompatActivity
 
     public void onClick(View v) {
         // here get SharedPreferences and send them with the Intent
-        confirmarSincronizar();
 
+        boolean isDayStarted = mPrefControl.getBoolean(ControlSharedPref.INICIO_DIA, false);
+        boolean isDataSynchronized = mPrefControl.getBoolean(ControlSharedPref.DATA_SINCRONIZADA, false);
+        if (isDayStarted) {
+            if (!isDataSynchronized) {
+                confirmarSincronizar();
+            } else {
+                Toast.makeText(SincronizarActivity.this, "Los datos ya han sido sincronizados.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(SincronizarActivity.this, "Debe iniciar el día antes de intentar sincronizar los datos.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void confirmarSincronizar() {

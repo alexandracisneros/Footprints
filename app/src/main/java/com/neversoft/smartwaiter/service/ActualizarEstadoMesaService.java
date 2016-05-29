@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -125,7 +124,7 @@ public class ActualizarEstadoMesaService extends IntentService {
         event.putExtra(EXTRA_RESULTADO_ACTUALIZACION, mResultado);
         event.putExtra(EXTRA_MENSAJE_ACTUALIZACION, mMensaje);
 
-        SystemClock.sleep(2000);
+//        SystemClock.sleep(2000);
         if (!LocalBroadcastManager.getInstance(this).sendBroadcast(event)) {
 
             NotificationCompat.Builder b = new NotificationCompat.Builder(this);

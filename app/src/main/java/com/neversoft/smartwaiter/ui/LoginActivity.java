@@ -33,7 +33,6 @@ import com.neversoft.smartwaiter.model.entity.SpinnerEE;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
 import com.neversoft.smartwaiter.preference.ControlSharedPref;
 import com.neversoft.smartwaiter.preference.LoginSharedPref;
-import com.neversoft.smartwaiter.preference.PedidoSharedPref;
 import com.neversoft.smartwaiter.util.Funciones;
 
 import org.apache.http.client.HttpResponseException;
@@ -56,7 +55,6 @@ public class LoginActivity extends AppCompatActivity
     private SharedPreferences mPrefLoginValues;
     private SharedPreferences mPrefControl;
     private SharedPreferences mPrefConfig;
-    private SharedPreferences mPrefPedidoEnCurso;
     private SharedPreferences mPrefConexion;
 
     private String mAmbiente = "";
@@ -110,8 +108,6 @@ public class LoginActivity extends AppCompatActivity
         // get SharedPreferences object
         mPrefLoginValues = getSharedPreferences(LoginSharedPref.NAME, MODE_PRIVATE);
         mPrefConfig = getSharedPreferences(PREF_CONFIG, MODE_PRIVATE);
-        mPrefPedidoEnCurso = getSharedPreferences(PedidoSharedPref.PREFS_NAME,
-                MODE_PRIVATE);
         mPrefConexion = getSharedPreferences(ConexionSharedPref.NAME, MODE_PRIVATE);
 
     }
@@ -299,26 +295,11 @@ public class LoginActivity extends AppCompatActivity
             // pass false so the previous values are not cleared out.
             LoginSharedPref.save(mPrefLoginValues, null, null, mSelectedItem.getDescripcion().trim(), true, false);
             Log.d(DBHelper.TAG, "Configuraciones Insertadas");
-            goToMainActivity();
+
+            startActivity(new Intent(LoginActivity.this, IniciarDiaActivity.class));
         } catch (Exception e) {
             Toast.makeText(this, "Se produjó la excepción: " + e.getMessage(),
                     Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void goToMainActivity() {
-        Intent intent;
-//        int pedidoIdEnCurso = mPrefPedidoEnCurso.getInt(
-//                PedidoSharedPref.PEDIDO_ID, 0);  //TODO REEPLAZAR POR ORIGINAL
-        int pedidoIdEnCurso = 0;
-        if (pedidoIdEnCurso > 0) {
-            // If there's a Pedido en Curso, go and show that Pedido
-            intent = new Intent(LoginActivity.this, TomarPedidoActivity.class);
-            startActivity(intent);
-        } else {
-            // Otherwise go straight to MenuPrincipal
-            intent = new Intent(LoginActivity.this, MesasActivity.class);
-            startActivity(intent);
         }
     }
 
@@ -404,7 +385,7 @@ public class LoginActivity extends AppCompatActivity
             } catch (Exception e) {
                 requestObject = e;
             }
-            SystemClock.sleep(2000);
+//            SystemClock.sleep(1000);
             return requestObject;
         }
 

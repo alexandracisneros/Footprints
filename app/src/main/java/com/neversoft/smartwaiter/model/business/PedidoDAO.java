@@ -39,7 +39,7 @@ public class PedidoDAO {
         updateWhere = Pedido.ID + " =? ";
         updateWhereArgs = new String[]{idPedido};
 
-        db.update(Tables.PEDIDO, cv, updateWhere,updateWhereArgs);
+        db.update(Tables.PEDIDO, cv, updateWhere, updateWhereArgs);
     }
 
     public long savePedido(final PedidoEE pedido, int estadoArticulo) throws Exception {
@@ -87,7 +87,7 @@ public class PedidoDAO {
                     cvItem.put(DetallePedido.COMENTARIO, det.getComentario());
                     cvItem.put(DetallePedido.ESTADO_ART, det.getEstadoArticulo());
                     cvItem.put(DetallePedido.DESC_ART, det.getDescArticulo());
-                    idItemPedido = db.insertOrThrow(Tables.DETALLE_PEDIDO, null,cvItem);
+                    idItemPedido = db.insertOrThrow(Tables.DETALLE_PEDIDO, null, cvItem);
                     count++;
                 }
                 if (idItemPedido > 0) {
@@ -117,18 +117,14 @@ public class PedidoDAO {
             db = dbHelper.getReadableDatabase();
             // estadoEnviado=-1 =No tener en cuenta estado
             // estadoEnviado= 0 =Pedidos que no han sido enviados
-            String where = Pedido.CONFIRMADO + " =?";
-
-            ArrayList<String> whereArgsArrayList = new ArrayList<String>();
+            //ignoro confirmado que tiene x defecto 0
+            String where=null;
+            String[] whereArgs=null;
             if (estadoEnviado != -1) {
-                where += " AND " + Pedido.ENVIADO + " =?";
-                whereArgsArrayList.add("1");
-                whereArgsArrayList.add(String.valueOf(estadoEnviado));
-            } else {
-                whereArgsArrayList.add("1");
+                where = Pedido.ENVIADO + " =?";
+                whereArgs=new String[1];
+                whereArgs[0]=String.valueOf(estadoEnviado);
             }
-            String[] whereArgs = new String[whereArgsArrayList.size()];
-            whereArgs = whereArgsArrayList.toArray(whereArgs);
             count = dbHelper.count(Tables.PEDIDO, where, whereArgs);
 
         } finally {
@@ -251,5 +247,26 @@ public class PedidoDAO {
         }
     }
 
+    public int updateEstadoEnviado(long idPedido, String estadoEnviado) {
+        DBHelper dbHelper;
+        SQLiteDatabase db = null;
+
+        ContentValues cvPedido = new ContentValues();
+        cvPedido.put(Pedido.ENVIADO, Integer.parseInt(estadoEnviado));
+        String updateWherePedido = Pedido.ID + " =? ";
+        String[] updateWhereArgsPedido = new String[]{String.valueOf(idPedido)};
+
+        try {
+            dbHelper = DBHelper.getInstance(PedidoDAO.this.mContext);
+            db = dbHelper.getWritableDatabase();
+
+            return db.update(Tables.PEDIDO, cvPedido, updateWherePedido, updateWhereArgsPedido);
+
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+    }
 
 }

@@ -48,6 +48,8 @@ public class EnviarPedidoService extends IntentService {
     private String mCodCia;
     private String mUsuario;
 
+    private PedidoDAO mPedidoDAO;
+
     public EnviarPedidoService() {
         super(NAME);
         // We don’t want intents redelivered
@@ -76,7 +78,7 @@ public class EnviarPedidoService extends IntentService {
 
 
                 ArrayList<PedidoEE> listaPedidosRegistrados = new ArrayList<>();
-                PedidoDAO pedidoDAO = new PedidoDAO(getApplicationContext());
+                mPedidoDAO = new PedidoDAO(getApplicationContext());
                 //todo
                 //get data as string convert it back to an Order and again to JSON???
                 //wouldn't it be better if they all already had the same names as the WebApi Project?
@@ -84,7 +86,7 @@ public class EnviarPedidoService extends IntentService {
                 Gson gson = new Gson();
                 PedidoEE pedido = gson.fromJson(stringPedido,PedidoEE.class);
                 try {
-                    idPedido = pedidoDAO.savePedido(pedido, 1); // 1=ENVIADO A COCINA
+                    idPedido = mPedidoDAO.savePedido(pedido, 1); // 1=ENVIADO A COCINA
                 } catch (Exception e) {
                     throw new Exception("No se pudo guardar el pedido. Excepcion: " + e.getMessage());
                 }
@@ -94,7 +96,7 @@ public class EnviarPedidoService extends IntentService {
                     String dataToSend = getEnvio(listaPedidosRegistrados, idPedido);//TODO  //PASA ARRAY
 //                     Log.d(DBHelper.TAG, dataToSend);
                     //TODO : BEFORE YOU SEND THE ORDER REGISTER IT IN THE DATABASE SO YOU HAVE  AN ORDER ID
-                    idOrderFromServer = sendDataToServer(dataToSend);
+                    idOrderFromServer = sendDataToServer(dataToSend,idPedido);
                     if (idOrderFromServer > 0) {
                         exito = true;
                     } else {
@@ -107,7 +109,7 @@ public class EnviarPedidoService extends IntentService {
             mensaje = e.getMessage();
             exito = false;
         }
-        SystemClock.sleep(3000);
+//        SystemClock.sleep(3000);
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction(EnviarPedidoService.ACTION_SEND_DATA);
         //Put Extras
@@ -137,7 +139,7 @@ public class EnviarPedidoService extends IntentService {
     }
 
     // Methods used in sending all the orders back to the server for processing
-    private int sendDataToServer(String dataToSend) throws Exception {
+    private int sendDataToServer(String dataToSend, long idPedido) throws Exception {
         int procesoOK = 0;
         Object requestObject = null;
         String resultado;
@@ -156,6 +158,7 @@ public class EnviarPedidoService extends IntentService {
                     .obtainFormPostConnection(POST_URI, parameters);
             requestObject = restConnector.doRequest(POST_URI);
             if (requestObject instanceof String) {
+                mPedidoDAO.updateEstadoEnviado(idPedido,"1");
                 // Only if the request was successful parse the returned value
                 // otherwise re-throw the exception
                 resultado = (String) requestObject;
