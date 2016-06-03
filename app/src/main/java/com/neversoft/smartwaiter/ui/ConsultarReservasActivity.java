@@ -1,6 +1,5 @@
 package com.neversoft.smartwaiter.ui;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,10 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -266,7 +263,7 @@ public class ConsultarReservasActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         if (menuItem.getOrder() != SmartWaiter.OPCION_RESERVAS) {
-            WeakReference<Activity> weakActivity = new WeakReference<Activity>(ConsultarReservasActivity.this);
+            WeakReference<AppCompatActivity> weakActivity = new WeakReference<AppCompatActivity>(ConsultarReservasActivity.this);
             Funciones.selectMenuOption(weakActivity, menuItem.getOrder());
             return true;
         }

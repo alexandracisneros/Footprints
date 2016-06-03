@@ -38,5 +38,10 @@
             android:icon="@drawable/ic_action_cierre"
             android:orderInCategory="6"
             android:title="@string/opt_cerrar_dia"/>
+        <item
+            android:id="@+id/usuario"
+            android:icon="@drawable/ic_cambiar_usuario"
+            android:orderInCategory="7"
+            android:title="@string/opt_usuario"/>
     </group>
 </menu>

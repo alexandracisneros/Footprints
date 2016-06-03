@@ -23,6 +23,7 @@ public class SmartWaiter extends Application {
     public static final int OPCION_PEDIDOS_RECOGER=4;
     public static final int OPCION_PEDIDOS_FACTURAR=5;
     public static final int OPCION_CERRAR_DIA=6;
+    public static final int OPCION_USUARIO=7;
 
 
     @Override

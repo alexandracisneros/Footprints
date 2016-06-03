@@ -334,7 +334,7 @@ public class PedidosARecogerActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         if (menuItem.getOrder() != SmartWaiter.OPCION_PEDIDOS_RECOGER) {
-            WeakReference<Activity> weakActivity = new WeakReference<Activity>(PedidosARecogerActivity.this);
+            WeakReference<AppCompatActivity> weakActivity = new WeakReference<AppCompatActivity>(PedidosARecogerActivity.this);
             Funciones.selectMenuOption(weakActivity, menuItem.getOrder());
             return true;
         }

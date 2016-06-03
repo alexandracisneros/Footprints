@@ -1,0 +1,125 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              tools:context="com.neversoft.smartwaiter.ui.CerrarDiaActivity">
+
+    <include layout="@layout/toolbar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7">
+
+        <include layout="@layout/navigation_view"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:background="@color/detail_accent_pane_background_sec"
+            android:baselineAligned="false"
+            android:paddingLeft="@dimen/form_horizontal_padding_small"
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:id="@+id/picture_imageview"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:adjustViewBounds="true"
+                android:background="@android:color/white"
+                android:maxHeight="24dp"
+                android:maxWidth="24dp"
+                android:padding="4dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_empty_user"/>
+
+
+            <android.support.v7.widget.GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="4"
+                android:background="@color/detail_accent_pane_background"
+                android:paddingBottom="@dimen/abc_list_item_padding_horizontal_material"
+                android:paddingTop="@dimen/abc_list_item_padding_horizontal_material"
+                android:paddingLeft="@dimen/abc_list_item_padding_horizontal_material"
+                android:paddingRight="@dimen/abc_list_item_padding_horizontal_material"
+                app:columnCount="2"
+                app:rowCount="3">
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:text="Usuario"
+                    android:gravity="center_vertical"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textColor="@color/detail_accent_label"
+                    app:layout_columnWeight="1"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1"/>
+
+                <TextView
+                    android:id="@+id/usuarioTextView"
+                    android:gravity="center_vertical"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@android:color/white"
+                    app:layout_gravity="fill"
+                    app:layout_columnWeight="1"
+                    tools:text="Usuario"/>
+
+                <TextView
+                    android:text="Empresa"
+                    android:gravity="center_vertical"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textColor="@color/detail_accent_label"
+                    app:layout_columnWeight="1"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1"/>
+
+                <TextView
+                    android:id="@+id/empresaTextView"
+                    android:gravity="center_vertical"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@android:color/white"
+                    app:layout_gravity="fill"
+                    app:layout_columnWeight="1"
+                    tools:text="Empresa"/>
+
+                <TextView
+
+                    android:text="Inicio de sesión"
+                    android:gravity="center_vertical"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textColor="@color/detail_accent_label"
+                    app:layout_columnWeight="1"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1"/>
+
+
+                <TextView
+                    android:id="@+id/ultimoLoginTextView"
+                    android:gravity="center_vertical"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@android:color/white"
+                    app:layout_columnWeight="1"
+                    app:layout_gravity="fill"
+                    tools:text="30/05/2015 04:59 pm"/>
+
+                <Button
+                    android:id="@+id/cambiarUsuarioButton"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="@dimen/detail_view_padding"
+                    android:paddingRight="@dimen/detail_view_padding"
+                    android:text="Cambiar Usuario"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    app:layout_columnSpan="2"
+                    app:layout_gravity="center_horizontal"
+                    app:layout_rowWeight="0.5"/>
+
+            </android.support.v7.widget.GridLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

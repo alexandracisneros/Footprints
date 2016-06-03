@@ -26,6 +26,7 @@
     <string name="opt_pedidos_recoger">Pedidos a Recoger</string>
     <string name="opt_pedido_facturar">Pedidos a Facturar</string>
     <string name="opt_cerrar_dia">Cerrar Periodo</string>
+    <string name="opt_usuario">Usuario</string>
     <!--Menu Opciones - FIN-->
     <string name="producto_pedido_label">Producto</string>
     <string name="precio_pedido_label">Precio</string>

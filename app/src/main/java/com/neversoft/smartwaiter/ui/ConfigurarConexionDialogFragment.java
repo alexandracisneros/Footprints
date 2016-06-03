@@ -25,7 +25,6 @@ import com.neversoft.smartwaiter.util.Funciones;
 
 import java.net.URLEncoder;
 
-;
 
 
 public class ConfigurarConexionDialogFragment extends AppCompatDialogFragment {

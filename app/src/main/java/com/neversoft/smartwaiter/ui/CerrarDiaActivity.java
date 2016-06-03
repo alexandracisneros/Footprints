@@ -34,7 +34,7 @@ import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.Locale;
 
-;
+
 
 public class CerrarDiaActivity extends AppCompatActivity
         implements View.OnClickListener,
@@ -207,7 +207,7 @@ public class CerrarDiaActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         if (menuItem.getOrder() != SmartWaiter.OPCION_CERRAR_DIA) {
-            WeakReference<Activity> weakActivity = new WeakReference<Activity>(CerrarDiaActivity.this);
+            WeakReference<AppCompatActivity> weakActivity = new WeakReference<AppCompatActivity>(CerrarDiaActivity.this);
             Funciones.selectMenuOption(weakActivity, menuItem.getOrder());
             return true;
         }

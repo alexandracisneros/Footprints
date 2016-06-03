@@ -179,7 +179,7 @@ public class SincronizarActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         if (menuItem.getOrder() != SmartWaiter.OPCION_SINCRONIZAR) {
-            WeakReference<Activity> weakActivity = new WeakReference<Activity>(SincronizarActivity.this);
+            WeakReference<AppCompatActivity> weakActivity = new WeakReference<AppCompatActivity>(SincronizarActivity.this);
             Funciones.selectMenuOption(weakActivity, menuItem.getOrder());
             return true;
         }

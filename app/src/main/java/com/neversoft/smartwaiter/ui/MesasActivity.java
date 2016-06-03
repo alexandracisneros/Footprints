@@ -278,7 +278,7 @@ public class MesasActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         if (menuItem.getOrder() != SmartWaiter.OPCION_TOMAR_PEDIDO) {
-            WeakReference<Activity> weakActivity = new WeakReference<Activity>(MesasActivity.this);
+            WeakReference<AppCompatActivity> weakActivity = new WeakReference<AppCompatActivity>(MesasActivity.this);
             Funciones.selectMenuOption(weakActivity, menuItem.getOrder());
             return true;
         }

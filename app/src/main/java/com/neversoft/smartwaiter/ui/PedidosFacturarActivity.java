@@ -379,7 +379,7 @@ public class PedidosFacturarActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         if (menuItem.getOrder() != SmartWaiter.OPCION_PEDIDOS_FACTURAR) {
-            WeakReference<Activity> weakActivity = new WeakReference<Activity>(PedidosFacturarActivity.this);
+            WeakReference<AppCompatActivity> weakActivity = new WeakReference<AppCompatActivity>(PedidosFacturarActivity.this);
             Funciones.selectMenuOption(weakActivity, menuItem.getOrder());
             return true;
         }

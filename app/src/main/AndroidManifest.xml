@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="com.neversoft.smartwaiter"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest package="com.neversoft.smartwaiter"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <!--<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>-->
+    <!-- <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> -->
 
     <supports-screens
         android:largeScreens="true"
@@ -14,6 +13,7 @@
         android:requiresSmallestWidthDp="600"
         android:smallScreens="false"
         android:xlargeScreens="true"/>
+
     <application
         android:name=".ui.SmartWaiter"
         android:allowBackup="true"
@@ -46,11 +46,13 @@
 
         <service android:name=".service.SincronizarService">
         </service>
+
         <receiver android:name=".receiver.SincronizarReceiver">
             <intent-filter>
                 <action android:name="com.neversoft.smartwaiter.SYNC_DATA"/>
             </intent-filter>
         </receiver>
+
         <activity
             android:name=".ui.TomarPedidoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -120,11 +122,11 @@
 
         <service android:name=".service.ConsultarPedidosRecogerService"/>
 
-        <!--<receiver android:name=".receiver.ConsultarPedidosRecogerReceiver">-->
-        <!--<intent-filter>-->
-        <!--<action android:name="android.intent.action.BOOT_COMPLETED"/>-->
-        <!--</intent-filter>-->
-        <!--</receiver>-->
+        <!-- <receiver android:name=".receiver.ConsultarPedidosRecogerReceiver"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.BOOT_COMPLETED"/> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
 
         <service android:name=".service.NotificarPedidosRecogidosService"/>
 
@@ -146,14 +148,20 @@
         <service android:name=".service.ActualizarEstadoMesaService"/>
         <service android:name=".service.ObtenerListaMesasService"/>
 
-        <!--SO-->
-        <!--QA1-->
-        <!-- -->
-        <!--tr4ck18_t0xY-->
-        <!--SQL SERVER-->
-        <!-- -->
-        <!--sa-->
-        <!--calidad$123-->
+        <!-- SO -->
+        <!-- QA1 -->
+        <!--  -->
+        <!-- tr4ck18_t0xY -->
+        <!-- SQL SERVER -->
+        <!--  -->
+        <!-- sa -->
+        <!-- calidad$123 -->
+        <activity
+            android:name=".ui.CambiarUsuarioActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensorLandscape">
+
+        </activity>
     </application>
 
 </manifest>

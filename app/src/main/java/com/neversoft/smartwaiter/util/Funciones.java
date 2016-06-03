@@ -1,15 +1,16 @@
 package com.neversoft.smartwaiter.util;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 
+import com.neversoft.smartwaiter.ui.CambiarUsuarioActivity;
 import com.neversoft.smartwaiter.ui.CerrarDiaActivity;
 import com.neversoft.smartwaiter.ui.ConsultarReservasActivity;
 import com.neversoft.smartwaiter.ui.IniciarDiaActivity;
@@ -23,6 +24,7 @@ import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -39,6 +41,16 @@ public class Funciones {
         String dateString = dateFormat.format(date).toString();
         return dateString;
 
+    }
+
+    public static String getDateFromTimeStamp(long milliSeconds, String dateFormat) {
+        // Create a DateFormatter object for displaying date in specified format.
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat,Locale.getDefault());
+
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return formatter.format(calendar.getTime());
     }
 
     public static long getCurrentTimeStamp() {
@@ -133,8 +145,8 @@ public class Funciones {
                         Color.blue(c) * Color.blue(c) * .114);
     }
 
-    public static void selectMenuOption(final WeakReference<Activity> mReference, int position) {
-        final Activity activity = mReference.get();
+    public static void selectMenuOption(final WeakReference<AppCompatActivity> mReference, int position) {
+        final AppCompatActivity activity = mReference.get();
         Intent intent;
         switch (position) {
             case SmartWaiter.OPCION_INICIAR_DIA:
@@ -169,6 +181,11 @@ public class Funciones {
                 break;
             case SmartWaiter.OPCION_CERRAR_DIA:
                 intent = new Intent(activity, CerrarDiaActivity.class);
+                activity.startActivity(intent);
+                activity.finish();
+                break;
+            case SmartWaiter.OPCION_USUARIO:
+                intent = new Intent(activity, CambiarUsuarioActivity.class);
                 activity.startActivity(intent);
                 activity.finish();
                 break;

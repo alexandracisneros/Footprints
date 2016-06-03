@@ -29,7 +29,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@android:color/white"
+                android:background="@color/detail_accent_pane_background"
                 android:gravity="center_vertical"
                 android:padding="@dimen/abc_list_item_padding_horizontal_material"
                 app:layout_rowWeight="1">
@@ -37,6 +37,7 @@
                 <Spinner
                     android:id="@+id/pisos_spinner"
                     android:layout_width="0dp"
+                    android:textColor="@android:color/white"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
                     android:layout_weight="1"/>
@@ -44,6 +45,7 @@
                 <Spinner
                     android:id="@+id/ambientes_spinner"
                     android:layout_width="0dp"
+                    android:textColor="@android:color/white"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/abc_list_item_padding_horizontal_material"
                     android:layout_weight="1"/>
@@ -53,7 +55,7 @@
                 android:id="@+id/mesasGridView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@android:color/white"
+                android:background="@color/detail_accent_pane_background"
                 android:columnWidth="200dp"
                 android:horizontalSpacing="4dp"
                 android:numColumns="auto_fit"

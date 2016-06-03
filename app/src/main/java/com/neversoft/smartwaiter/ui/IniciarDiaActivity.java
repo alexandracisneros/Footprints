@@ -167,7 +167,7 @@ public class IniciarDiaActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         if (menuItem.getOrder() != SmartWaiter.OPCION_INICIAR_DIA) {
-            WeakReference<Activity> weakActivity = new WeakReference<Activity>(IniciarDiaActivity.this);
+            WeakReference<AppCompatActivity> weakActivity = new WeakReference<AppCompatActivity>(IniciarDiaActivity.this);
             Funciones.selectMenuOption(weakActivity, menuItem.getOrder());
             return true;
         }
