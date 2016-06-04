@@ -123,7 +123,7 @@ public class PedidosFacturarActivity extends AppCompatActivity
                 if (!hasFocus) {
                     // code to execute when EditText loses focus
                     String total = mTotalTextView.getText().toString();
-                    String recibido = mMontoRecibidoEditText.getText().toString();
+                    String recibido = mMontoRecibidoEditText.getText().toString(); //POSIBLE ERROR java.lang.NumberFormatException: Invalid float: ""
 
                     Float t = Float.parseFloat(total);
                     Float rec = Float.parseFloat(recibido);
@@ -176,7 +176,13 @@ public class PedidosFacturarActivity extends AppCompatActivity
         mListaTipoVenta.add(new SpinnerEE("01", "Factura"));
         mListaTipoVenta.add(new SpinnerEE("03", "Boleta"));
         mTipoVentaSpinner.setOnItemSelectedListener(this);
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, mListaTipoVenta);
+
+        ArrayAdapter adapter = new ArrayAdapter(
+                this,
+                R.layout.spinner_item,
+                mListaTipoVenta
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mTipoVentaSpinner.setAdapter(adapter);
 
     }
@@ -187,7 +193,13 @@ public class PedidosFacturarActivity extends AppCompatActivity
         mListaTipoPago.add(new SpinnerEE("CEF", "Efectivo"));
         mListaTipoPago.add(new SpinnerEE("CCC", "Tarjeta de Crédito"));
         mTipoPagoSpinner.setOnItemSelectedListener(this);
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, mListaTipoPago);
+
+        ArrayAdapter adapter = new ArrayAdapter(
+                this,
+                R.layout.spinner_item,
+                mListaTipoPago
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mTipoPagoSpinner.setAdapter(adapter);
     }
 

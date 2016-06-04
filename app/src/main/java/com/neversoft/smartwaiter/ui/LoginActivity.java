@@ -297,6 +297,7 @@ public class LoginActivity extends AppCompatActivity
             Log.d(DBHelper.TAG, "Configuraciones Insertadas");
 
             startActivity(new Intent(LoginActivity.this, IniciarDiaActivity.class));
+            finish();
         } catch (Exception e) {
             Toast.makeText(this, "Se produjó la excepción: " + e.getMessage(),
                     Toast.LENGTH_LONG).show();

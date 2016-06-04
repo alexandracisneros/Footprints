@@ -30,8 +30,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
-                android:background="@android:color/white"
-                android:padding="@dimen/abc_list_item_padding_horizontal_material"
+                android:background="@color/detail_accent_pane_background"
+                android:paddingTop="@dimen/abc_list_item_padding_horizontal_material"
+                android:paddingRight="@dimen/abc_action_bar_default_height_material"
+                android:paddingLeft="@dimen/abc_action_bar_default_height_material"
+                android:paddingBottom="@dimen/abc_list_item_padding_horizontal_material"
                 app:columnCount="3">
 
                 <TextView
@@ -39,6 +42,7 @@
                     android:gravity="center_vertical"
                     android:text="Código Reserva"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@android:color/white"
                     app:layout_columnWeight="2"
                     app:layout_gravity="fill"
                     app:layout_rowWeight="1"/>
@@ -50,7 +54,7 @@
                     android:gravity="center_vertical"
                     android:inputType="number"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/secondary_text"
+                    android:textColor="@android:color/white"
                     app:layout_columnWeight="5"
                     app:layout_gravity="fill"/>
 
@@ -67,6 +71,7 @@
                     android:gravity="center_vertical"
                     android:text="ID Cliente"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@android:color/white"
                     app:layout_columnWeight="2"
                     app:layout_gravity="fill"
                     app:layout_rowWeight="1"/>
@@ -78,7 +83,7 @@
                     android:gravity="center_vertical"
                     android:inputType="number"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/secondary_text"
+                    android:textColor="@android:color/white"
                     app:layout_columnWeight="5"
                     app:layout_gravity="fill"
                     app:layout_rowWeight="1"/>
@@ -99,6 +104,7 @@
                     android:gravity="center_vertical"
                     android:text="Razón Social"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@android:color/white"
                     app:layout_columnWeight="2"
                     app:layout_gravity="fill"
                     app:layout_rowWeight="1"/>
@@ -109,7 +115,7 @@
                     android:layout_height="0dp"
                     android:gravity="center_vertical"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/secondary_text"
+                    android:textColor="@android:color/white"
                     app:layout_columnWeight="5"
                     app:layout_gravity="fill"
                     app:layout_rowWeight="1"/>
@@ -128,6 +134,7 @@
                     android:gravity="center_vertical"
                     android:text="DNI/RUC"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@android:color/white"
                     app:layout_columnWeight="2"
                     app:layout_gravity="fill"
                     app:layout_rowWeight="1"/>
@@ -137,7 +144,7 @@
                     android:layout_height="0dp"
                     android:gravity="center_vertical"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/secondary_text"
+                    android:textColor="@android:color/white"
                     app:layout_columnWeight="5"
                     app:layout_gravity="fill"
                     app:layout_rowWeight="1"/>
@@ -158,7 +165,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="5"
-                android:background="@android:color/white"
+                android:background="@color/detail_accent_pane_background"
                 android:columnWidth="200dp"
                 android:horizontalSpacing="4dp"
                 android:numColumns="auto_fit"

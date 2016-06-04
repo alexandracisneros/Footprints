@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.neversoft.smartwaiter.R;
 import com.neversoft.smartwaiter.database.DBHelper;
 import com.neversoft.smartwaiter.database.DBHelper.MesaInfo;
 import com.neversoft.smartwaiter.database.DBHelper.MesaPiso;
@@ -178,7 +179,12 @@ public class MesaPisoDAO {
                 }
                 cursor.close();
                 db.close();  //ITV
-                ArrayAdapter adapter = new ArrayAdapter(mContext, android.R.layout.simple_spinner_item, ((MesasActivity) activity).getListaPisos());
+                ArrayAdapter adapter = new ArrayAdapter(
+                        mContext,
+                        R.layout.spinner_item,
+                        ((MesasActivity) activity).getListaPisos()
+                );
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 ((MesasActivity) activity).getPisosSpinner().setAdapter(adapter);
 
                 AdapterView.OnItemSelectedListener pisosSelectedListener = new AdapterView.OnItemSelectedListener() {
@@ -227,8 +233,14 @@ public class MesaPisoDAO {
                 }
                 cursor.close();
                 db.close();//ITV
-                ArrayAdapter adapter = new ArrayAdapter(mContext, android.R.layout.simple_spinner_item, ((MesasActivity) activity).getListaAmbientes());
+                ArrayAdapter adapter = new ArrayAdapter(
+                        mContext,
+                        R.layout.spinner_item,
+                        ((MesasActivity) activity).getListaAmbientes()
+                );
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 ((MesasActivity) activity).getAmbienteSpinner().setAdapter(adapter);
+
 
                 AdapterView.OnItemSelectedListener ambientesSelectedListener = new AdapterView.OnItemSelectedListener() {
 
