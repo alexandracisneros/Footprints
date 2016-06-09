@@ -1,11 +1,9 @@
 package com.neversoft.smartwaiter.ui;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -33,7 +31,6 @@ import com.neversoft.smartwaiter.util.Funciones;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.Locale;
-
 
 
 public class CerrarDiaActivity extends AppCompatActivity
@@ -66,7 +63,7 @@ public class CerrarDiaActivity extends AppCompatActivity
         mPrefControl = getSharedPreferences(ControlSharedPref.NAME, MODE_PRIVATE);
         mPrefConexion = getSharedPreferences(ConexionSharedPref.NAME, MODE_PRIVATE);
         mPrefLogin = getSharedPreferences(LoginSharedPref.NAME, MODE_PRIVATE);
-        mPedidoExtra=getSharedPreferences(PedidoExtraSharedPref.NAME,MODE_PRIVATE);
+        mPedidoExtra = getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
 
         mCerrarDiaButton = (Button) findViewById(R.id.cerrarDiaButton);
         mCerrarDiaButton.setOnClickListener(this);

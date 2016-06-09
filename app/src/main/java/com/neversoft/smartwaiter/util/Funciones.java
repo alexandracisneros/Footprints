@@ -57,6 +57,12 @@ public class Funciones {
         Date date = new Date();
         return date.getTime();
     }
+    public static Date addDays(int numberOfDays){
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, numberOfDays);
+        Date newDate = cal.getTime();
+        return newDate;
+    }
 
     @SuppressLint("SimpleDateFormat")
     public static String changeStringDateFormat(String date, String oldFormat,

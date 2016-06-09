@@ -118,7 +118,7 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
         String result;
 //        AlarmPedidoDespaSharedPref.save(mPrefAlarmDespachos, Funciones.getCurrentTimeStamp());
         long timeStamp = mPrefAlarmDespachos.getLong(AlarmPedidoDespaSharedPref.FECHA_ULTIMA_SINCRONIZACION,
-                Funciones.getCurrentTimeStamp());
+                Funciones.addDays(-1).getTime());
         String fechaHora = String.valueOf(timeStamp);
         //fechaHora = URLEncoder.encode(fechaHora, "utf-8");
         Log.d(DBHelper.TAG, "LAST TIMESTAMP SAVED:" + fechaHora);

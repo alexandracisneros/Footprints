@@ -1,11 +1,9 @@
 package com.neversoft.smartwaiter.ui;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -127,9 +125,10 @@ public class IniciarDiaActivity extends AppCompatActivity
 
     public void iniciarDia() {
         String url = mUrlServer
-                + "ventas/IniciarDiaVendedorMV/?fecha=%s&codVen=%s&codCia=%s&usuario=%s&cadenaConexion=%s";
+                + "restaurante/IniciarDiaMozo/?fecha=%s&codCia=%s&usuario=%s&cadenaConexion=%s";
+        http:
+//siempresoftqa.cloudapp.net/pruebamovilalex/api/restaurante/IniciarDiaMozo/?fecha=2016/01/01&usuario=SUPERVISOR&cadenaConexion=Initial%20Catalog=PRUEBAMOVILJHAV&codCia=001
         mFechaInicioDia = Funciones.getCurrentDate("yyyy/MM/dd");
-        String codMozo = mPrefConfig.getString("CodMozo", "");
         String codCia = mPrefConfig.getString("CodCia", "");
         String usuario = mPrefConfig.getString("Usuario", "").toUpperCase(
                 Locale.getDefault());
@@ -138,24 +137,21 @@ public class IniciarDiaActivity extends AppCompatActivity
         try {
             // Simple GET
             String mensajeError = "";
-            if (codMozo != "") {
-                if (codCia != "") {
-                    if (usuario != "") {
-                        String encondedAmbiente = URLEncoder.encode(ambiente,
-                                "utf-8");
-                        String urlWithParams = String.format(url,
-                                mFechaInicioDia, codMozo, codCia, usuario,
-                                encondedAmbiente);
-                        new DoIniciarDia().execute(urlWithParams);
-                    } else {
-                        mensajeError = "No se ha configurado 'código de vendedor'";
-                    }
+
+            if (codCia != "") {
+                if (usuario != "") {
+                    String encondedAmbiente = URLEncoder.encode(ambiente,
+                            "utf-8");
+                    String urlWithParams = String.format(url,
+                            mFechaInicioDia, codCia, usuario, encondedAmbiente);
+                    new DoIniciarDia().execute(urlWithParams);
                 } else {
-                    mensajeError = "No se ha configurado 'código de compañía'";
+                    mensajeError = "No se ha configurado 'código de vendedor'";
                 }
             } else {
-                mensajeError = "No se ha configurado 'código de mozo'";
+                mensajeError = "No se ha configurado 'código de compañía'";
             }
+
             if (mensajeError != "") {
                 throw new Exception(mensajeError);
             }
@@ -201,25 +197,22 @@ public class IniciarDiaActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Object result) {
             // Clear progress indicator
-            String response = "";
+            String response;
             showProgressIndicator(false);
-            if (result instanceof String) {
-                response = (String) result;
-                if (response.equals("1")) {
-                    // update login data to SharedPreferences
-                    // We only want to change the value for 'inicioDia'
-                    // We DO NOT want to change any of the other values
-                    ControlSharedPref.save(mPrefControl, true, mFechaInicioDia,
-                            null, null, null, null, false);
-                    response = "Día iniciado correctamente.";
-                } else if (response.equals("2")) {
-                    response = "No se pudo iniciar el día porque existe un registro" +
-                            " anterior que aún no ha sido cerrado.";
-                }
+            boolean resultadoIO;
+            resultadoIO = Boolean.parseBoolean(String.valueOf(result));
+            if (resultadoIO) {
+                // update login data to SharedPreferences
+                // We only want to change the value for 'inicioDia'
+                // We DO NOT want to change any of the other values
+                ControlSharedPref.save(mPrefControl, true, mFechaInicioDia,
+                        null, null, null, null, false);
+                response = "Día iniciado correctamente.";
 
-            } else if (result instanceof Exception) {
-                response = ((Exception) result).getMessage();
-                Log.d(DBHelper.TAG, response);
+
+            } else {
+                response = "No se pudo iniciar el día porque existe un registro" +
+                        " anterior o el día aún no se ha iniciado en el servidor.";
             }
             Toast.makeText(IniciarDiaActivity.this, response, Toast.LENGTH_LONG).show();
         }
