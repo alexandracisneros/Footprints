@@ -1,5 +1,6 @@
 package com.neversoft.smartwaiter.ui;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +24,7 @@ import com.neversoft.smartwaiter.io.RestConnector;
 import com.neversoft.smartwaiter.io.RestUtil;
 import com.neversoft.smartwaiter.model.business.PedidoDAO;
 import com.neversoft.smartwaiter.model.business.SincroDAO;
+import com.neversoft.smartwaiter.preference.AlarmPedidoDespaSharedPref;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
 import com.neversoft.smartwaiter.preference.ControlSharedPref;
 import com.neversoft.smartwaiter.preference.LoginSharedPref;
@@ -44,6 +46,7 @@ public class CambiarUsuarioActivity extends AppCompatActivity
     private SharedPreferences mPrefControl;
     private SharedPreferences mPrefConexion;
     private SharedPreferences mPedidoExtra;
+    private SharedPreferences mPrefAlarmDespachos;
     private TextView mUsuarioTextView;
     private TextView mEmpresaTextView;
     private TextView mUltimoLoginTextView;
@@ -77,6 +80,7 @@ public class CambiarUsuarioActivity extends AppCompatActivity
         mPrefControl = getSharedPreferences(ControlSharedPref.NAME, MODE_PRIVATE);
         mPrefConexion = getSharedPreferences(ConexionSharedPref.NAME, MODE_PRIVATE);
         mPedidoExtra = getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
+        mPrefAlarmDespachos = getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
 
         mUsuarioTextView.setText(mPrefLogin.getString(LoginSharedPref.USUARIO, "Sin establecer"));
         mEmpresaTextView.setText(mPrefLogin.getString(LoginSharedPref.COMPANIA, "Sin establecer"));
@@ -104,15 +108,15 @@ public class CambiarUsuarioActivity extends AppCompatActivity
         switch (v.getId()) {
             case R.id.cambiarUsuarioButton:
                 boolean isDayStarted;
-                boolean isDataSynchronized;
+//                boolean isDataSynchronized;
                 isDayStarted = mPrefControl.getBoolean(ControlSharedPref.INICIO_DIA, false);
                 if (isDayStarted) {
-                    isDataSynchronized = mPrefControl.getBoolean(ControlSharedPref.DATA_SINCRONIZADA, false);
-                    if (isDataSynchronized) {
+//                    isDataSynchronized = mPrefControl.getBoolean(ControlSharedPref.DATA_SINCRONIZADA, false);
+//                    if (isDataSynchronized) {
                         confirmarRealizacionDePedidos();
-                    } else {
-                        Toast.makeText(CambiarUsuarioActivity.this, "Aún no ha sincronizado los datos.", Toast.LENGTH_SHORT).show();
-                    }
+//                    } else {
+//                        Toast.makeText(CambiarUsuarioActivity.this, "Aún no ha sincronizado los datos.", Toast.LENGTH_SHORT).show();
+//                    }
                 } else {
                     cambiarUsuario();
                 }
@@ -239,6 +243,7 @@ public class CambiarUsuarioActivity extends AppCompatActivity
                     ControlSharedPref.save(mPrefControl, false, "", true, false, false, "", false);
                     PedidoSharedPref.clear(getApplicationContext());
                     PedidoExtraSharedPref.remove(mPedidoExtra);
+                    AlarmPedidoDespaSharedPref.remove(mPrefAlarmDespachos);
                     // Clear out mPrefLoginValues
                     cambiarUsuario();
                     mensaje = "Día cerrado correctamente.";

@@ -1,5 +1,6 @@
 package com.neversoft.smartwaiter.ui;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -21,6 +22,7 @@ import com.neversoft.smartwaiter.io.RestConnector;
 import com.neversoft.smartwaiter.io.RestUtil;
 import com.neversoft.smartwaiter.model.business.PedidoDAO;
 import com.neversoft.smartwaiter.model.business.SincroDAO;
+import com.neversoft.smartwaiter.preference.AlarmPedidoDespaSharedPref;
 import com.neversoft.smartwaiter.preference.ConexionSharedPref;
 import com.neversoft.smartwaiter.preference.ControlSharedPref;
 import com.neversoft.smartwaiter.preference.LoginSharedPref;
@@ -45,6 +47,7 @@ public class CerrarDiaActivity extends AppCompatActivity
     private SharedPreferences mPrefConexion;
     private SharedPreferences mPrefLogin;
     private SharedPreferences mPedidoExtra;
+    private SharedPreferences mPrefAlarmDespachos;
     private MaterialDialog mProgress;
 
     @Override
@@ -64,6 +67,7 @@ public class CerrarDiaActivity extends AppCompatActivity
         mPrefConexion = getSharedPreferences(ConexionSharedPref.NAME, MODE_PRIVATE);
         mPrefLogin = getSharedPreferences(LoginSharedPref.NAME, MODE_PRIVATE);
         mPedidoExtra = getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
+        mPrefAlarmDespachos = getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
 
         mCerrarDiaButton = (Button) findViewById(R.id.cerrarDiaButton);
         mCerrarDiaButton.setOnClickListener(this);
@@ -141,17 +145,17 @@ public class CerrarDiaActivity extends AppCompatActivity
     public void onClick(View view) {
         boolean isDayClosed;
         boolean isDayStarted;
-        boolean isDataSynchronized;
+//        boolean isDataSynchronized;
         isDayClosed = mPrefControl.getBoolean(ControlSharedPref.CIERRE_DIA, false);
         if (!isDayClosed) {
             isDayStarted = mPrefControl.getBoolean(ControlSharedPref.INICIO_DIA, false);
             if (isDayStarted) {
-                isDataSynchronized = mPrefControl.getBoolean(ControlSharedPref.DATA_SINCRONIZADA, false);
-                if (isDataSynchronized) {
-                    confirmarRealizacionDePedidos();
-                } else {
-                    Toast.makeText(CerrarDiaActivity.this, "Aún no ha sincronizado los datos.", Toast.LENGTH_SHORT).show();
-                }
+//                isDataSynchronized = mPrefControl.getBoolean(ControlSharedPref.DATA_SINCRONIZADA, false);
+//                if (isDataSynchronized) {
+                confirmarRealizacionDePedidos();
+//                } else {
+//                    Toast.makeText(CerrarDiaActivity.this, "Aún no ha sincronizado los datos.", Toast.LENGTH_SHORT).show();
+//                }
             } else {
                 Toast.makeText(CerrarDiaActivity.this, "Debe iniciar el día antes de intentar cerrarlo.", Toast.LENGTH_SHORT).show();
             }
@@ -256,6 +260,8 @@ public class CerrarDiaActivity extends AppCompatActivity
                     ControlSharedPref.save(mPrefControl, false, "", true, false, false, "", false);
                     PedidoSharedPref.clear(getApplicationContext());
                     PedidoExtraSharedPref.remove(mPedidoExtra);
+                    AlarmPedidoDespaSharedPref.remove(mPrefAlarmDespachos);
+
                     // Clear out mPrefLoginValues
 //                    LoginSharedPref.remove(mPrefLogin); //TODO: Aun por ver aunque parece que no se hara a no ser que el usuario decida cambiar de usuario
 
