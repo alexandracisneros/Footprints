@@ -58,7 +58,7 @@ public class ArticuloItemAdapter extends BaseAdapter {
         } else {
             wrapper = (ViewHolder) convertView.getTag();
         }
-        Picasso.with(mContext).load(TextUtils.isEmpty(mItems.get(position).getUrl()) ? null : mItems.get(position).getUrl())
+        Picasso.with(mContext).load(TextUtils.isEmpty(mItems.get(position).getUrl().trim()) ? null : mItems.get(position).getUrl())
                 .placeholder(R.drawable.ic_empty_plate)
                 .resize(mSize, mSize)
                 .centerCrop()

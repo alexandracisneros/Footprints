@@ -456,7 +456,7 @@ public class TomarPedidoActivity extends AppCompatActivity
             item.setVisible(showOnSingle);
         }
 
-        //"Don't you fucking play the hero again OK! Because I'll die if something happens to you". If only Fer would have remembered what David said to him :'(
+
         private void modifyProductQuantiy(int accion, SparseBooleanArray checkedItemPositions) {
             if (checkedItemPositions.valueAt(0)) {
                 int position = checkedItemPositions.keyAt(0);
