@@ -67,7 +67,7 @@ public class CerrarDiaActivity extends AppCompatActivity
         mPrefConexion = getSharedPreferences(ConexionSharedPref.NAME, MODE_PRIVATE);
         mPrefLogin = getSharedPreferences(LoginSharedPref.NAME, MODE_PRIVATE);
         mPedidoExtra = getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
-        mPrefAlarmDespachos = getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
+        mPrefAlarmDespachos = getSharedPreferences(AlarmPedidoDespaSharedPref.NAME, Context.MODE_PRIVATE);
 
         mCerrarDiaButton = (Button) findViewById(R.id.cerrarDiaButton);
         mCerrarDiaButton.setOnClickListener(this);

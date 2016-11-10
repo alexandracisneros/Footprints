@@ -80,7 +80,7 @@ public class CambiarUsuarioActivity extends AppCompatActivity
         mPrefControl = getSharedPreferences(ControlSharedPref.NAME, MODE_PRIVATE);
         mPrefConexion = getSharedPreferences(ConexionSharedPref.NAME, MODE_PRIVATE);
         mPedidoExtra = getSharedPreferences(PedidoExtraSharedPref.NAME, MODE_PRIVATE);
-        mPrefAlarmDespachos = getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
+        mPrefAlarmDespachos = getSharedPreferences(AlarmPedidoDespaSharedPref.NAME, Context.MODE_PRIVATE);
 
         mUsuarioTextView.setText(mPrefLogin.getString(LoginSharedPref.USUARIO, "Sin establecer"));
         mEmpresaTextView.setText(mPrefLogin.getString(LoginSharedPref.COMPANIA, "Sin establecer"));

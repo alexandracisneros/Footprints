@@ -43,8 +43,14 @@ public class DetallePedidoDAO {
                 String idPedidoServidor = jsonObjPed.get("idPed").getAsString();
                 String cantRecoger = jsonObjPed.get("cantrec").getAsString();
                 IDsArray = getIdsDetalleActualizar(jsonObjPed.get("detalle").getAsJsonArray());
-                PedidoDAO.updatePedidoRecoger(idPedido, idPedidoServidor, cantRecoger, db);
-                updateEstadoArticulo(idPedido, IDsArray, estadoOriginal, nuevoEstado, db);
+                rowCountUpdate=PedidoDAO.updatePedidoRecoger(idPedido, idPedidoServidor, cantRecoger, db);
+                if(rowCountUpdate<=0) {
+                    throw new Exception("No se pudo concretar actualización de cabecera de pedido.");
+                }
+                rowCountUpdate=updateEstadoArticulo(idPedido, IDsArray, estadoOriginal, nuevoEstado, db);
+                if(rowCountUpdate<=0) {
+                    throw new Exception("No se pudo concretar actualización de uno o más items del pedido.");
+                }
 
             }
             db.setTransactionSuccessful();
@@ -77,8 +83,9 @@ public class DetallePedidoDAO {
         return rowCountUpdate;
     }
 
-    private void updateEstadoArticulo(String idPedido, List<String> IDsArray, int estadoOriginal, int nuevoEstado, SQLiteDatabase db) throws Exception {
+    private int  updateEstadoArticulo(String idPedido, List<String> IDsArray, int estadoOriginal, int nuevoEstado, SQLiteDatabase db) throws Exception {
 
+        int affectedRows=0;
         ContentValues cv = new ContentValues();
         cv.put(DetallePedido.ESTADO_ART, nuevoEstado);
         String updateWhere;
@@ -91,7 +98,9 @@ public class DetallePedidoDAO {
 
         updateWhereArgs = IDsArray.toArray(new String[IDsArray.size()]);
 
-        db.update(Tables.DETALLE_PEDIDO, cv, updateWhere, updateWhereArgs);
+        affectedRows=db.update(Tables.DETALLE_PEDIDO, cv, updateWhere, updateWhereArgs);
+
+        return affectedRows;
 
     }
 

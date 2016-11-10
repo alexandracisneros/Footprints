@@ -61,7 +61,7 @@ public class ConsultarPedidosRecogerService extends WakefulIntentService {
         mPrefConfig = getApplicationContext().getSharedPreferences(LoginActivity.PREF_CONFIG, Context.MODE_PRIVATE);
         mPrefLogin = getApplicationContext().getSharedPreferences(LoginSharedPref.NAME, Context.MODE_PRIVATE);
         mPrefConexion = getApplicationContext().getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
-        mPrefAlarmDespachos = getApplicationContext().getSharedPreferences(ConexionSharedPref.NAME, Context.MODE_PRIVATE);
+        mPrefAlarmDespachos = getApplicationContext().getSharedPreferences(AlarmPedidoDespaSharedPref.NAME, Context.MODE_PRIVATE);
 
         mAmbiente = mPrefConexion.getString(ConexionSharedPref.AMBIENTE, "");
         mCodCia = mPrefConfig.getString("CodCia", "");

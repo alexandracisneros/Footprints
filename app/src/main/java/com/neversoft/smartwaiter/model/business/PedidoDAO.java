@@ -27,8 +27,8 @@ public class PedidoDAO {
         this.mContext = context;
     }
 
-    public static void updatePedidoRecoger(String idPedido, String idPedidoServidor, String nuevaCantidad, SQLiteDatabase db) throws Exception {
-
+    public static int updatePedidoRecoger(String idPedido, String idPedidoServidor, String nuevaCantidad, SQLiteDatabase db) throws Exception {
+        int affectedRows=0;
         ContentValues cv = new ContentValues();
         cv.put(Pedido.CANT_RECOGIDA, nuevaCantidad.trim());
         cv.put(Pedido.NRO_PED_SERVIDOR, idPedidoServidor);
@@ -39,7 +39,8 @@ public class PedidoDAO {
         updateWhere = Pedido.ID + " =? ";
         updateWhereArgs = new String[]{idPedido};
 
-        db.update(Tables.PEDIDO, cv, updateWhere, updateWhereArgs);
+        affectedRows=db.update(Tables.PEDIDO, cv, updateWhere, updateWhereArgs);
+        return affectedRows;
     }
 
     public long savePedido(final PedidoEE pedido, int estadoArticulo) throws Exception {
