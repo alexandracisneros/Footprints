@@ -93,7 +93,8 @@ public class MesaPisoDAO {
         int numToUpdate = 0;
         int numAffectedRows;
         String updateQuery = "UPDATE " + Tables.MESA_PISO + " SET  " +
-                MesaPiso.COD_ESTADO_MESA + "=? WHERE " + MesaPiso.ID + "=? ";
+                MesaPiso.COD_ESTADO_MESA + "=? ," +
+                MesaPiso.COD_RESERVA + "=?  WHERE " + MesaPiso.ID + "=? ";
         DBHelper dbHelper;
         SQLiteDatabase db = null;
         try {
@@ -106,7 +107,9 @@ public class MesaPisoDAO {
                 JsonObject jsonObjItem = jsonArrayMesa.get(i).getAsJsonObject();
                 statement.clearBindings();
                 statement.bindString(1, jsonObjItem.get("CEMESA").getAsString());
-                statement.bindLong(2, jsonObjItem.get("CODMESA").getAsInt());
+                statement.bindLong(2, jsonObjItem.get("CODRESERVA").getAsInt());
+                statement.bindLong(3, jsonObjItem.get("CODMESA").getAsInt());
+
                 numAffectedRows = statement.executeUpdateDelete();
                 if (numAffectedRows > 0) {
                     numToUpdate++;
@@ -305,6 +308,7 @@ public class MesaPisoDAO {
                 mesaPisoEE.setCodEstado(cursor.getString(MesasInfoQuery.MESA_COD_ESTADO));
                 mesaPisoEE.setDescEstado(cursor.getString(MesasInfoQuery.MESA_DESC_ESTADO));
                 mesaPisoEE.setHTMLColor(cursor.getString(MesasInfoQuery.MESA_COD_COLOR));
+                mesaPisoEE.setCodReserva(cursor.getInt(MesasInfoQuery.MESA_COD_RESERVA));
 
                 return mesaPisoEE;
 
@@ -340,7 +344,8 @@ public class MesaPisoDAO {
                 MesaPiso.NRO_ASIENTOS,
                 MesaPiso.COD_ESTADO_MESA,
                 MesaInfo.DESC_ESTADO,
-                MesaInfo.COD_COLOR
+                MesaInfo.COD_COLOR,
+                MesaPiso.COD_RESERVA
         };
         int MESA_ID = 0;
         int MESA_NRO_PISO = 1;
@@ -350,6 +355,7 @@ public class MesaPisoDAO {
         int MESA_COD_ESTADO = 5;
         int MESA_DESC_ESTADO = 6;
         int MESA_COD_COLOR = 7;
+        int MESA_COD_RESERVA=8;
     }
 
 }
